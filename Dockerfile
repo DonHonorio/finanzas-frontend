@@ -19,6 +19,7 @@ COPY --from=builder /app ./
 
 # Configurar variable de entorno para el puerto en Render
 ENV PORT=3000
+ENV NEXT_PUBLIC_API_URL="https://finanzas-api.fly.dev"
 
 # Exponer el puerto
 EXPOSE 3000
