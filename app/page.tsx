@@ -8,7 +8,7 @@ export default async function Home() {
     <>
       <div className="h-screen w-full">
         <div className="h-1/2 flex flex-col items-center">
-          <h1 className="text-6xl font-bold mb-4">Finanzas Personales</h1>
+          <h1 className="text-6xl font-bold mb-4">Finanzas Personales Pruebas 1.0</h1>
           <ListaNombres />
         </div>
         <div className="flex flex-col justify-center items-center space-y-4 h-1/2">
