@@ -1,44 +1,45 @@
 "use client"
 
-import { crearNombre, obtenerNombres } from "@/actions/prueba-action"
-import { use, useActionState, useEffect, useState } from "react"
+import { addTask, getAllTasks } from "@/src/index-db"
+import { useEffect, useState } from "react"
 
-type Nombre = {
-    id: number,
-    name: string,
-    createdAt: string,
-    updatedAt: string
+type Task = {
+    title: string
+    done: boolean
+    createdAt: Date
 }
 
 export default function ListaNombres() {
 
-    const [state, dispatch] = useActionState(crearNombre, 0)
-    const [data, setData] = useState<Nombre[]>([])
-
-    const fetchNombres = async () => obtenerNombres()
-
-    useEffect(() =>{
-        console.log('STATE: ', state)
-        if(state) {
-            fetchNombres().then(nombres => setData(nombres))
-        }
-    }, [state])
+    const [data, setData] = useState<Task[]>([])
 
     useEffect(() => {
-        fetchNombres().then(nombres => setData(nombres))
+        const fetchNombres = async () => {
+            const tasks = await getAllTasks()
+            setData(tasks as Task[])
+        }
+        fetchNombres()
     }, [])
+
+    const createTarea = async (formData: FormData) => {
+        const name = formData.get("name") as string
+        await addTask(name)
+        const tasks = await getAllTasks()
+        setData(tasks as Task[])
+        console.log(tasks)
+    }
 
     return (
         <>
             <div className="h-full flex flex-col justify-between">
                 <ul>
-                    {data.map(nombre => (
-                        <li key={nombre.id}>{nombre.name}</li>
+                    {data.map(dato => (
+                        <li key={dato.createdAt.toString()}>{dato.title}</li>
                     ))}
                 </ul>
 
-                <form action={dispatch} className="bg-green-200">
-                    <input type="text" name="name" placeholder="Agregar nombre" className="p-2 m-2 rounded-md"/>
+                <form action={createTarea} className="bg-green-200">
+                    <input type="text" name="name" placeholder="Agregar nombre" className="p-2 m-2 rounded-md" />
                     <button type="submit" className="bg-green-400 p-2 m-2 rounded-md hover:bg-green-500 transition">Agregar</button>
                 </form>
             </div>

@@ -1,5 +1,4 @@
-import Boton from "@/components/prueba/Boton"
-import { prueba } from "@/actions/prueba-action"
+import Boton from "@/components/prueba/Boton";
 import ListaNombres from "@/components/prueba/ListaNombres";
 
 export default async function Home() {

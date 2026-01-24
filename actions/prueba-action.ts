@@ -9,8 +9,6 @@ export async function prueba() {
         }
     })
 
-    console.log('RUTA: ', url)
-    console.log('RESPUESTA DEL SERVIDOR:', req)
     const json = await req.json()
 
     if(!req.ok)  {

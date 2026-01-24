@@ -1,17 +1,11 @@
 "use client"
 
 import { prueba } from "@/actions/prueba-action"
-import { useActionState, useEffect } from "react"
+import { useActionState } from "react"
 
 export default function Boton() {
 
     const [state, dispatch] = useActionState(prueba, '')
-
-    useEffect(() => { {
-        if(state && state.numero) {
-            console.log('Respuesta de la acción de prueba:', state)
-        }
-    } }, [state])
 
     return (
         <>
