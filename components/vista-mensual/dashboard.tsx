@@ -10,29 +10,42 @@ import {
 } from '@tanstack/react-table'
 import { CategoryRow, Month } from '@/src/types/dashboard-types'
 import { data } from '@/src/mock-data'
+import { TableBody } from './table-body'
+import { TableFooter } from './table-footer'
+import { TableHeader } from './table-header'
 
-const months: Month[] = [
+export const months: Month[] = [
     'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
     'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
 ]
 
-function sumMonth(data: CategoryRow[], month: Month) {
-    return data.reduce((acc, row) => acc + row.months[month], 0)
-}
-
-function sumBudgets(data: CategoryRow[]) {
-    return data.reduce((acc, row) => acc + row.budget, 0)
-}
-
-function formatCurrency(value: number) {
+export function formatCurrency(value: number) {
     return new Intl.NumberFormat('es-ES', {
         style: 'currency',
         currency: 'EUR',
     }).format(value)
 }
 
+export const columnWidths: Record<string, string> = {
+    name: '20%',
+    budget: '10%',
+    enero: '5%',
+    febrero: '5%',
+    marzo: '5%',
+    abril: '5%',
+    mayo: '5%',
+    junio: '5%',
+    julio: '5%',
+    agosto: '5%',
+    septiembre: '5%',
+    octubre: '5%',
+    noviembre: '5%',
+    diciembre: '5%',
+}
+
 
 export function Dashboard() {
+
     const columns = useMemo<ColumnDef<CategoryRow>[]>(() => [
         {
             accessorKey: 'name',
@@ -58,54 +71,24 @@ export function Dashboard() {
     })
 
     return (
-        <table className="w-full border-collapse text-sm">
-            <thead className="bg-gray-50 border-b">
-                {table.getHeaderGroups().map(hg => (
-                    <tr key={hg.id}>
-                        {hg.headers.map(header => (
-                            <th
-                                key={header.id}
-                                className="px-4 py-3 text-left font-semibold text-gray-600"
-                            >
-                                {flexRender(header.column.columnDef.header, header.getContext())}
-                            </th>
-                        ))}
-                    </tr>
-                ))}
-            </thead>
+        <div className="h-full flex flex-col border rounded-lg overflow-hidden">
 
-            <tbody>
-                {table.getRowModel().rows.map(row => (
-                    <tr
-                        key={row.id}
-                        className="border-b hover:bg-gray-50 transition"
-                    >
-                        {row.getVisibleCells().map(cell => (
-                            <td
-                                key={cell.id}
-                                className="px-4 py-2 text-right whitespace-nowrap"
-                            >
-                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                            </td>
-                        ))}
-                    </tr>
-                ))}
-            </tbody>
+            {/* HEADER */}
+            <div className="shrink-0">
+                <TableHeader table={table} />
+            </div>
 
-            <tfoot className="bg-gray-100 font-semibold">
-                <tr>
-                    <td className="px-4 py-3 text-left">TOTAL</td>
-                    <td className="px-4 py-3 text-right">
-                        {formatCurrency(sumBudgets(data))}
-                    </td>
-                    {months.map(m => (
-                        <td key={m} className="px-4 py-3 text-right">
-                            {formatCurrency(sumMonth(data, m))}
-                        </td>
-                    ))}
-                </tr>
-            </tfoot>
-        </table>
+            {/* BODY (scrollable) */}
+            <div className="flex-1 overflow-auto">
+                <TableBody table={table} />
+            </div>
 
+            {/* FOOTER (fixed abajo) */}
+            <div className="shrink-0 sticky bottom-0 z-10">
+                <TableFooter table={table} />
+            </div>
+
+        </div>
     )
 }
+

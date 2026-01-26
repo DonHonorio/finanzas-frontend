@@ -22,4 +22,14 @@ export const data: CategoryRow[] = [
       septiembre: 0, octubre: 0, noviembre: 0, diciembre: 0,
     },
   },
+  {
+    id: '3',
+    name: 'Ocio',
+    budget: 100,
+    months: {
+      enero: 122230, febrero: 80, marzo: 90, abril: 110,
+      mayo: 95, junio: 100, julio: 130, agosto: 85,
+      septiembre: 70, octubre: 150, noviembre: 60, diciembre: 200,
+    },
+  }
 ]
