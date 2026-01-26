@@ -20,7 +20,7 @@ export function TableBody({ table }: { table: Table<CategoryRow> }) {
                         {row.getVisibleCells().map(cell => (
                             <td
                                 key={cell.id}
-                                className="px-4 py-2 text-right whitespace-nowrap overflow-hidden text-ellipsis"
+                                className={`p-3 text-[16px] font-normal whitespace-nowrap overflow-hidden text-ellipsis ${cell.column.id === 'name' ? 'text-left' : 'text-right'}`}
                             >
                                 {flexRender(
                                     cell.column.columnDef.cell,

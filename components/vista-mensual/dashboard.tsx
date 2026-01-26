@@ -28,20 +28,20 @@ export function formatCurrency(value: number) {
 }
 
 export const columnWidths: Record<string, string> = {
-    name: '20%',
-    budget: '10%',
-    enero: '5%',
-    febrero: '5%',
-    marzo: '5%',
-    abril: '5%',
-    mayo: '5%',
-    junio: '5%',
-    julio: '5%',
-    agosto: '5%',
-    septiembre: '5%',
-    octubre: '5%',
-    noviembre: '5%',
-    diciembre: '5%',
+    name: '13%',
+    budget: '5%',
+    enero: '6%',
+    febrero: '6%',
+    marzo: '6%',
+    abril: '6%',
+    mayo: '6%',
+    junio: '6%',
+    julio: '6%',
+    agosto: '6%',
+    septiembre: '6%',
+    octubre: '6%',
+    noviembre: '6%',
+    diciembre: '6%',
 }
 
 
@@ -51,11 +51,14 @@ export function Dashboard() {
     const columns = useMemo<ColumnDef<CategoryRow>[]>(() => [
         {
             accessorKey: 'name',
-            header: 'Categoría',
+            header: 'GASTOS MENSUALES',
+            meta: {
+                align: 'center'
+            }
         },
         {
             accessorKey: 'budget',
-            header: 'Presupuesto',
+            header: 'PRESUPUESTO',
             cell: info => formatCurrency(info.getValue<number>()),
         },
         ...months.map(month => ({

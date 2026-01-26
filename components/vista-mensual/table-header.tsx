@@ -3,6 +3,7 @@ import { columnWidths } from "./dashboard";
 import { CategoryRow } from "@/src/types/dashboard-types";
 
 export function TableHeader({ table }: { table: Table<CategoryRow> }) {
+
     return (
         <table className="w-full border-collapse text-sm table-fixed">
             <colgroup>
@@ -20,7 +21,7 @@ export function TableHeader({ table }: { table: Table<CategoryRow> }) {
                         {hg.headers.map(header => (
                             <th
                                 key={header.id}
-                                className="px-4 py-3 text-end font-semibold text-gray-600"
+                                className={`px-4 py-3 text-end font-semibold text-gray-600 ${header.column.id === 'name' ? 'text-left' : 'text-right'}`}
                             >
                                 {flexRender(
                                     header.column.columnDef.header,
