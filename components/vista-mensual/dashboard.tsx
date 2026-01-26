@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import {
     CellContext,
     ColumnDef,
@@ -13,6 +13,7 @@ import { data } from '@/src/mock-data'
 import { TableBody } from './table-body'
 import { TableFooter } from './table-footer'
 import { TableHeader } from './table-header'
+import { AddCategoryModal } from './add-category-modal'
 
 export const months: Month[] = [
     'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
@@ -45,6 +46,7 @@ export const columnWidths: Record<string, string> = {
 
 
 export function Dashboard() {
+    const [openModal, setOpenModal] = useState(false)
 
     const columns = useMemo<ColumnDef<CategoryRow>[]>(() => [
         {
@@ -85,11 +87,24 @@ export function Dashboard() {
 
             {/* BOTÓN SEPARADOR */}
             <div className="shrink-0 border-t bg-gray-50 px-4 py-2">
-                <button className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-2">
+                <button
+                    onClick={() => setOpenModal(true)}
+                    className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-2"
+                >
                     <span className="text-lg">＋</span>
                     Añadir categoría
                 </button>
             </div>
+
+            {/* MODAL */}
+            <AddCategoryModal
+                open={openModal}
+                onCancel={() => setOpenModal(false)}
+                onAccept={() => {
+                    setOpenModal(false)
+                    // aquí meterás luego el submit
+                }}
+            />
 
             {/* FOOTER (fixed abajo) */}
             <div className="shrink-0 sticky bottom-0 z-10">
