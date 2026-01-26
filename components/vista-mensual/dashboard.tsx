@@ -83,6 +83,14 @@ export function Dashboard() {
                 <TableBody table={table} />
             </div>
 
+            {/* BOTÓN SEPARADOR */}
+            <div className="shrink-0 border-t bg-gray-50 px-4 py-2">
+                <button className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-2">
+                    <span className="text-lg">＋</span>
+                    Añadir categoría
+                </button>
+            </div>
+
             {/* FOOTER (fixed abajo) */}
             <div className="shrink-0 sticky bottom-0 z-10">
                 <TableFooter table={table} />

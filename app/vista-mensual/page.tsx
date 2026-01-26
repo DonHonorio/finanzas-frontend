@@ -1,4 +1,5 @@
 import { Dashboard } from "@/components/vista-mensual/dashboard";
+import { VistaMensualHeader } from "@/components/vista-mensual/vista-mensual-header";
 
 export default function Page() {
   return (
@@ -6,9 +7,7 @@ export default function Page() {
       <div className="h-full flex flex-col">
 
         {/* TÍTULO */}
-        <header className="h-10 text-2xl text-center shrink-0">
-          Vista Mensual
-        </header>
+        <VistaMensualHeader />
 
         {/* CONTENIDO PRINCIPAL */}
         <main className="flex-1 overflow-hidden">
