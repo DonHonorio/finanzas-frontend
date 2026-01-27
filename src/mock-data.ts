@@ -4,7 +4,7 @@ import { CategoryRow } from "./types/dashboard-types";
 export const data: CategoryRow[] = [
   {
     id: '1',
-    name: 'Gimnasio',
+    category: 'Gimnasio',
     budget: 50,
     months: {
       enero: 50, febrero: 41, marzo: 50, abril: 50,
@@ -14,7 +14,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '2',
-    name: 'Suscripciones',
+    category: 'Suscripciones',
     budget: 39.04,
     months: {
       enero: 14.99, febrero: 1.37, marzo: 47.3, abril: 0,
@@ -24,7 +24,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '3',
-    name: 'Ocio',
+    category: 'Ocio',
     budget: 100,
     months: {
       enero: 122230, febrero: 80, marzo: 90, abril: 110,
@@ -34,7 +34,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '4',
-    name: 'Comida',
+    category: 'Comida',
     budget: 300,
     months: {
       enero: 280, febrero: 310, marzo: 290, abril: 320,
@@ -44,7 +44,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '5',
-    name: 'Transporte',
+    category: 'Transporte',
     budget: 150,
     months: {
       enero: 140, febrero: 150, marzo: 160, abril: 145,
@@ -54,7 +54,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '6',
-    name: 'Servicios',
+    category: 'Servicios',
     budget: 200,
     months: {
       enero: 200, febrero: 200, marzo: 200, abril: 200,
@@ -64,7 +64,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '7',
-    name: 'Salud',
+    category: 'Salud',
     budget: 80,
     months: {
       enero: 50, febrero: 120, marzo: 60, abril: 75,
@@ -74,7 +74,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '8',
-    name: 'Entretenimiento',
+    category: 'Entretenimiento',
     budget: 120,
     months: {
       enero: 100, febrero: 140, marzo: 130, abril: 115,
@@ -84,7 +84,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '9',
-    name: 'Educación',
+    category: 'Educación',
     budget: 250,
     months: {
       enero: 250, febrero: 250, marzo: 250, abril: 250,
@@ -94,7 +94,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '10',
-    name: 'Ropa',
+    category: 'Ropa',
     budget: 100,
     months: {
       enero: 150, febrero: 80, marzo: 120, abril: 90,
@@ -104,7 +104,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '11',
-    name: 'Hogar',
+    category: 'Hogar',
     budget: 180,
     months: {
       enero: 200, febrero: 150, marzo: 180, abril: 190,
@@ -114,7 +114,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '12',
-    name: 'Mascotas',
+    category: 'Mascotas',
     budget: 60,
     months: {
       enero: 60, febrero: 60, marzo: 65, abril: 60,
@@ -124,7 +124,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '13',
-    name: 'Seguros',
+    category: 'Seguros',
     budget: 300,
     months: {
       enero: 300, febrero: 300, marzo: 300, abril: 300,
@@ -134,7 +134,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '14',
-    name: 'Viajes',
+    category: 'Viajes',
     budget: 500,
     months: {
       enero: 0, febrero: 0, marzo: 800, abril: 0,
@@ -144,7 +144,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '15',
-    name: 'Ahorros',
+    category: 'Ahorros',
     budget: 1000,
     months: {
       enero: 1000, febrero: 1000, marzo: 1000, abril: 1000,
@@ -154,7 +154,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '16',
-    name: 'Regalos',
+    category: 'Regalos',
     budget: 100,
     months: {
       enero: 150, febrero: 80, marzo: 50, abril: 100,
@@ -164,7 +164,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '17',
-    name: 'Telefonía',
+    category: 'Telefonía',
     budget: 50,
     months: {
       enero: 50, febrero: 50, marzo: 50, abril: 50,
@@ -174,7 +174,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '18',
-    name: 'Higiene',
+    category: 'Higiene',
     budget: 40,
     months: {
       enero: 35, febrero: 42, marzo: 38, abril: 40,
@@ -184,7 +184,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '19',
-    name: 'Electrodomésticos',
+    category: 'Electrodomésticos',
     budget: 150,
     months: {
       enero: 0, febrero: 500, marzo: 0, abril: 200,
@@ -194,7 +194,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '20',
-    name: 'Inversiones',
+    category: 'Inversiones',
     budget: 2000,
     months: {
       enero: 2000, febrero: 2000, marzo: 2000, abril: 2000,
@@ -204,7 +204,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '21',
-    name: 'Libros',
+    category: 'Libros',
     budget: 75,
     months: {
       enero: 80, febrero: 60, marzo: 90, abril: 70,
@@ -214,7 +214,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '22',
-    name: 'Hobbies',
+    category: 'Hobbies',
     budget: 120,
     months: {
       enero: 100, febrero: 130, marzo: 120, abril: 140,
@@ -224,7 +224,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '23',
-    name: 'Restaurantes',
+    category: 'Restaurantes',
     budget: 200,
     months: {
       enero: 180, febrero: 220, marzo: 200, abril: 210,
@@ -234,7 +234,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '24',
-    name: 'Cine',
+    category: 'Cine',
     budget: 60,
     months: {
       enero: 60, febrero: 60, marzo: 60, abril: 60,
@@ -244,7 +244,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '25',
-    name: 'Deportes',
+    category: 'Deportes',
     budget: 90,
     months: {
       enero: 85, febrero: 95, marzo: 90, abril: 100,
@@ -254,7 +254,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '26',
-    name: 'Suscripción Streaming',
+    category: 'Suscripción Streaming',
     budget: 45,
     months: {
       enero: 45, febrero: 45, marzo: 45, abril: 45,
@@ -264,7 +264,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '27',
-    name: 'Jardinería',
+    category: 'Jardinería',
     budget: 70,
     months: {
       enero: 50, febrero: 60, marzo: 80, abril: 90,
@@ -274,7 +274,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '28',
-    name: 'Reparaciones',
+    category: 'Reparaciones',
     budget: 100,
     months: {
       enero: 0, febrero: 200, marzo: 0, abril: 150,
@@ -284,7 +284,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '29',
-    name: 'Donaciones',
+    category: 'Donaciones',
     budget: 80,
     months: {
       enero: 80, febrero: 80, marzo: 80, abril: 80,
@@ -294,7 +294,7 @@ export const data: CategoryRow[] = [
   },
   {
     id: '30',
-    name: 'Diversos',
+    category: 'Diversos',
     budget: 110,
     months: {
       enero: 100, febrero: 120, marzo: 110, abril: 130,

@@ -28,7 +28,7 @@ export function formatCurrency(value: number) {
 }
 
 export const columnWidths: Record<string, string> = {
-    name: '13%',
+    category: '13%',
     budget: '5%',
     enero: '6%',
     febrero: '6%',
@@ -62,8 +62,8 @@ export function Dashboard() {
 
     const columns = useMemo<ColumnDef<CategoryRow>[]>(() => [
         {
-            accessorKey: 'name',
-            header: 'GASTOS MENSUALES',
+            accessorKey: 'category',
+            header: 'CATEGORÍAS',
             meta: {
                 align: 'center'
             }

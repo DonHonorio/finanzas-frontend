@@ -18,20 +18,24 @@ export function TableHeader({ table }: { table: Table<CategoryRow> }) {
             <thead className="bg-gray-50 border-b border-border">
                 {table.getHeaderGroups().map(hg => (
                     <tr key={hg.id}>
-                        {hg.headers.map(header => (
-                            <th
-                                key={header.id}
-                                className={`px-4 py-3 text-end font-semibold text-secondary-foreground 
-                                    ${header.column.id === 'name' ? 'text-left' : 'text-right'}
+                        {hg.headers.map(header => {
+                            // console.log('header column id: ', header.column.id)
+                            return (
+                                <th
+                                    key={header.id}
+                                    className={`px-4 py-3 font-semibold text-secondary-foreground 
+                                    ${header.column.id === 'category' ? 'text-left' : 'text-center'}
                                     bg-muted
                                     `}
-                            >
-                                {flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
-                                )}
-                            </th>
-                        ))}
+                                >
+                                    {flexRender(
+                                        header.column.columnDef.header,
+                                        header.getContext()
+                                    )}
+                                </th>
+                            )
+                        }
+                        )}
                     </tr>
                 ))}
             </thead>

@@ -6,7 +6,7 @@ export type Month =
 
 export type CategoryRow = {
   id: string
-  name: string
+  category: string
   budget: number
   months: Record<Month, number>
 }

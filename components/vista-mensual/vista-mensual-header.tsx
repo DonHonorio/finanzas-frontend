@@ -1,13 +1,14 @@
 'use client'
 
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, RotateCw } from 'lucide-react'
 import { useState } from 'react'
 
 type Mode = 'gastos' | 'ingresos'
 
 export function VistaMensualHeader() {
   const [mode, setMode] = useState<Mode>('gastos')
-  const [year, setYear] = useState(2026)
+  const [actualYear, setActualYear] = useState(new Date().getFullYear())
+  const [year, setYear] = useState(new Date().getFullYear())
 
   const onBack = () => {
     // hook vacío – aquí meterás router.back() o lo que quieras
@@ -70,6 +71,16 @@ export function VistaMensualHeader() {
 
         {/* SELECTOR DE AÑO */}
         <div className="flex items-center gap-4">
+
+          {year !== actualYear &&(
+            <button className='p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground'
+              onClick={() => {setActualYear(year); alert('Pulsado')}}
+              disabled={year === actualYear}
+            >
+              <RotateCw className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+            </button>
+          )}
+
 
           <button
             onClick={() => setYear(y => y - 1)}
