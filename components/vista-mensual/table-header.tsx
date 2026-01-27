@@ -15,13 +15,16 @@ export function TableHeader({ table }: { table: Table<CategoryRow> }) {
                 ))}
             </colgroup>
 
-            <thead className="bg-gray-50 border-b">
+            <thead className="bg-gray-50 border-b border-border">
                 {table.getHeaderGroups().map(hg => (
                     <tr key={hg.id}>
                         {hg.headers.map(header => (
                             <th
                                 key={header.id}
-                                className={`px-4 py-3 text-end font-semibold text-gray-600 ${header.column.id === 'name' ? 'text-left' : 'text-right'}`}
+                                className={`px-4 py-3 text-end font-semibold text-secondary-foreground 
+                                    ${header.column.id === 'name' ? 'text-left' : 'text-right'}
+                                    bg-muted
+                                    `}
                             >
                                 {flexRender(
                                     header.column.columnDef.header,

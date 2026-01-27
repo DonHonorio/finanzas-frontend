@@ -44,6 +44,18 @@ export const columnWidths: Record<string, string> = {
     diciembre: '6%',
 }
 
+export const getCellColor = (value: number, budget: number, isExpense: boolean) => {
+    if (value === 0) return "bg-muted/30"
+    if (budget === 0) return "bg-secondary/30" // Light yellow
+
+    if (isExpense) {
+      if (value > budget) return "bg-accent/40 text-foreground" // Medium yellow for over budget
+      return "bg-secondary/30 text-foreground" // Light yellow for within budget
+    }
+
+    return "bg-accent/40 text-foreground" // Medium yellow for income
+  }
+
 
 export function Dashboard() {
     const [openModal, setOpenModal] = useState(false)
@@ -76,7 +88,7 @@ export function Dashboard() {
     })
 
     return (
-        <div className="h-full flex flex-col border rounded-lg overflow-hidden">
+        <div className="h-full flex flex-col border border-border rounded-lg overflow-hidden">
 
             {/* HEADER */}
             <div className="shrink-0">
@@ -89,10 +101,10 @@ export function Dashboard() {
             </div>
 
             {/* BOTÓN SEPARADOR */}
-            <div className="shrink-0 border-t bg-gray-50 px-4 py-2">
+            <div className="shrink-0 border-t border-border bg-sidebar-accent px-4 py-3">
                 <button
                     onClick={() => setOpenModal(true)}
-                    className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-2"
+                    className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-2 select-none"
                 >
                     <span className="text-lg">＋</span>
                     Añadir categoría

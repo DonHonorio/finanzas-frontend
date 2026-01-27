@@ -24,7 +24,7 @@ export function VistaMensualPageClient() {
         <footer className="h-10 mt-4 flex justify-end shrink-0">
           <button
             onClick={() => setOpenModal(true)}
-            className="w-80 bg-blue-500 text-white text-lg rounded-lg hover:bg-blue-600 transition"
+            className="w-60 bg-primary hover:bg-primary/90 text-primary-foreground text-lg rounded-lg transition select-none"
           >
             + Añadir Movimiento
           </button>

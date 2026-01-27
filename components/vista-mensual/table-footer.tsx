@@ -13,7 +13,7 @@ function sumBudgets(data: CategoryRow[]) {
 
 export function TableFooter({ table }: { table: Table<CategoryRow> }) {
     return (
-        <table className="w-full table-fixed border-collapse text-sm bg-gray-100 font-semibold border-t">
+        <table className="w-full table-fixed border-collapse text-sm font-semibold border-t border-border">
             <colgroup>
                 {table.getAllLeafColumns().map(col => (
                     <col
@@ -30,7 +30,7 @@ export function TableFooter({ table }: { table: Table<CategoryRow> }) {
                         {formatCurrency(sumBudgets(data))}
                     </td>
                     {months.map(m => (
-                        <td key={m} className="px-4 py-3 text-right">
+                        <td key={m} className="px-4 py-3 text-right bg-secondary/30">
                             {formatCurrency(sumMonth(data, m))}
                         </td>
                     ))}
