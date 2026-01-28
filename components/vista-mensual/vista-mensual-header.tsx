@@ -3,10 +3,10 @@
 import { ChevronLeft, ChevronRight, RotateCw } from 'lucide-react'
 import { useState } from 'react'
 
-type Mode = 'gastos' | 'ingresos'
+type Mode = 'expenses' | 'incomes'
 
 export function VistaMensualHeader() {
-  const [mode, setMode] = useState<Mode>('gastos')
+  const [mode, setMode] = useState<Mode>('expenses')
   const [actualYear, setActualYear] = useState(new Date().getFullYear())
   const [year, setYear] = useState(new Date().getFullYear())
 
@@ -46,24 +46,24 @@ export function VistaMensualHeader() {
               absolute top-1 left-1 h-10 w-[calc(50%-4px)]
               bg-primary text-primary-foreground rounded-lg shadow
               transition-all duration-300
-              ${mode === 'ingresos' ? 'translate-x-full' : ''}
+              ${mode === 'incomes' ? 'translate-x-full' : ''}
             `}
           />
 
           <button
             className={`relative z-10 w-1/2 text-sm font-semibold transition select-none
-              ${mode === 'gastos' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}
+              ${mode === 'expenses' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}
             `}
-            onClick={() => setMode('gastos')}
+            onClick={() => setMode('expenses')}
           >
             Gastos
           </button>
 
           <button
             className={`relative z-10 w-1/2 text-sm font-semibold transition select-none
-              ${mode === 'ingresos' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}
+              ${mode === 'incomes' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}
             `}
-            onClick={() => setMode('ingresos')}
+            onClick={() => setMode('incomes')}
           >
             Ingresos
           </button>
@@ -72,9 +72,9 @@ export function VistaMensualHeader() {
         {/* SELECTOR DE AÑO */}
         <div className="flex items-center gap-4">
 
-          {year !== actualYear &&(
+          {year !== actualYear && (
             <button className='p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground'
-              onClick={() => {setActualYear(year); alert('Pulsado')}}
+              onClick={() => { setActualYear(year); alert('Pulsado') }}
               disabled={year === actualYear}
             >
               <RotateCw className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />

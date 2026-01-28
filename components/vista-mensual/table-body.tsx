@@ -2,7 +2,6 @@ import { flexRender, Table } from "@tanstack/react-table";
 import { columnWidths, getCellColor } from "./dashboard";
 import { CategoryRow } from "@/src/types/dashboard-types";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 import { Button } from "../ui/button";
 import { Edit2, Eye } from "lucide-react";
 
@@ -14,7 +13,6 @@ type Props = {
 
 export function TableBody({ table, onView, onEdit }: Props) {
 
-    const [hoveredRow, setHoveredRow] = useState<string | null>(null)
     console.log('RENDERIZANDO TABLE-BODY')
 
     return (
@@ -31,8 +29,6 @@ export function TableBody({ table, onView, onEdit }: Props) {
             <tbody>
                 {table.getRowModel().rows.map(row => (
                     <tr key={row.id}
-                        onMouseEnter={() => setHoveredRow(row.getValue('category'))}
-                        onMouseLeave={() => setHoveredRow(null)}
                         className="border-b border-border hover:bg-gray-50">
                         {row.getVisibleCells().map(cell => (
                             <td
@@ -49,19 +45,15 @@ export function TableBody({ table, onView, onEdit }: Props) {
                                         cell.getContext()
                                     )
                                 ) : (
-                                    <div className="flex items-center ">
-                                        {flexRender(
-                                            cell.column.columnDef.cell,
-                                            cell.getContext()
-                                        )}
-                                        <div className={cn(
-                                            "flex ml-auto gap-1 opacity-0 transition-opacity",
-                                            hoveredRow === row.getValue('category') && "opacity-100")}>
-                                            <Button variant="ghost" size="sm" onClick={() => onView(row.getValue('category'))}>
+                                    <div className="flex items-center group">
+                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+
+                                        <div className="flex ml-auto gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <Button variant="ghost" size="sm" onClick={() => onView(row.original)}>
                                                 <Eye className="h-4 w-4 text-primary" />
                                             </Button>
 
-                                            <Button variant="ghost" size="sm" onClick={() => onEdit(row.getValue('category'))}>
+                                            <Button variant="ghost" size="sm" onClick={() => onEdit(row.original)}>
                                                 <Edit2 className="h-4 w-4 text-primary" />
                                             </Button>
                                         </div>
