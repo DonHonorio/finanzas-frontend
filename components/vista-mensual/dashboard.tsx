@@ -2,11 +2,8 @@
 
 import { useMemo, useState } from 'react'
 import {
-    CellContext,
-    ColumnDef,
-    flexRender,
-    getCoreRowModel,
-    useReactTable,
+    ColumnDef, getCoreRowModel,
+    useReactTable
 } from '@tanstack/react-table'
 import { CategoryRow, Month } from '@/src/types/dashboard-types'
 import { data } from '@/src/mock-data'
@@ -14,6 +11,8 @@ import { TableBody } from './table-body'
 import { TableFooter } from './table-footer'
 import { TableHeader } from './table-header'
 import { AddCategoryModal } from './add-category-modal'
+import { EditCategoryModal } from './edit-category-button'
+import { ViewCategoryModal } from './view-category-modal'
 
 export const months: Month[] = [
     'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
@@ -49,16 +48,35 @@ export const getCellColor = (value: number, budget: number, isExpense: boolean) 
     if (budget === 0) return "bg-secondary/30" // Light yellow
 
     if (isExpense) {
-      if (value > budget) return "bg-accent/40 text-foreground" // Medium yellow for over budget
-      return "bg-secondary/30 text-foreground" // Light yellow for within budget
+        if (value > budget) return "bg-accent/40 text-foreground" // Medium yellow for over budget
+        return "bg-secondary/30 text-foreground" // Light yellow for within budget
     }
 
     return "bg-accent/40 text-foreground" // Medium yellow for income
-  }
+}
 
 
 export function Dashboard() {
     const [openModal, setOpenModal] = useState(false)
+    console.log('RENDERIZANDO DASHBOARD')
+
+    const [selectedCategory, setSelectedCategory] = useState<CategoryRow | null>(null)
+    const [modalType, setModalType] = useState<"view" | "edit" | null>(null)
+
+    const handleView = (category: CategoryRow) => {
+        setSelectedCategory(category)
+        setModalType("view")
+    }
+
+    const handleEdit = (category: CategoryRow) => {
+        setSelectedCategory(category)
+        setModalType("edit")
+    }
+
+    const handleCloseModal = () => {
+        setModalType(null)
+        setSelectedCategory(null)
+    }
 
     const columns = useMemo<ColumnDef<CategoryRow>[]>(() => [
         {
@@ -97,7 +115,7 @@ export function Dashboard() {
 
             {/* BODY (scrollable) */}
             <div className="flex-1 overflow-auto">
-                <TableBody table={table} />
+                <TableBody table={table} onView={handleView} onEdit={handleEdit} />
             </div>
 
             {/* BOTÓN SEPARADOR */}
@@ -120,6 +138,26 @@ export function Dashboard() {
                     // aquí meterás luego el submit
                 }}
             />
+
+            {modalType === "view" && selectedCategory && (
+                <ViewCategoryModal
+                    open={modalType === "view"}
+                    category={selectedCategory}
+                    onCancel={handleCloseModal}
+                />
+            )}
+
+            {modalType === "edit" && selectedCategory && (
+                <EditCategoryModal
+                    open={modalType === "edit"}
+                    category={selectedCategory}
+                    onCancel={handleCloseModal}
+                    onAccept={() => {
+                        // lógica de guardar
+                        handleCloseModal()
+                    }}
+                />
+            )}
 
             {/* FOOTER (fixed abajo) */}
             <div className="shrink-0 sticky bottom-0 z-10">
