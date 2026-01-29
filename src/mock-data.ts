@@ -1,7 +1,7 @@
 import { CategoryRow } from "./types/dashboard-types";
 
 // mockData.ts
-export const data: CategoryRow[] = [
+export const mockExpenses: CategoryRow[] = [
   {
     id: '1',
     category: 'Gimnasio',
@@ -300,6 +300,109 @@ export const data: CategoryRow[] = [
       enero: 100, febrero: 120, marzo: 110, abril: 130,
       mayo: 105, junio: 115, julio: 110, agosto: 125,
       septiembre: 115, octubre: 120, noviembre: 110, diciembre: 140,
+    },
+  },
+]
+
+export const mockIncomes: CategoryRow[] = [
+  {
+    id: '1',
+    category: 'Salario Principal',
+    budget: 3000,
+    months: {
+      enero: 3000, febrero: 3000, marzo: 3000, abril: 3000,
+      mayo: 3000, junio: 3000, julio: 3000, agosto: 3000,
+      septiembre: 3000, octubre: 3000, noviembre: 3000, diciembre: 3000,
+    },
+  },
+  {
+    id: '2',
+    category: 'Bonus',
+    budget: 500,
+    months: {
+      enero: 0, febrero: 0, marzo: 500, abril: 0,
+      mayo: 0, junio: 1000, julio: 0, agosto: 0,
+      septiembre: 500, octubre: 0, noviembre: 0, diciembre: 2000,
+    },
+  },
+  {
+    id: '3',
+    category: 'Freelance',
+    budget: 400,
+    months: {
+      enero: 300, febrero: 500, marzo: 400, abril: 450,
+      mayo: 350, junio: 500, julio: 400, agosto: 550,
+      septiembre: 450, octubre: 500, noviembre: 400, diciembre: 600,
+    },
+  },
+  {
+    id: '4',
+    category: 'Rendimientos',
+    budget: 150,
+    months: {
+      enero: 150, febrero: 150, marzo: 150, abril: 150,
+      mayo: 150, junio: 150, julio: 150, agosto: 150,
+      septiembre: 150, octubre: 150, noviembre: 150, diciembre: 150,
+    },
+  },
+  {
+    id: '5',
+    category: 'Venta de Artículos',
+    budget: 200,
+    months: {
+      enero: 0, febrero: 300, marzo: 250, abril: 0,
+      mayo: 150, junio: 0, julio: 400, agosto: 200,
+      septiembre: 0, octubre: 350, noviembre: 0, diciembre: 500,
+    },
+  },
+  {
+    id: '6',
+    category: 'Comisiones',
+    budget: 300,
+    months: {
+      enero: 250, febrero: 350, marzo: 300, abril: 320,
+      mayo: 280, junio: 350, julio: 300, agosto: 380,
+      septiembre: 320, octubre: 350, noviembre: 300, diciembre: 400,
+    },
+  },
+  {
+    id: '7',
+    category: 'Reembolsos',
+    budget: 100,
+    months: {
+      enero: 0, febrero: 150, marzo: 0, abril: 200,
+      mayo: 0, junio: 100, julio: 0, agosto: 120,
+      septiembre: 0, octubre: 180, noviembre: 0, diciembre: 150,
+    },
+  },
+  {
+    id: '8',
+    category: 'Regalos en Efectivo',
+    budget: 80,
+    months: {
+      enero: 100, febrero: 0, marzo: 0, abril: 0,
+      mayo: 200, junio: 0, julio: 0, agosto: 0,
+      septiembre: 0, octubre: 0, noviembre: 0, diciembre: 300,
+    },
+  },
+  {
+    id: '9',
+    category: 'Tutorías',
+    budget: 250,
+    months: {
+      enero: 200, febrero: 250, marzo: 250, abril: 300,
+      mayo: 250, junio: 200, julio: 250, agosto: 300,
+      septiembre: 250, octubre: 250, noviembre: 200, diciembre: 250,
+    },
+  },
+  {
+    id: '10',
+    category: 'Intereses Bancarios',
+    budget: 50,
+    months: {
+      enero: 50, febrero: 50, marzo: 50, abril: 50,
+      mayo: 50, junio: 50, julio: 50, agosto: 50,
+      septiembre: 50, octubre: 50, noviembre: 50, diciembre: 50,
     },
   },
 ]

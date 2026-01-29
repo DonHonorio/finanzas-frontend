@@ -6,13 +6,13 @@ import {
     useReactTable
 } from '@tanstack/react-table'
 import { CategoryRow, Month } from '@/src/types/dashboard-types'
-import { data } from '@/src/mock-data'
 import { TableBody } from './table-body'
 import { TableFooter } from './table-footer'
 import { TableHeader } from './table-header'
 import { AddCategoryModal } from './add-category-modal'
 import { EditCategoryModal } from './edit-category-button'
 import { ViewCategoryModal } from './view-category-modal'
+import useSWR from 'swr'
 
 export const months: Month[] = [
     'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
@@ -55,13 +55,17 @@ export const getCellColor = (value: number, budget: number, isExpense: boolean) 
     return "bg-accent/40 text-foreground" // Medium yellow for income
 }
 
+const fetcher = (url: string) => fetch(url).then(res => res.json()).then(data => data.categories)
 
-export function Dashboard() {
+export function Dashboard({ mode }: { mode: "expenses" | "incomes" }) {
     const [openModal, setOpenModal] = useState(false)
-    console.log('RENDERIZANDO DASHBOARD')
-
+    
     const [selectedCategory, setSelectedCategory] = useState<CategoryRow | null>(null)
     const [modalType, setModalType] = useState<"view" | "edit" | null>(null)
+
+    const { data = [], isLoading } = useSWR<CategoryRow[]>(`/api/dashboard/${mode}`, fetcher, {
+        keepPreviousData: true, // ✅ mantiene tabla anterior mientras carga la nueva
+    })
 
     const handleView = (category: CategoryRow) => {
         setSelectedCategory(category)
@@ -100,9 +104,10 @@ export function Dashboard() {
     ], [])
 
     const table = useReactTable({
-        data,
+        data: data ?? [], // Si no hay data aún, pasamos [
         columns,
         getCoreRowModel: getCoreRowModel(),
+        manualPagination: false
     })
 
     return (
@@ -115,7 +120,11 @@ export function Dashboard() {
 
             {/* BODY (scrollable) */}
             <div className="flex-1 overflow-auto">
-                <TableBody table={table} onView={handleView} onEdit={handleEdit} />
+                {isLoading ? (
+                    <div className="p-10 text-center text-muted-foreground">Cargando {mode}...</div>
+                ) : (
+                    <TableBody table={table} onView={handleView} onEdit={handleEdit} />
+                )}
             </div>
 
             {/* BOTÓN SEPARADOR */}
@@ -161,7 +170,7 @@ export function Dashboard() {
 
             {/* FOOTER (fixed abajo) */}
             <div className="shrink-0 sticky bottom-0 z-10">
-                <TableFooter table={table} />
+                <TableFooter table={table} data={isLoading ? [] : data} />
             </div>
 
         </div>

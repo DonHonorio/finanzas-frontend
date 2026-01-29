@@ -3,10 +3,12 @@
 import { ChevronLeft, ChevronRight, RotateCw } from 'lucide-react'
 import { useState } from 'react'
 
-type Mode = 'expenses' | 'incomes'
+type Props = {
+  mode: "expenses" | "incomes"
+  setMode: (m: "expenses" | "incomes") => void
+}
 
-export function VistaMensualHeader() {
-  const [mode, setMode] = useState<Mode>('expenses')
+export function VistaMensualHeader({ mode, setMode }: Props) {
   const [actualYear, setActualYear] = useState(new Date().getFullYear())
   const [year, setYear] = useState(new Date().getFullYear())
 

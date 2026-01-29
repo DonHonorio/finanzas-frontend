@@ -13,8 +13,6 @@ type Props = {
 
 export function TableBody({ table, onView, onEdit }: Props) {
 
-    console.log('RENDERIZANDO TABLE-BODY')
-
     return (
         <table className="w-full table-fixed border-collapse text-sm">
             <colgroup>
