@@ -1,6 +1,6 @@
 "use client"
 
-import { addTask, getAllTasks } from "@/src/index-db"
+import { addTask, getAllTasks } from "@/src/lib/index-db"
 import { useEffect, useState } from "react"
 
 type Task = {
