@@ -3,7 +3,6 @@ import { CategoryRow, Month } from "@/src/types/dashboard-types"
 import { Table } from "@tanstack/react-table"
 
 function sumMonth(data: CategoryRow[], month: Month) {
-  console.log('DATA: ', data)
   return data.reduce((acc, row) => acc + (row.months[month] || 0), 0)
 }
 

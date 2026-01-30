@@ -59,14 +59,14 @@ export const categoryTitle = 'name'
 
 const fetcher = (url: string) => fetch(url).then(res => {if (!res.ok) throw new Error('Error en la petición'); return res.json()}).then(data => data)
 
-export function Dashboard({ mode }: { mode: "expenses" | "incomes" }) {
+export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", actualYear: number }) {
     const [openModal, setOpenModal] = useState(false)
 
     const [selectedCategory, setSelectedCategory] = useState<CategoryRow | null>(null)
     const [modalType, setModalType] = useState<"view" | "edit" | null>(null)
 
     const { data = [], isLoading, error } = useSWR<CategoryRow[]>(
-        `/api/dashboard/${mode}`,
+        `/api/dashboard/${mode}/${actualYear}`,
         fetcher,
         {
             keepPreviousData: true,

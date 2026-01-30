@@ -8,17 +8,18 @@ import { AddMovementModal } from "@/components/vista-mensual/add-movement-modal"
 export function VistaMensualPageClient() {
   const [openModal, setOpenModal] = useState(false)
   const [mode, setMode] = useState<"expenses" | "incomes">("expenses")
+  const [actualYear, setActualYear] = useState(new Date().getFullYear())
 
   return (
     <div className="h-screen p-10 box-border">
       <div className="h-full flex flex-col">
 
         {/* HEADER */}
-        <VistaMensualHeader mode={mode} setMode={setMode} />
+        <VistaMensualHeader mode={mode} setMode={setMode} actualYear={actualYear} setActualYear={setActualYear} />
 
         {/* CONTENIDO */}
         <main className="flex-1 overflow-hidden">
-          <Dashboard mode={mode} />
+          <Dashboard mode={mode} actualYear={actualYear} />
         </main>
 
         {/* BOTÓN */}

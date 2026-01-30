@@ -6,12 +6,13 @@ import { useState } from 'react'
 type Props = {
   mode: "expenses" | "incomes"
   setMode: (m: "expenses" | "incomes") => void
+  actualYear: number
+  setActualYear: (y: number) => void
 }
 
-export function VistaMensualHeader({ mode, setMode }: Props) {
-  const [actualYear, setActualYear] = useState(new Date().getFullYear())
-  const [year, setYear] = useState(new Date().getFullYear())
-
+export function VistaMensualHeader({ mode, setMode, actualYear, setActualYear }: Props) {
+  const [year, setYear] = useState(actualYear)
+  
   const onBack = () => {
     // hook vacío – aquí meterás router.back() o lo que quieras
   }
@@ -76,7 +77,7 @@ export function VistaMensualHeader({ mode, setMode }: Props) {
 
           {year !== actualYear && (
             <button className='p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground'
-              onClick={() => { setActualYear(year); alert('Pulsado') }}
+              onClick={() => { setActualYear(year) }}
               disabled={year === actualYear}
             >
               <RotateCw className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
