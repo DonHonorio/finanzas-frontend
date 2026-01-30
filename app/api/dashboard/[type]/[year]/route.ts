@@ -1,7 +1,7 @@
 export async function GET(request: Request, { params }: { params: Promise<{ type: string; year: string }> }) {
     const { type, year } = await params
 
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJpYXQiOjE3Njk2MjUwMDMsImV4cCI6MTc3MjIxNzAwM30.PdzbFXbMGHgiWAlNWqu9JXhOQb2MMWHZQqHu4i6-2Hw'
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJpYXQiOjE3Njk3OTUyNDUsImV4cCI6MTc3MjM4NzI0NX0.FAiRLJ-SuyDIJM41Iv-gDjRCsf8zX0UJ4ZCdnKSM2kI'
 
     const url = `${process.env.API_URL}/categories/dashboard/?type=${type}&year=${year}`
     const req = await fetch(url, {
