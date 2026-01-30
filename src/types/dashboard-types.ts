@@ -5,8 +5,15 @@ export type Month =
   | 'septiembre' | 'octubre' | 'noviembre' | 'diciembre'
 
 export type CategoryRow = {
-  id: string
-  category: string
+  categoryId: string
+  name: string
   budget: number
+  frequency: string
+  dtstart: Date
+  icon: string
+  color: string
+  order: number
+  isActive: boolean
   months: Record<Month, number>
 }
+

@@ -1,5 +1,5 @@
 import { flexRender, Table } from "@tanstack/react-table";
-import { columnWidths, getCellColor } from "./dashboard";
+import { categoryTitle, columnWidths, getCellColor } from "./dashboard";
 import { CategoryRow } from "@/src/types/dashboard-types";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -32,12 +32,12 @@ export function TableBody({ table, onView, onEdit }: Props) {
                             <td
                                 key={cell.id}
                                 className={cn('p-3 text-[16px] font-normal whitespace-nowrap overflow-hidden text-ellipsis ',
-                                    cell.column.id === 'category' ? 'text-left' : 'text-center',
-                                    cell.column.id != 'category' && cell.column.id != 'budget' && 'bg-muted/30',
-                                    cell.column.id != 'category' && cell.column.id != 'budget' && getCellColor(cell.getValue<number>(), row.getValue('budget'), true)
+                                    cell.column.id === categoryTitle ? 'text-left' : 'text-center',
+                                    cell.column.id !== categoryTitle && cell.column.id !== 'budget' && 'bg-muted/30',
+                                    cell.column.id !== categoryTitle && cell.column.id !== 'budget' && getCellColor(cell.getValue<number>(), row.getValue('budget'), true)
                                 )}
                             >
-                                {cell.column.id !== 'category' ? (
+                                {cell.column.id !== categoryTitle ? (
                                     flexRender(
                                         cell.column.columnDef.cell,
                                         cell.getContext()

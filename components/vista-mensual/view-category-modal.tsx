@@ -23,7 +23,7 @@ export function ViewCategoryModal({ open, category, onCancel }: Props) {
                 </h2>
 
                 <ul className="space-y-2 text-gray-700">
-                    <li><strong>Nombre:</strong> {category.category}</li>
+                    <li><strong>Nombre:</strong> {category.name}</li>
                     <li><strong>Presupuesto:</strong> {category.budget}€</li>
                     <li className="flex items-center gap-2">
                         <strong>Color:</strong>

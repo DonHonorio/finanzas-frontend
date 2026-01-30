@@ -24,7 +24,7 @@ export function EditCategoryModal({ open, category, onCancel, onAccept }: Props)
                 </h2>
 
                 <div className="text-gray-600">
-                    Aquí irá el formulario para <strong>{category.category}</strong>
+                    Aquí irá el formulario para <strong>{category.name}</strong>
                 </div>
             </div>
 

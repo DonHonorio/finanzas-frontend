@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
     ColumnDef, getCoreRowModel,
     useReactTable
@@ -27,8 +27,8 @@ export function formatCurrency(value: number) {
 }
 
 export const columnWidths: Record<string, string> = {
-    category: '13%',
-    budget: '5%',
+    category: '12%',
+    budget: '6%',
     enero: '6%',
     febrero: '6%',
     marzo: '6%',
@@ -55,17 +55,40 @@ export const getCellColor = (value: number, budget: number, isExpense: boolean) 
     return "bg-accent/40 text-foreground" // Medium yellow for income
 }
 
-const fetcher = (url: string) => fetch(url).then(res => res.json()).then(data => data.categories)
+export const categoryTitle = 'name'
+
+const fetcher = (url: string) => fetch(url).then(res => {if (!res.ok) throw new Error('Error en la petición'); return res.json()}).then(data => data)
 
 export function Dashboard({ mode }: { mode: "expenses" | "incomes" }) {
     const [openModal, setOpenModal] = useState(false)
-    
+
     const [selectedCategory, setSelectedCategory] = useState<CategoryRow | null>(null)
     const [modalType, setModalType] = useState<"view" | "edit" | null>(null)
 
-    const { data = [], isLoading } = useSWR<CategoryRow[]>(`/api/dashboard/${mode}`, fetcher, {
-        keepPreviousData: true, // ✅ mantiene tabla anterior mientras carga la nueva
-    })
+    const { data = [], isLoading, error } = useSWR<CategoryRow[]>(
+        `/api/dashboard/${mode}`,
+        fetcher,
+        {
+            keepPreviousData: true,
+            revalidateOnFocus: false, // ❌ Evita revalidar al cambiar de pestaña
+            revalidateOnReconnect: false, // ❌ Evita revalidar al reconectar
+            dedupingInterval: 60000, // ⏱️ Solo una petición por minuto
+            onSuccess: (data) => {
+                // console.log(`✅ Datos cargados para ${mode}:`, data)
+            },
+            onError: (err) => {
+                console.error(`❌ Error cargando ${mode}:`, err)
+            }
+        }
+    )
+
+    useEffect(() => {
+        console.log(`📊 Datos actuales (${mode}):`, data.length, 'registros')
+    }, [data, mode])
+
+    if (error) {
+        console.error('Error en SWR:', error)
+    }
 
     const handleView = (category: CategoryRow) => {
         setSelectedCategory(category)
@@ -84,7 +107,7 @@ export function Dashboard({ mode }: { mode: "expenses" | "incomes" }) {
 
     const columns = useMemo<ColumnDef<CategoryRow>[]>(() => [
         {
-            accessorKey: 'category',
+            accessorKey: categoryTitle,
             header: 'CATEGORÍAS',
             meta: {
                 align: 'center'

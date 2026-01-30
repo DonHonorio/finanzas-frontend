@@ -1,5 +1,5 @@
 import { flexRender, Table } from "@tanstack/react-table";
-import { columnWidths } from "./dashboard";
+import { categoryTitle, columnWidths } from "./dashboard";
 import { CategoryRow } from "@/src/types/dashboard-types";
 
 export function TableHeader({ table }: { table: Table<CategoryRow> }) {
@@ -24,7 +24,7 @@ export function TableHeader({ table }: { table: Table<CategoryRow> }) {
                                 <th
                                     key={header.id}
                                     className={`px-4 py-3 font-semibold text-secondary-foreground 
-                                    ${header.column.id === 'category' ? 'text-left' : 'text-center'}
+                                    ${header.column.id === categoryTitle ? 'text-left' : 'text-center'}
                                     bg-muted
                                     `}
                                 >
