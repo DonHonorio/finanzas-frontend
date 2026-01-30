@@ -12,7 +12,7 @@ import { TableHeader } from './table-header'
 import { AddCategoryModal } from './add-category-modal'
 import { EditCategoryModal } from './edit-category-button'
 import { ViewCategoryModal } from './view-category-modal'
-import useSWR from 'swr'
+import { useDashboardData } from '@/src/hooks/use-dashboard-data'
 
 export const months: Month[] = [
     'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
@@ -57,34 +57,21 @@ export const getCellColor = (value: number, budget: number, isExpense: boolean) 
 
 export const categoryTitle = 'name'
 
-const fetcher = (url: string) => fetch(url).then(res => {if (!res.ok) throw new Error('Error en la petición'); return res.json()}).then(data => data)
-
 export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", actualYear: number }) {
     const [openModal, setOpenModal] = useState(false)
+    const tipoDato = mode === "expenses" ? "gastos" : "ingresos"
 
     const [selectedCategory, setSelectedCategory] = useState<CategoryRow | null>(null)
     const [modalType, setModalType] = useState<"view" | "edit" | null>(null)
 
-    const { data = [], isLoading, error } = useSWR<CategoryRow[]>(
-        `/api/dashboard/${mode}/${actualYear}`,
-        fetcher,
-        {
-            keepPreviousData: true,
-            revalidateOnFocus: false, // ❌ Evita revalidar al cambiar de pestaña
-            revalidateOnReconnect: false, // ❌ Evita revalidar al reconectar
-            dedupingInterval: 60000, // ⏱️ Solo una petición por minuto
-            onSuccess: (data) => {
-                // console.log(`✅ Datos cargados para ${mode}:`, data)
-            },
-            onError: (err) => {
-                console.error(`❌ Error cargando ${mode}:`, err)
-            }
-        }
-    )
+    const { data = [], isLoading, error, mutate } = useDashboardData(mode, actualYear);
 
     useEffect(() => {
-        console.log(`📊 Datos actuales (${mode}):`, data.length, 'registros')
-    }, [data, mode])
+        // Solo loguear cuando realmente haya datos
+        if (data.length > 0 && !isLoading) {
+            console.log(`📊 Datos actuales (${tipoDato}):`, data.length, 'registros')
+        }
+    }, [data, mode, isLoading])
 
     if (error) {
         console.error('Error en SWR:', error)
@@ -127,7 +114,7 @@ export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", 
     ], [])
 
     const table = useReactTable({
-        data: data ?? [], // Si no hay data aún, pasamos [
+        data: data, // Si no hay data aún, pasamos [
         columns,
         getCoreRowModel: getCoreRowModel(),
         manualPagination: false
@@ -144,7 +131,37 @@ export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", 
             {/* BODY (scrollable) */}
             <div className="flex-1 overflow-auto">
                 {isLoading ? (
-                    <div className="p-10 text-center text-muted-foreground">Cargando {mode}...</div>
+                    <div className="p-10 text-center text-muted-foreground">
+                        Cargando {tipoDato}...
+                    </div>
+                ) : error ? (
+                    // 🔴 MOSTRAR ERROR AL USUARIO
+                    <div className="p-10 text-center text-destructive">
+                        <div className="text-lg font-semibold mb-2">
+                            Error al cargar datos
+                        </div>
+                        <div className="text-sm mb-4">
+                            No se pudieron cargar los {tipoDato} para {actualYear}
+                        </div>
+                        <button
+                            onClick={() => mutate()} // ✅ Llama a mutate sin argumentos
+                            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+                            disabled={isLoading} // Deshabilita mientras carga
+                        >
+                            {isLoading ? 'Cargando...' : 'Reintentar'}
+                        </button>
+
+                        {/* Opcional: Mostrar detalles del error */}
+                        {process.env.NODE_ENV === 'development' && (
+                            <div className="mt-4 p-3 bg-destructive/10 rounded text-xs font-mono">
+                                {error.message}
+                            </div>
+                        )}
+                    </div>
+                ) : data.length === 0 ? (
+                    <div className="p-10 text-center text-muted-foreground">
+                        No hay {tipoDato} para {actualYear}
+                    </div>
                 ) : (
                     <TableBody table={table} onView={handleView} onEdit={handleEdit} />
                 )}
