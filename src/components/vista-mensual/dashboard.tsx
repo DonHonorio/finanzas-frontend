@@ -5,7 +5,7 @@ import {
     ColumnDef, getCoreRowModel,
     useReactTable
 } from '@tanstack/react-table'
-import { CategoryRow, Month } from '@/src/types/dashboard-types'
+import { CategoryRow } from '@/src/types/dashboard-types'
 import { TableBody } from './table-body'
 import { TableFooter } from './table-footer'
 import { TableHeader } from './table-header'
@@ -13,108 +13,110 @@ import { AddCategoryModal } from './add-category-modal'
 import { EditCategoryModal } from './edit-category-button'
 import { ViewCategoryModal } from './view-category-modal'
 import { useDashboardData } from '@/src/hooks/use-dashboard-data'
+import { formatCurrency, months } from '@/src/lib/utils'
+import { DataLoading } from '../ui/data-loading'
+import { DataError } from '../ui/data-error'
+import { NoData } from '../ui/no-data'
 
-export const months: Month[] = [
-    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
-]
+/**
+ * Nombre del campo que se usará como título de la primera columna llamada: 'categoría' en la tabla
+ * Centralizado aquí porque actua como key y facilitar cambios futuros (ej: cambiar de 'name' a 'nombre')
+ * También es importante porque se relaciona automaticamente con los datos recibidos del backend
+ */
+export const categoryColumnTitle = 'name'
 
-export function formatCurrency(value: number) {
-    return new Intl.NumberFormat('es-ES', {
-        style: 'currency',
-        currency: 'EUR',
-    }).format(value)
-}
-
-export const columnWidths: Record<string, string> = {
-    category: '12%',
-    budget: '6%',
-    enero: '6%',
-    febrero: '6%',
-    marzo: '6%',
-    abril: '6%',
-    mayo: '6%',
-    junio: '6%',
-    julio: '6%',
-    agosto: '6%',
-    septiembre: '6%',
-    octubre: '6%',
-    noviembre: '6%',
-    diciembre: '6%',
-}
-
-export const getCellColor = (value: number, budget: number, isExpense: boolean) => {
-    if (value === 0) return "bg-muted/30"
-    if (budget === 0) return "bg-secondary/30" // Light yellow
-
-    if (isExpense) {
-        if (value > budget) return "bg-accent/40 text-foreground" // Medium yellow for over budget
-        return "bg-secondary/30 text-foreground" // Light yellow for within budget
-    }
-
-    return "bg-accent/40 text-foreground" // Medium yellow for income
-}
-
-export const categoryTitle = 'name'
-
+/**
+ * Componente principal del Dashboard que muestra datos de gastos/ingresos
+ * Gestiona la tabla de datos, modales y estados de carga/error
+ */
 export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", actualYear: number }) {
-    const [openModal, setOpenModal] = useState(false)
+    // Estado para controlar la apertura del modal de añadir categoría
+    const [openAddCategoryModal, setOpenAddCategoryModal] = useState(false)
+    
+    // Srive para mostrar el tipo de dato en la UI 
     const tipoDato = mode === "expenses" ? "gastos" : "ingresos"
 
+    // Estados para gestionar los modales de vista/edición de categorías
+    // Para abrir un modal en una categoría específica
     const [selectedCategory, setSelectedCategory] = useState<CategoryRow | null>(null)
     const [modalType, setModalType] = useState<"view" | "edit" | null>(null)
 
+    // Hook personalizado para obtener datos del dashboard con SWR
+    // Incluye mutación para reintentar peticiones en caso de error
     const { data = [], isLoading, error, mutate } = useDashboardData(mode, actualYear);
 
+    /**
+     * Efecto para logging de datos (solo en desarrollo)
+     * Se ejecuta cuando cambian los datos, el modo o el estado de carga
+     * Solo muestra logs cuando hay datos reales cargados
+     */
     useEffect(() => {
         // Solo loguear cuando realmente haya datos
-        if (data.length > 0 && !isLoading) {
+        if (data.length > 0 && !isLoading && process.env.NODE_ENV === 'development') {
             console.log(`📊 Datos actuales (${tipoDato}):`, data.length, 'registros')
+            console.log('Data: ', data)
         }
     }, [data, mode, isLoading])
 
+    // Log de errores en consola para debugging
     if (error) {
         console.error('Error en SWR:', error)
     }
 
-    const handleView = (category: CategoryRow) => {
+    
+    // Maneja la apertura del "modal de visualización" para una categoría
+    const handleView = (category: CategoryRow) => { // Se le pasa el objeto categoría completo
         setSelectedCategory(category)
         setModalType("view")
     }
 
+    // Maneja la apertura del "modal de edición" para una categoría
     const handleEdit = (category: CategoryRow) => {
         setSelectedCategory(category)
         setModalType("edit")
     }
-
+    
+    // Cierra cualquier modal abierto y limpia la categoría seleccionada
     const handleCloseModal = () => {
         setModalType(null)
         setSelectedCategory(null)
     }
 
+    /**
+     * Definición de columnas para react-table usando useMemo
+     * Se memoiza para evitar recreación en cada render
+     * Incluye columna de categoría, presupuesto y las 12 columnas mensuales
+     */
     const columns = useMemo<ColumnDef<CategoryRow>[]>(() => [
         {
-            accessorKey: categoryTitle,
-            header: 'CATEGORÍAS',
+            accessorKey: categoryColumnTitle, // key de la columna
+            header: 'CATEGORÍAS', // Título que ve el usuario
             meta: {
-                align: 'center'
+                align: 'center' // estilo aplicado
             }
         },
         {
             accessorKey: 'budget',
             header: 'PRESUPUESTO',
-            cell: info => formatCurrency(info.getValue<number>()),
+            // Formatea el valor numérico como moneda
+            cell: info => formatCurrency(info.getValue<number>()), // estilo aplicado a las celdas de esta columna (ahorrando hacerlo después)
         },
+        // Genera columnas dinámicas para cada mes
         ...months.map(month => ({
-            id: month,
-            header: month.toUpperCase(),
+            id: month, // 'enero', 'febrero'...
+            header: month.toUpperCase(), // poniendo en mayúscula el título de columnas
+            // Función para acceder al valor del mes en el objeto months, es decir -> busca un accessorKey en las claves del objeto months del array de categories
             accessorFn: row => row.months[month],
             cell: info => formatCurrency(info.getValue<number>()),
         } as ColumnDef<CategoryRow>)),
     ], [])
 
+    /**
+     * Instancia de react-table que maneja la lógica de la tabla
+     * Se pasa data directamente, useReactTable maneja el estado vacío internamente
+     */
     const table = useReactTable({
-        data: data, // Si no hay data aún, pasamos [
+        data: data, // useReactTable maneja data vacía internamente
         columns,
         getCoreRowModel: getCoreRowModel(),
         manualPagination: false
@@ -123,54 +125,39 @@ export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", 
     return (
         <div className="h-full flex flex-col border border-border rounded-lg overflow-hidden">
 
-            {/* HEADER */}
+            {/* Cabecera de la tabla - fija en la parte superior */}
             <div className="shrink-0">
                 <TableHeader table={table} />
             </div>
 
-            {/* BODY (scrollable) */}
-            <div className="flex-1 overflow-auto">
+            {/* Cuerpo principal de la tabla - área desplazable */}
+            {/* Se muestran los posibles estados en los que se encuentra el dashboard */}
+            <div className="flex-1 overflow-auto no-scrollbar">
                 {isLoading ? (
-                    <div className="p-10 text-center text-muted-foreground">
-                        Cargando {tipoDato}...
-                    </div>
+                    // Estado de carga
+                    <DataLoading label={tipoDato} />
                 ) : error ? (
-                    // 🔴 MOSTRAR ERROR AL USUARIO
-                    <div className="p-10 text-center text-destructive">
-                        <div className="text-lg font-semibold mb-2">
-                            Error al cargar datos
-                        </div>
-                        <div className="text-sm mb-4">
-                            No se pudieron cargar los {tipoDato} para {actualYear}
-                        </div>
-                        <button
-                            onClick={() => mutate()} // ✅ Llama a mutate sin argumentos
-                            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-                            disabled={isLoading} // Deshabilita mientras carga
-                        >
-                            {isLoading ? 'Cargando...' : 'Reintentar'}
-                        </button>
-
-                        {/* Opcional: Mostrar detalles del error */}
-                        {process.env.NODE_ENV === 'development' && (
-                            <div className="mt-4 p-3 bg-destructive/10 rounded text-xs font-mono">
-                                {error.message}
-                            </div>
-                        )}
-                    </div>
+                    // Estado de error con opción de reintentar
+                    <DataError
+                        label={tipoDato}
+                        year={actualYear}
+                        isRetrying={isLoading}
+                        onRetry={() => mutate()}
+                        error={error}
+                    />
                 ) : data.length === 0 ? (
-                    <div className="p-10 text-center text-muted-foreground">
-                        No hay {tipoDato} para {actualYear}
-                    </div>
+                    // Estado sin datos
+                    <NoData label={tipoDato} year={actualYear} />
                 ) : (
+                    // Estado con datos - renderiza la tabla
                     <TableBody table={table} onView={handleView} onEdit={handleEdit} />
                 )}
             </div>
 
-            {/* BOTÓN SEPARADOR */}
+            {/* Botón para añadir nueva categoría - separador visual */}
             <div className="shrink-0 border-t border-border bg-sidebar-accent px-4 py-3">
                 <button
-                    onClick={() => setOpenModal(true)}
+                    onClick={() => setOpenAddCategoryModal(true)}
                     className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-2 select-none"
                 >
                     <span className="text-lg">＋</span>
@@ -178,42 +165,44 @@ export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", 
                 </button>
             </div>
 
-            {/* MODAL */}
+            {/* Modal para añadir nueva categoría */}
             <AddCategoryModal
-                open={openModal}
-                onCancel={() => setOpenModal(false)}
+                open={openAddCategoryModal}
+                onCancel={() => setOpenAddCategoryModal(false)}
                 onAccept={() => {
-                    setOpenModal(false)
-                    // aquí meterás luego el submit
+                    setOpenAddCategoryModal(false)
+                    // TODO: Implementar lógica de submit para guardar categoría
                 }}
             />
 
+            {/* Modal para visualizar detalles de categoría */}
             {modalType === "view" && selectedCategory && (
                 <ViewCategoryModal
-                    open={modalType === "view"}
+                    open={modalType === "view"} // Se envía open como true para que el componente "Modal" básico (del cual está formado ViewCategoryModal) se pueda abrir
                     category={selectedCategory}
                     onCancel={handleCloseModal}
                 />
             )}
 
+            {/* Modal para editar categoría existente */}
             {modalType === "edit" && selectedCategory && (
                 <EditCategoryModal
                     open={modalType === "edit"}
                     category={selectedCategory}
                     onCancel={handleCloseModal}
                     onAccept={() => {
-                        // lógica de guardar
+                        // TODO: Implementar lógica de guardado
                         handleCloseModal()
                     }}
                 />
             )}
 
-            {/* FOOTER (fixed abajo) */}
-            <div className="shrink-0 sticky bottom-0 z-10">
+            {/* Pie de tabla con totales - fijo en la parte inferior */}
+            <div className="shrink-0">
+                {/* sticky bottom-0 z-10 - Esperando a que ocurra algún problema para aplicar este código a la clase del div */}
                 <TableFooter table={table} data={isLoading ? [] : data} />
             </div>
 
         </div>
     )
 }
-

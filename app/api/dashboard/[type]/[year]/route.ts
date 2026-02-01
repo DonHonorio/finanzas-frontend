@@ -1,9 +1,15 @@
 export async function GET(request: Request, { params }: { params: Promise<{ type: string; year: string }> }) {
+    // Extrae tipo (expenses/incomes) y año de los parámetros de la ruta
     const { type, year } = await params
 
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJpYXQiOjE3Njk3OTUyNDUsImV4cCI6MTc3MjM4NzI0NX0.FAiRLJ-SuyDIJM41Iv-gDjRCsf8zX0UJ4ZCdnKSM2kI'
-
+    // Token JWT para autenticación con la API backend
+    const token = process.env.JWT || ''
+    
+    // Alternativa comentada: endpoint falso para testing sin backend
     const url = `${process.env.API_URL}/categories/dashboard/?type=${type}&year=${year}`
+    // const url = `${process.env.API_URL}/categories/dashboardFake` // PARA TESTING LOCAL
+    
+    // Petición al backend
     const req = await fetch(url, {
         headers: {
             'Authorization': `Bearer ${token}`

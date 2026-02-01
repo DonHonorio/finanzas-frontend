@@ -1,6 +1,6 @@
 'use client'
 
-import { Modal } from "@/components/ui/modal"
+import { Modal } from "@/src/components/ui/modal"
 import { CategoryRow } from "@/src/types/dashboard-types"
 
 type Props = {

@@ -1,28 +1,59 @@
 'use client'
 
 import { useState } from 'react'
-import { Dashboard } from "@/components/vista-mensual/dashboard"
-import { VistaMensualHeader } from "@/components/vista-mensual/vista-mensual-header"
-import { AddMovementModal } from "@/components/vista-mensual/add-movement-modal"
+import { Dashboard } from "@/src/components/vista-mensual/dashboard"
+import { VistaMensualHeader } from "@/src/components/vista-mensual/vista-mensual-header"
+import { AddMovementModal } from "@/src/components/vista-mensual/add-movement-modal"
 
+/**
+ * Componente principal de la página de Vista Mensual.
+ * Gestiona el estado global de la vista (tipo de vista, año, modales)
+ * y organiza la estructura de los componentes hijos.
+ */
 export function VistaMensualPageClient() {
+  // Controla la apertura/cierre del modal para añadir movimientos
   const [openModal, setOpenModal] = useState(false)
+
+  // Determina si se visualizan gastos o ingresos en el dashboard
   const [mode, setMode] = useState<"expenses" | "incomes">("expenses")
+
+  // Año actual seleccionado para filtrar los datos -> es el año con el que se hacen las consultas, no el que se muestra en el filtro de la cabecera
   const [actualYear, setActualYear] = useState(new Date().getFullYear())
 
   return (
-    <div className="h-screen p-10 box-border">
+    <div className="h-screen p-10">
+
+      {/* En este div está el contenido que se ve a simple vista */}
       <div className="h-full flex flex-col">
+        {/* 
+          Cabecera con controles de navegación:
+          - Botón de volver (onBack)
+          - Título
+          - Selector entre Gastos/Ingresos (mode)
+          - Selector de año (actualYear)
+        */}
+        <VistaMensualHeader
+          mode={mode}
+          setMode={setMode}
+          actualYear={actualYear}
+          setActualYear={setActualYear}
+        />
 
-        {/* HEADER */}
-        <VistaMensualHeader mode={mode} setMode={setMode} actualYear={actualYear} setActualYear={setActualYear} />
 
-        {/* CONTENIDO */}
+        {/* 
+          Contenedor principal del dashboard:
+          - Se pasa el modo (expenses/incomes) y el año actual
+          - evita que el scroll esté fuera de la tabla, se ajusta al tamaño disponible automáticamente
+        */}
         <main className="flex-1 overflow-hidden">
           <Dashboard mode={mode} actualYear={actualYear} />
         </main>
 
-        {/* BOTÓN */}
+        {/* 
+          Pie de página con acción principal:
+          - Botón para abrir el modal de creación de movimientos
+          - Usa clases de Tailwind para diseño responsive y estilos visuales
+        */}
         <footer className="h-10 mt-4 flex justify-end shrink-0">
           <button
             onClick={() => setOpenModal(true)}
@@ -33,13 +64,19 @@ export function VistaMensualPageClient() {
         </footer>
       </div>
 
-      {/* MODAL */}
+
+      {/* 
+        Modal para añadir nuevos movimientos:
+        - Controlado por el estado 'openModal'
+        - onCancel: cierra el modal sin guardar cambios
+        - onAccept: cerrará el modal tras guardar (lógica pendiente de implementar)
+      */}
       <AddMovementModal
         open={openModal}
         onCancel={() => setOpenModal(false)}
         onAccept={() => {
           setOpenModal(false)
-          // lógica real más adelante
+          // TODO: Implementar lógica de guardado del movimiento
         }}
       />
     </div>

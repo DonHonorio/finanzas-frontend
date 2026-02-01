@@ -1,5 +1,5 @@
-import Boton from "@/components/prueba/Boton";
-import ListaNombres from "@/components/prueba/ListaNombres";
+import Boton from "@/src/components/prueba/Boton";
+import ListaNombres from "@/src/components/prueba/ListaNombres";
 
 export default async function Home() {
 
@@ -13,9 +13,12 @@ export default async function Home() {
         <div className="flex flex-col justify-center items-center space-y-4 h-1/2">
 
           <Boton />
-          {/* <Nombre /> */}
+          <div className="flex bg-amber-200">
+            <div className="w-50 h-50 bg-violet-400 " />
+            <div className="w-50 h-50 bg-violet-400 " />
+          </div>
 
-          <div className="text-4xl bg-blue-400 text-white p-8 rounded-lg">
+          <div className="text-4xl bg-blue-400 text-white p-8 rounded-lg ease-in-out">
             Bienvenido a la aplicación de Finanzas Personales
           </div>
         </div>

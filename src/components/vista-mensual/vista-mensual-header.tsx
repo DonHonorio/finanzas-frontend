@@ -1,7 +1,9 @@
 'use client'
 
-import { ChevronLeft, ChevronRight, RotateCw } from 'lucide-react'
+import { ChevronLeft } from 'lucide-react'
 import { useState } from 'react'
+import { ToggleButton } from '../ui/toggle-button'
+import { YearSelector } from '../ui/year-selector'
 
 type Props = {
   mode: "expenses" | "incomes"
@@ -10,18 +12,25 @@ type Props = {
   setActualYear: (y: number) => void
 }
 
+/**
+ * Componente de cabecera para la Vista Mensual
+ * Contiene controles de navegación: botón volver, selector modo (gastos/ingresos) y selector de año
+ */
 export function VistaMensualHeader({ mode, setMode, actualYear, setActualYear }: Props) {
+  // Estado local para el año mostrado en el selector (puede diferir del año aplicado)
   const [year, setYear] = useState(actualYear)
-  
+
+  // TODO: Implementar lógica de navegación atrás (router.back() o navegación personalizada)
   const onBack = () => {
-    // hook vacío – aquí meterás router.back() o lo que quieras
+    // placeholder - se implementará con la lógica de navegación real
   }
 
   return (
     <div className="mb-6">
 
-      <div className="flex items-center gap-x-4 mb-6">
-        {/* VOLVER */}
+      {/* 1. Fila superior: Botón volver y título */}
+      <div className="flex items-center mb-6">
+        {/* Botón "Volver" - Navegación a vista anterior */}
         <button
           onClick={onBack}
           className="flex items-center gap-2 px-4 py-2 border-border rounded-md text-sm text-gray-600 hover:text-gray-900 hover:bg-accent active:-translate-x-0.5 transition select-none"
@@ -30,80 +39,51 @@ export function VistaMensualHeader({ mode, setMode, actualYear, setActualYear }:
           Volver
         </button>
 
-        {/* TÍTULO */}
+        {/* Título principal centrado automáticamente con mx-auto */}
         <h1 className="mx-auto text-3xl font-bold">
           Vista Mensual
         </h1>
 
       </div>
 
-      {/* CONTROLES */}
+      {/* 2. Fila inferior: Controles principales (modo y año) */}
       <div className="flex items-center justify-between">
 
-        {/* SWITCH */}
+        {/* Selector de modo: Gastos vs Ingresos */}
         <div className="relative bg-gray-100 rounded-xl p-1 w-56 h-12 flex items-center">
 
-          {/* SLIDER */}
+          {/* Indicador visual deslizante - cambia posición según el modo */}
           <div
             className={`
               absolute top-1 left-1 h-10 w-[calc(50%-4px)]
               bg-primary text-primary-foreground rounded-lg shadow
               transition-all duration-300
-              ${mode === 'incomes' ? 'translate-x-full' : ''}
+              ${mode === 'incomes' ? 'translate-x-full' : ''} /* Desplaza a derecha para ingresos */
             `}
           />
 
-          <button
-            className={`relative z-10 w-1/2 text-sm font-semibold transition select-none
-              ${mode === 'expenses' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}
-            `}
+          {/* Botón "Gastos" */}
+          <ToggleButton
+            isActive={mode === 'expenses'}
+            label="Gastos"
             onClick={() => setMode('expenses')}
-          >
-            Gastos
-          </button>
+          />
 
-          <button
-            className={`relative z-10 w-1/2 text-sm font-semibold transition select-none
-              ${mode === 'incomes' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}
-            `}
+          {/* Botón "Ingresos" */}
+          <ToggleButton
+            isActive={mode === 'incomes'}
+            label="Ingresos"
             onClick={() => setMode('incomes')}
-          >
-            Ingresos
-          </button>
+          />
         </div>
 
-        {/* SELECTOR DE AÑO */}
-        <div className="flex items-center gap-4">
-
-          {year !== actualYear && (
-            <button className='p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground'
-              onClick={() => { setActualYear(year) }}
-              disabled={year === actualYear}
-            >
-              <RotateCw className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
-            </button>
-          )}
-
-
-          <button
-            onClick={() => setYear(y => y - 1)}
-            className="p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-
-          <span className="text-2xl font-bold tabular-nums select-none">
-            {year}
-          </span>
-
-          <button
-            onClick={() => setYear(y => y + 1)}
-            className="p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
-          >
-            <ChevronRight className="h-5 w-5" />
-          </button>
-
-        </div>
+        {/* Selector de año con navegación y botón de aplicar cambios */}
+        <YearSelector
+          year={year}
+          setYear={setYear}
+          actualYear={actualYear}
+          setActualYear={setActualYear}
+        />
       </div>
     </div>
   )

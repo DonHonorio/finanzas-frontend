@@ -1,6 +1,6 @@
 "use client"
 
-import { prueba } from "@/actions/prueba-action"
+import { prueba } from "@/src/actions/prueba-action"
 import { useActionState } from "react"
 
 export default function Boton() {
