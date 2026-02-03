@@ -20,3 +20,18 @@ export function formatCurrency(value: number) {
     currency: 'EUR',
   }).format(value)
 }
+
+// Opciones de icono
+export const iconOptions = [
+  "💰", "💵", "🧾", "💳", "🏦", "💶", "🏛️", "💸",
+  "🛒", "🍔", "🚗", "🏠", "🎁", "🎬", "📚", "🧳",
+  "🎓", "👕", "💲", "🛠️", "📱", "💻", "🎮", "🎵",
+  "🏃", "🏖️", "🧘", "🎨", "📷", "🌳", "⚡", "🔦",
+  "🧲", "📺", "🧻", "🍬", "🧼", "🥤", "🍕", "☕",
+  "🍷", "🍺", "🥗", "🍜", "🥧", "🎂", "🎁", "💐",
+  "🚕", "🚌", "🚆", "🚲", "🛵", "✈️", "🚢", "🛴",
+  "📦", "🛍️", "🎧", "🎮", "🎸", "🎹", "🎯", "🎲"
+]
+
+// Opciones de color
+export const colorOptions = ["#F0BD24", "#F2994A", "#F2C94C", "#E0E0E0", "#BDBDBD", "#4F4F4F"]
