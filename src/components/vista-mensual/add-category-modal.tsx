@@ -1,11 +1,14 @@
 'use client'
 
-import { useState } from "react"
+import { useActionState, useEffect, useState } from "react"
 import { Modal } from "@/src/components/ui/modal"
 import { ToggleButton } from "@/src/components/ui/toggle-button"
 import { ActiveToggle } from "@/src/components/ui/active-toggle"
 import { FrequencyField, type FrequencyUnit, type FrequencyValue } from "@/src/components/ui/frequency-field"
 import { cn, colorOptions, iconOptions } from "@/src/lib/utils"
+import createCategory from "@/src/actions/create-category-action"
+import ErrorMessage from "../ui/ErrorMessage"
+import { toast } from "react-toastify"
 
 // Props
 type Props = {
@@ -15,6 +18,12 @@ type Props = {
 }
 
 export function AddCategoryModal({ open, onAccept, onCancel }: Props) {
+
+  const [state, dispatch, isPending] = useActionState(createCategory, {
+    errors: [],
+    success: ''
+  })
+
   // Estado de formulario
   const [name, setName] = useState("")
   const [budget, setBudget] = useState("")
@@ -27,6 +36,19 @@ export function AddCategoryModal({ open, onAccept, onCancel }: Props) {
   const [color, setColor] = useState(colorOptions[0])
   const [isActive, setIsActive] = useState(true)
 
+  const resetForm = () => {
+    setName("")
+    setBudget("")
+    setFrequency("custom")
+    setCustomCount("")
+    setCustomUnit("weeks")
+    setDtstart("")
+    setType("expense")
+    setIcon(iconOptions[0])
+    setColor(colorOptions[0])
+    setIsActive(true)
+  }
+
   // Flags de UI
   const isCustom = frequency === "custom"
   const isFormValid =
@@ -35,27 +57,41 @@ export function AddCategoryModal({ open, onAccept, onCancel }: Props) {
     dtstart !== "" &&
     (!isCustom || (customCount !== "" && Number(customCount) > 0))
 
+  useEffect(() => {
+    if (state.success) {
+      toast.success(state.success)
+      resetForm()
+      onAccept()
+    }
+  }, [state])
+
   return (
     // Modal
     <Modal
       open={open}
       onCancel={onCancel}
-      className="w-[70vw] max-w-5xl h-[65vh] rounded-2xl overflow-hidden"
+      className="w-[75vw] max-w-5xl h-[72vh] rounded-2xl overflow-hidden"
     >
       {/* Formulario */}
+      {state.errors.length > 0 && (
+        <div className="px-6 pt-5">
+          <div className="max-h-40 overflow-y-auto space-y-2 pr-2">
+            {state.errors.map((error, index) => (
+              <ErrorMessage key={`${error}-${index}`}>{error}</ErrorMessage>
+            ))}
+          </div>
+        </div>
+      )}
       <form
         id="add-category-form"
         className="flex-1 p-6 overflow-hidden"
-        onSubmit={(event) => {
-          event.preventDefault()
-          onAccept()
-        }}
+        action={dispatch}
       >
         {/* Título */}
         <h2 className="text-[26px] font-semibold mb-4">Crear Categoría</h2>
 
         {/* Grilla principal */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(60vh-170px)]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(72vh-210px)]">
           {/* COLUMNA IZQUIERDA */}
           <div className="space-y-4">
             {/* Nombre */}
@@ -63,6 +99,7 @@ export function AddCategoryModal({ open, onAccept, onCancel }: Props) {
               <label className="block text-[15px] font-semibold text-gray-700 mb-1">Nombre</label>
               <input
                 type="text"
+                name="name"
                 placeholder="Nombre de la categoría"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
@@ -77,6 +114,7 @@ export function AddCategoryModal({ open, onAccept, onCancel }: Props) {
                 type="number"
                 min={0}
                 step="0.01"
+                name="budget"
                 placeholder="0,00"
                 value={budget}
                 onChange={(event) => setBudget(event.target.value)}
@@ -94,6 +132,9 @@ export function AddCategoryModal({ open, onAccept, onCancel }: Props) {
                 onCustomCountChange={setCustomCount}
                 customUnit={customUnit}
                 onCustomUnitChange={setCustomUnit}
+                name="frequency"
+                customCountName="customCount"
+                customUnitName="customUnit"
               />
             </div>
 
@@ -102,6 +143,7 @@ export function AddCategoryModal({ open, onAccept, onCancel }: Props) {
               <label className="block text-[15px] font-semibold text-gray-700 mb-1">Fecha de Inicio</label>
               <input
                 type="date"
+                name="dtstart"
                 value={dtstart}
                 onChange={(event) => setDtstart(event.target.value)}
                 className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary"
@@ -114,6 +156,7 @@ export function AddCategoryModal({ open, onAccept, onCancel }: Props) {
             {/* Tipo */}
             <div>
               <label className="block text-[15px] font-semibold text-gray-700 mb-2">Tipo</label>
+              <input type="hidden" name="type" value={type} />
               <div className="relative bg-gray-100 rounded-lg p-1 h-11 flex items-center">
                 <div
                   className={cn(
@@ -137,6 +180,7 @@ export function AddCategoryModal({ open, onAccept, onCancel }: Props) {
             {/* Icono */}
             <div>
               <label className="block text-[15px] font-semibold text-gray-700 mb-2">Icono</label>
+              <input type="hidden" name="icon" value={icon} />
               <div className="grid grid-cols-8 gap-2">
                 {iconOptions.map((item, index) => (
                   <button
@@ -160,6 +204,7 @@ export function AddCategoryModal({ open, onAccept, onCancel }: Props) {
             {/* Color */}
             <div>
               <label className="block text-[15px] font-semibold text-gray-700 mb-2">Color</label>
+              <input type="hidden" name="color" value={color} />
               <div className="flex flex-wrap gap-2">
                 {colorOptions.map((item, index) => (
                   <button
@@ -182,6 +227,7 @@ export function AddCategoryModal({ open, onAccept, onCancel }: Props) {
             {/* Activo */}
             <div className="flex items-center justify-start gap-10 mt-6">
               <label className="text-[15px] font-semibold text-gray-700">Activo</label>
+              <input type="hidden" name="isActive" value={String(isActive)} />
               <ActiveToggle
                 isActive={isActive}
                 onToggle={() => setIsActive((value) => !value)}
@@ -206,15 +252,15 @@ export function AddCategoryModal({ open, onAccept, onCancel }: Props) {
         <button
           type="submit"
           form="add-category-form"
-          disabled={!isFormValid}
+          disabled={!isFormValid || isPending}
           className={cn(
             "px-12 py-2.5 rounded-lg text-[15px] text-gray-900 transition",
-            isFormValid
+            isFormValid && !isPending
               ? "bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer"
               : "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
           )}
         >
-          Crear
+          {isPending ? "Creando..." : "Crear"}
         </button>
       </div>
     </Modal>

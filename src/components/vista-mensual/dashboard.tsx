@@ -171,7 +171,7 @@ export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", 
                 onCancel={() => setOpenAddCategoryModal(false)}
                 onAccept={() => {
                     setOpenAddCategoryModal(false)
-                    // TODO: Implementar lógica de submit para guardar categoría
+                    mutate()
                 }}
             />
 
