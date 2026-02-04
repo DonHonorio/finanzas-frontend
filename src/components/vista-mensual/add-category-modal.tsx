@@ -12,7 +12,7 @@ type Props = {
 
 export function AddCategoryModal({ open, onAccept, onCancel, mode }: Props) {
   return (
-    <Modal open={open} onCancel={onCancel} className="w-[75vw] max-w-5xl h-[72vh] rounded-2xl overflow-hidden">
+    <Modal open={open} onCancel={onCancel} className="w-[75vw] max-w-5xl rounded-2xl overflow-hidden">
       <CategoryForm
         action={createCategory}
         onSuccess={onAccept}

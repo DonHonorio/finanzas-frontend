@@ -170,8 +170,8 @@ export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", 
                 open={openAddCategoryModal}
                 onCancel={() => setOpenAddCategoryModal(false)}
                 onAccept={() => {
-                    mutate() // Refresca los datos del dashboard después de añadir una categoría
                     setOpenAddCategoryModal(false)
+                    mutate() // Refresca los datos del dashboard después de añadir una categoría
                 }}
                 mode={mode}
             />
@@ -192,6 +192,7 @@ export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", 
                     category={selectedCategory}
                     onCancel={handleCloseModal}
                     onAccept={() => {
+                        setOpenAddCategoryModal(false)
                         mutate() // Refresca los datos del dashboard después de editar una categoría
                         handleCloseModal()
                     }}

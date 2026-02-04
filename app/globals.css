@@ -29,8 +29,8 @@
   --color-muted-foreground: #636363;
 
   /* Destructive */
-  --color-destructive: rgb(156, 115, -5, 0.5);
-  --color-destructive-foreground: #0a0a0a;
+  --color-destructive: #FF7262;
+  --color-destructive-foreground: #ffffff;
 
   /* Border & Input */
   --color-border: #e0dcdd;
