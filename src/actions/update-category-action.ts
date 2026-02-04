@@ -1,0 +1,53 @@
+"use server"
+
+import { getToken } from "../auth/token"
+import { DraftCategorySchema, ErrorResponseSchema, SuccessSchema } from "../schemas"
+import { ActionStateType } from "../types/action-types"
+
+export default async function updateCategory(prevState: ActionStateType, formData: FormData) {
+  const categoryId = formData.get('categoryId') // Asegúrate de incluir el ID en el formulario
+  const categoryData = {
+    name: formData.get('name'),
+    budget: formData.get('budget'),
+    frequency: formData.get('frequency'),
+    dtstart: formData.get('dtstart'),
+    type: formData.get('type'),
+    icon: formData.get('icon'),
+    color: formData.get('color'),
+    isActive: formData.get('isActive') === 'true',
+  }
+
+  const category = DraftCategorySchema.safeParse(categoryData)
+  if (!category.success) {
+    return {
+      errors: category.error._zod.def.map(issue => issue.message),
+      success: ''
+    }
+  }
+
+  const token = await getToken()
+  const url = `${process.env.API_URL}/categories/${categoryId}`
+  const req = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(category.data)
+  })
+
+  const json = await req.json()
+  if (!req.ok) {
+    const { error } = ErrorResponseSchema.parse(json)
+    return {
+      errors: [error],
+      success: ''
+    }
+  }
+
+  const success = SuccessSchema.parse(json.message)
+  return {
+    errors: [],
+    success
+  }
+}

@@ -9,7 +9,8 @@ export type CategoryRow = {
   name: string
   budget: number
   frequency: string
-  dtstart: Date
+  type: 'expense' | 'income'
+  dtstart: string
   icon: string
   color: string
   order: number

@@ -1,13 +1,8 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
 import { getToken } from "../auth/token"
 import { DraftCategorySchema, ErrorResponseSchema, SuccessSchema } from "../schemas"
-
-type ActionStateType = {
-    errors: string[]
-    success: string
-}
+import { ActionStateType } from "../types/action-types"
 
 export default async function createCategory(prevState: ActionStateType, formData: FormData) {
 
@@ -52,7 +47,6 @@ export default async function createCategory(prevState: ActionStateType, formDat
     }
 
     const success = SuccessSchema.parse(json.message)
-    revalidatePath('/vista-mensual')
     return {
         errors: [],
         success

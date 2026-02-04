@@ -10,7 +10,7 @@ import { TableBody } from './table-body'
 import { TableFooter } from './table-footer'
 import { TableHeader } from './table-header'
 import { AddCategoryModal } from './add-category-modal'
-import { EditCategoryModal } from './edit-category-button'
+import { EditCategoryModal } from './edit-category-modal'
 import { ViewCategoryModal } from './view-category-modal'
 import { useDashboardData } from '@/src/hooks/use-dashboard-data'
 import { formatCurrency, months } from '@/src/lib/utils'
@@ -32,7 +32,7 @@ export const categoryColumnTitle = 'name'
 export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", actualYear: number }) {
     // Estado para controlar la apertura del modal de añadir categoría
     const [openAddCategoryModal, setOpenAddCategoryModal] = useState(false)
-    
+
     // Srive para mostrar el tipo de dato en la UI 
     const tipoDato = mode === "expenses" ? "gastos" : "ingresos"
 
@@ -63,7 +63,7 @@ export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", 
         console.error('Error en SWR:', error)
     }
 
-    
+
     // Maneja la apertura del "modal de visualización" para una categoría
     const handleView = (category: CategoryRow) => { // Se le pasa el objeto categoría completo
         setSelectedCategory(category)
@@ -75,7 +75,7 @@ export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", 
         setSelectedCategory(category)
         setModalType("edit")
     }
-    
+
     // Cierra cualquier modal abierto y limpia la categoría seleccionada
     const handleCloseModal = () => {
         setModalType(null)
@@ -170,9 +170,10 @@ export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", 
                 open={openAddCategoryModal}
                 onCancel={() => setOpenAddCategoryModal(false)}
                 onAccept={() => {
+                    mutate() // Refresca los datos del dashboard después de añadir una categoría
                     setOpenAddCategoryModal(false)
-                    mutate()
                 }}
+                mode={mode}
             />
 
             {/* Modal para visualizar detalles de categoría */}
@@ -191,7 +192,7 @@ export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", 
                     category={selectedCategory}
                     onCancel={handleCloseModal}
                     onAccept={() => {
-                        // TODO: Implementar lógica de guardado
+                        mutate() // Refresca los datos del dashboard después de editar una categoría
                         handleCloseModal()
                     }}
                 />
