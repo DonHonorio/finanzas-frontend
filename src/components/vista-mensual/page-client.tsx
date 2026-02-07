@@ -1,9 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Dashboard } from "@/src/components/vista-mensual/dashboard"
 import { VistaMensualHeader } from "@/src/components/vista-mensual/vista-mensual-header"
-import { AddMovementModal } from "@/src/components/vista-mensual/add-movement-modal"
+import { AddTransactionModal } from './add-transaction-modal'
+import { EditTransactionModal } from './edit-transaction-modal'
+import { getAccounts } from '@/src/actions/get-accounts-action'
+import { Account } from '@/src/types/account-types'
+import { getCategories } from '@/src/actions/get-categories-action'
+import { Category } from '@/src/types/category-types'
 
 /**
  * Componente principal de la página de Vista Mensual.
@@ -13,12 +18,26 @@ import { AddMovementModal } from "@/src/components/vista-mensual/add-movement-mo
 export function VistaMensualPageClient() {
   // Controla la apertura/cierre del modal para añadir movimientos
   const [openModal, setOpenModal] = useState(false)
+  const [openEditModal, setOpenEditModal] = useState(false)
 
   // Determina si se visualizan gastos o ingresos en el dashboard
   const [mode, setMode] = useState<"expenses" | "incomes">("expenses")
 
   // Año actual seleccionado para filtrar los datos -> es el año con el que se hacen las consultas, no el que se muestra en el filtro de la cabecera
   const [actualYear, setActualYear] = useState(new Date().getFullYear())
+
+  // Cuentas del usuario (se cargan al montar el componente)
+  const [accounts, setAccounts] = useState<Account[]>([])
+  
+  // Categorías del usuario (se cargan al montar el componente)
+  const [categories, setCategories] = useState<Category[]>([])
+
+  useEffect(() => {
+    // Cargar cuentas en background
+    getAccounts().then(data => setAccounts(data))
+    // Cargar categorías en background
+    getCategories().then(data => setCategories(data))
+  }, [])
 
   return (
     <div className="h-screen p-10">
@@ -56,6 +75,12 @@ export function VistaMensualPageClient() {
         */}
         <footer className="h-10 mt-4 flex justify-end shrink-0">
           <button
+            onClick={() => setOpenEditModal(true)}
+            className="w-60 bg-secondary hover:bg-secondary/90 text-secondary-foreground text-lg rounded-lg transition select-none mr-4"
+          >
+            Editar Movimiento (Demo)
+          </button>
+          <button
             onClick={() => setOpenModal(true)}
             className="w-60 bg-primary hover:bg-primary/90 text-primary-foreground text-lg rounded-lg transition select-none"
           >
@@ -71,12 +96,37 @@ export function VistaMensualPageClient() {
         - onCancel: cierra el modal sin guardar cambios
         - onAccept: cerrará el modal tras guardar (lógica pendiente de implementar)
       */}
-      <AddMovementModal
+      <AddTransactionModal
         open={openModal}
+        accounts={accounts}
+        categories={categories}
         onCancel={() => setOpenModal(false)}
         onAccept={() => {
           setOpenModal(false)
           // TODO: Implementar lógica de guardado del movimiento
+        }}
+      />
+      <EditTransactionModal
+        open={openEditModal}
+        transaction={{
+            "transactionId": "190",
+            "name": "Prueba",
+            "date": "2025-01-22T00:00:00.000Z",
+            "amount": 1459.61,
+            "description": "Ingreso recurrente",
+            "type": "income",
+            "currency": "JPY",
+            "createdAt": "2026-01-29T15:25:33.000Z",
+            "updatedAt": "2026-01-29T15:25:33.000Z",
+            "accountId": "5",
+            "categoryId": "15"
+        }}
+        accounts={accounts}
+        categories={categories}
+        onCancel={() => setOpenEditModal(false)}
+        onAccept={() => {
+          setOpenEditModal(false)
+          // TODO: Implementar lógica de edición del movimiento
         }}
       />
     </div>

@@ -2,7 +2,6 @@
 
 import { useActionState, useEffect, useState } from "react"
 import { FrequencyField } from "@/src/components/ui/frequency-field"
-import { Modal } from "@/src/components/ui/modal"
 import { cn, colorOptions, iconOptions } from "@/src/lib/utils"
 import ErrorMessage from "../ui/ErrorMessage"
 import { toast } from "react-toastify"
@@ -11,6 +10,8 @@ import { ActiveToggle } from "@/src/components/ui/active-toggle"
 import { ActionStateType } from "@/src/types/action-types"
 import deleteCategory from "@/src/actions/delete-category-action"
 import React from "react"
+import { DeleteButton } from "@/src/components/ui/delete-button"
+import { DeleteConfirmationModal } from "@/src/components/ui/delete-confirmation-modal"
 
 // Props
 type Props = {
@@ -80,7 +81,6 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
 
     // Estado para el modal de confirmación
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-    const [deleteConfirmation, setDeleteConfirmation] = useState("") // Texto ingresado por el usuario
     const [deleteState, deleteDispatch, isDeleting] = useActionState(deleteCategory, {
         errors: [],
         success: ""
@@ -109,12 +109,6 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
 
     const handleDelete = () => {
         if (!initialData?.categoryId) return
-        console.log('deleteConfirmation:', deleteConfirmation)
-        console.log('initialData.name:', initialData.name)
-        if (deleteConfirmation.trim() !== initialData.name.trim()) {
-            toast.error("El nombre ingresado no coincide con la categoría.")
-            return
-        }
         const formData = new FormData()
         formData.append("categoryId", initialData.categoryId)
 
@@ -290,56 +284,30 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
             {/* Botón de eliminar categoría */}
             {initialData?.categoryId && (
                 <div className="mt-0">
-                    <button
-                        type="button"
+                    <DeleteButton
                         onClick={() => setIsDeleteModalOpen(true)}
-                        className="mb-5 px-12 py-2.5 rounded-lg bg-destructive text-[15px] text-destructive-foreground hover:bg-destructive/90"
-                    >
-                        Eliminar Categoría
-                    </button>
+                        label="Eliminar Categoría"
+                        className="mb-5 px-12 py-2.5"
+                    />
                 </div>
             )}
 
             {/* Modal de confirmación */}
-            {isDeleteModalOpen && (
-                <Modal
-                    open={isDeleteModalOpen}
-                    onCancel={() => setIsDeleteModalOpen(false)}
-                    className="w-[90vw] max-w-lg rounded-2xl p-6"
-                >
-                    <h2 className="text-xl font-semibold mb-4">Confirmar Eliminación</h2>
-                    <p className="text-gray-700 mb-4">
+            <DeleteConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleDelete}
+                isDeleting={isDeleting}
+                title="Confirmar Eliminación"
+                description={
+                    <p>
                         Escribe el nombre de la categoría <strong>{initialData?.name}</strong> para confirmar la eliminación.
                     </p>
-                    <input
-                        type="text"
-                        placeholder="Nombre de la categoría"
-                        value={deleteConfirmation}
-                        onChange={(e) => setDeleteConfirmation(e.target.value)}
-                        className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary"
-                    />
-                    <div className="flex justify-end gap-4 mt-6">
-                        <button
-                            type="button"
-                            onClick={() => setIsDeleteModalOpen(false)}
-                            className="px-6 py-2.5 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
-                        >
-                            Cancelar
-                        </button>
-                        <button
-                            type="button"
-                            onClick={handleDelete}
-                            disabled={isDeleting}
-                            className={cn(
-                                "px-6 py-2.5 rounded-lg text-white",
-                                isDeleting ? "bg-destructive cursor-not-allowed" : "bg-destructive hover:bg-destructive/90"
-                            )}
-                        >
-                            {isDeleting ? "Eliminando..." : "Eliminar"}
-                        </button>
-                    </div>
-                </Modal>
-            )}
+                }
+                validationText={initialData?.name || ""}
+                inputPlaceholder="Nombre de la categoría"
+                confirmButtonText="Eliminar"
+            />
 
             {/* Footer */}
             <div className="px-6 py-4 flex justify-end gap-4 border-t border-gray-200">
