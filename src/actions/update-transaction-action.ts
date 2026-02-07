@@ -9,12 +9,12 @@ export default async function updateTransaction(prevState: ActionStateType, form
   const transactionData = {
     name: formData.get("name"),
     type: formData.get("type"),
-    account: formData.get("account"),
-    category: formData.get("category"),
     date: formData.get("date"),
     amount: formData.get("amount"),
     currency: formData.get("currency"),
     description: formData.get("description"),
+    accountId: formData.get("account"),
+    categoryId: formData.get("category"),
   };
 
   const transaction = DraftTransactionSchema.safeParse(transactionData);
@@ -35,9 +35,7 @@ export default async function updateTransaction(prevState: ActionStateType, form
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      ...transaction.data,
-      accountId: transaction.data.account,
-      categoryId: transaction.data.category,
+      ...transaction.data
     }),
   });
 

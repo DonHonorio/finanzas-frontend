@@ -3,12 +3,12 @@
 import { getToken } from "../auth/token"
 import { Category } from "../types/category-types"
 
+// Server action para obtener categorías desde la API externa
 export async function getCategories(): Promise<Category[]> {
     const token = await getToken()
     const url = `${process.env.API_URL}/categories`
     
-    // Si no hay token, retornamos array vacío
-    if (!token) return []
+    if (!token) return [] // Sin token, no se puede autenticar
 
     try {
         const req = await fetch(url, {
@@ -23,7 +23,7 @@ export async function getCategories(): Promise<Category[]> {
         }
 
         const data = await req.json()
-        return data.categories || [] 
+        return data.categories || [] // API devuelve { categories: [...] }
     } catch (error) {
         console.error("Error in getCategories action:", error)
         return []

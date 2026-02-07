@@ -7,7 +7,7 @@ type Props = {
   onToggle: () => void
   className?: string
 }
-
+// Componente de conmutador switch para activar/desactivar algo (ej: activar/desactivar cuenta o categoría sin eliminarla)
 export function ActiveToggle({ isActive, onToggle, className }: Props) {
   return (
     <button

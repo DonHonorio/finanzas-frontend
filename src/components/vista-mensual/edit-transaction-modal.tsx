@@ -5,20 +5,22 @@ import { Transaction } from "@/src/types/transaction-types"
 import { Account } from "@/src/types/account-types"
 import { Category } from "@/src/types/category-types"
 
-// Props
 type Props = {
     open: boolean
-    transaction: Transaction
+    transaction: Transaction          // Datos de la transacción a editar
     accounts: Account[]
     categories: Category[]
     onCancel: () => void
     onAccept: () => void
+    mode: "expenses" | "incomes"      // Determina el tipo inicial del formulario
 }
 
-export function EditTransactionModal({ open, transaction, accounts, categories, onCancel, onAccept }: Props) {
+// Modal wrapper para editar transacción existente
+export function EditTransactionModal({ open, transaction, accounts, categories, onCancel, onAccept, mode }: Props) {
     return (
         <Modal open={open} onCancel={onCancel} className="w-[75vw] max-w-2xl rounded-2xl overflow-hidden">
             <TransactionForm
+            // Se pasan los datos de la transacción a editar como initialData para prellenar el formulario
                 initialData={{
                     transactionId: transaction.transactionId,
                     name: transaction.name,
@@ -33,9 +35,10 @@ export function EditTransactionModal({ open, transaction, accounts, categories, 
                 }}
                 accounts={accounts}
                 categories={categories}
-                action={updateTransaction}
+                action={updateTransaction}  // Server action para actualizar (no crear)
                 onSuccess={onAccept}
                 onCancel={onCancel}
+                mode={mode}
             />
         </Modal>
     );

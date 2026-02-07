@@ -7,23 +7,30 @@ export type FrequencyValue = "once" | "daily" | "weekly" | "monthly" | "yearly" 
 export type FrequencyUnit = "days" | "weeks" | "months" | "years"
 
 type Props = {
-  frequency: string
+  frequency: string        // Formato RRULE (ej: "FREQ=WEEKLY;INTERVAL=2")
   onChange: (value: string) => void
-  name?: string
-  customCountName?: string
-  customUnitName?: string
+  name?: string            // Para formularios: nombre del campo RRULE completo
+  customCountName?: string // Para formularios: nombre del campo "cada X"
+  customUnitName?: string  // Para formularios: nombre del campo unidad (días/semanas/etc)
   className?: string
 }
 
+// Convierte un string RRULE (formato estándar de calendario) a valores que el componente puede manejar
+// Ejemplos:
+// - "FREQ=WEEKLY" → {value:"weekly", customCount:"", customUnit:"weeks"}
+// - "FREQ=MONTHLY;INTERVAL=2" → {value:"custom", customCount:"2", customUnit:"months"}
 const parseRRule = (rrule: string): { value: FrequencyValue; customCount: string; customUnit: FrequencyUnit } => {
   const upper = (rrule || "").toUpperCase()
   if (!upper) return { value: "once", customCount: "", customUnit: "days" }
 
+  // Caso especial: "FREQ=DAILY;COUNT=1" significa "una sola vez" (no recurrente)
   if (upper.includes("FREQ=DAILY;COUNT=1")) return { value: "once", customCount: "", customUnit: "days" }
 
+  // Extrae la frecuencia (DAILY, WEEKLY, etc.) y el intervalo (número) usando regex
   const freqMatch = upper.match(/FREQ=([A-Z]+)/)
   const intervalMatch = upper.match(/INTERVAL=(\d+)/)
 
+  // Mapea valores RRULE a valores del componente
   const mapFreqToValue: Record<string, FrequencyValue> = {
     DAILY: "daily",
     WEEKLY: "weekly",
@@ -34,10 +41,12 @@ const parseRRule = (rrule: string): { value: FrequencyValue; customCount: string
   const freq = freqMatch?.[1]
   const interval = intervalMatch?.[1]
 
+  // Si hay frecuencia PERO NO intervalo → opción simple (daily, weekly, etc.)
   if (freq && !interval && mapFreqToValue[freq]) {
     return { value: mapFreqToValue[freq], customCount: "", customUnit: "weeks" }
   }
 
+  // Si hay frecuencia CON intervalo → opción personalizada
   if (freq && interval) {
     const mapFreqToUnit: Record<string, FrequencyUnit> = {
       DAILY: "days",
@@ -46,15 +55,17 @@ const parseRRule = (rrule: string): { value: FrequencyValue; customCount: string
       YEARLY: "years"
     }
     return {
-      value: "custom",
-      customCount: interval,
+      value: "custom",          // Siempre "custom" cuando hay intervalo
+      customCount: interval,    // El número del intervalo (ej: "2" para cada 2 semanas)
       customUnit: mapFreqToUnit[freq] || "weeks"
     }
   }
 
+  // Fallback para RRULEs desconocidos o mal formados
   return { value: "custom", customCount: "", customUnit: "weeks" }
 }
 
+// Convierte valores del componente a RRULE string
 const buildRRule = (value: FrequencyValue, customCount: string, customUnit: FrequencyUnit) => {
   const interval = Number(customCount)
   switch (value) {
@@ -91,11 +102,13 @@ export function FrequencyField({
   customUnitName,
   className
 }: Props) {
+  // Estados internos para manejar la UI
   const parsed = parseRRule(frequency)
   const [value, setValue] = useState<FrequencyValue>(parsed.value)
   const [customCount, setCustomCount] = useState(parsed.customCount)
   const [customUnit, setCustomUnit] = useState<FrequencyUnit>(parsed.customUnit)
 
+  // Sincroniza estados internos cuando cambia la prop frequency externa
   useEffect(() => {
     const next = parseRRule(frequency)
     setValue(next.value)
@@ -105,6 +118,7 @@ export function FrequencyField({
 
   const isCustom = value === "custom"
 
+  // Actualiza el valor RRULE y llama a onChange
   const commit = (nextValue: FrequencyValue, nextCount = customCount, nextUnit = customUnit) => {
     onChange(buildRRule(nextValue, nextCount, nextUnit))
   }
@@ -112,7 +126,7 @@ export function FrequencyField({
   const handleValueChange = (nextValue: FrequencyValue) => {
     setValue(nextValue)
     if (nextValue === "custom") {
-      // Inicializar valores para "custom" si no están definidos
+      // Inicializa valores por defecto para modo personalizado
       const initialCount = customCount || "1"
       const initialUnit = customUnit || "weeks"
       setCustomCount(initialCount)
@@ -125,6 +139,7 @@ export function FrequencyField({
 
   return (
     <div className={cn("space-y-2", className)}>
+      {/* Campo hidden para formularios con el valor RRULE completo */}
       {name && <input type="hidden" name={name} value={buildRRule(value, customCount, customUnit)} />}
 
       <select
@@ -140,6 +155,7 @@ export function FrequencyField({
         <option value="custom">Personalizado</option>
       </select>
 
+      {/* Campos adicionales solo para modo "personalizado" */}
       {isCustom && (
         <div className="grid grid-cols-2 gap-2">
           <input

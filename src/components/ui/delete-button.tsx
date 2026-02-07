@@ -4,9 +4,10 @@ interface DeleteButtonProps {
     onClick: () => void
     label?: string
     className?: string
-    disabled?: boolean
+    disabled?: boolean  // Deshabilita el botón (ej: durante una acción en progreso)
 }
 
+// Botón para acciones destructivas (eliminar). Usa colores de tema "destructive"
 export function DeleteButton({ onClick, label = "Eliminar", className, disabled }: DeleteButtonProps) {
     return (
         <button

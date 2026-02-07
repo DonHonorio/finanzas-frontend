@@ -3,6 +3,7 @@
 import { getToken } from "../auth/token"
 import { Account } from "../types/account-types"
 
+// Server action para obtener cuentas desde la API externa
 export async function getAccounts(): Promise<Account[]> {
     const token = await getToken()
     const url = `${process.env.API_URL}/accounts`
@@ -23,7 +24,7 @@ export async function getAccounts(): Promise<Account[]> {
         }
 
         const data = await req.json()
-        return data.accounts || [] // Asumiendo que la API devuelve { accounts: [...] }
+        return data.accounts || [] // API devuelve { accounts: [...] }
     } catch (error) {
         console.error("Error in getAccounts action:", error)
         return []

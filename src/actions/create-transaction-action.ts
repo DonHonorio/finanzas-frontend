@@ -5,6 +5,9 @@ import { DraftTransactionSchema, ErrorResponseSchema, SuccessSchema } from "../s
 import { ActionStateType } from "../types/action-types";
 
 export default async function createTransaction(prevState: ActionStateType, formData: FormData) {
+  console.log('FORM DATA: ', formData)
+  
+  // Extrae valores del FormData para validación con Zod
   const transactionData = {
     name: formData.get("name"),
     date: formData.get("date"),
@@ -16,7 +19,7 @@ export default async function createTransaction(prevState: ActionStateType, form
     categoryId: formData.get("category")
   }
 
-
+  // Validación del lado del servidor con Zod
   const transaction = DraftTransactionSchema.safeParse(transactionData);
   if (!transaction.success) {
     return {
@@ -25,8 +28,12 @@ export default async function createTransaction(prevState: ActionStateType, form
     };
   }
 
+  // Autenticación con token JWT
   const token = await getToken();
+  
   const categoryId = formData.get("category");
+  
+  // Endpoint específico: POST a /categories/{id}/transactions
   const url = `${process.env.API_URL}/categories/${categoryId}/transactions`;
   const req = await fetch(url, {
     method: "POST",
@@ -40,6 +47,8 @@ export default async function createTransaction(prevState: ActionStateType, form
   });
 
   const json = await req.json();
+  
+  // Manejo de errores de la API externa
   if (!req.ok) {
     const { error } = ErrorResponseSchema.parse(json);
     return {
@@ -48,6 +57,7 @@ export default async function createTransaction(prevState: ActionStateType, form
     };
   }
 
+  // Respuesta exitosa
   const success = SuccessSchema.parse(json.message);
   return {
     errors: [],

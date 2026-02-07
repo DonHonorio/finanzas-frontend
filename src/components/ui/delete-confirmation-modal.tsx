@@ -9,15 +9,16 @@ interface DeleteConfirmationModalProps {
     isOpen: boolean
     onClose: () => void
     onConfirm: () => void
-    isDeleting: boolean
+    isDeleting: boolean                // Estado de la acción de eliminación en progreso
     title?: string
-    description: React.ReactNode
-    validationText: string
+    description: React.ReactNode       // Descripción con el texto que debe coincidir
+    validationText: string             // Texto exacto que usuario debe escribir para confirmar
     inputPlaceholder?: string
     confirmButtonText?: string
     cancelButtonText?: string
 }
 
+// Modal de confirmación para acciones destructivas que requiere escritura manual
 export function DeleteConfirmationModal({
     isOpen,
     onClose,
@@ -32,12 +33,14 @@ export function DeleteConfirmationModal({
 }: DeleteConfirmationModalProps) {
     const [inputValue, setInputValue] = useState("")
 
+    // Reinicia el campo de texto cada vez que se abre el modal
     useEffect(() => {
         if (isOpen) {
             setInputValue("")
         }
     }, [isOpen])
 
+    // Valida que el texto ingresado coincida exactamente antes de ejecutar onConfirm
     const handleConfirm = () => {
         if (inputValue.trim() !== validationText.trim()) {
             toast.error("El texto ingresado no coincide.")
@@ -52,10 +55,13 @@ export function DeleteConfirmationModal({
             onCancel={onClose}
             className="w-[90vw] max-w-lg rounded-2xl p-6"
         >
+            {/* título */}
             <h2 className="text-xl font-semibold mb-4">{title}</h2>
+            {/* descripción */}
             <div className="text-gray-700 mb-4">
                 {description}
             </div>
+            {/* input para validación */}
             <input
                 type="text"
                 placeholder={inputPlaceholder}
@@ -63,6 +69,7 @@ export function DeleteConfirmationModal({
                 onChange={(e) => setInputValue(e.target.value)}
                 className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary"
             />
+            {/* botones de cancelar y confirmar */}
             <div className="flex justify-end gap-4 mt-6">
                 <button
                     type="button"

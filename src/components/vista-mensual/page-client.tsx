@@ -95,6 +95,8 @@ export function VistaMensualPageClient() {
         - Controlado por el estado 'openModal'
         - onCancel: cierra el modal sin guardar cambios
         - onAccept: cerrará el modal tras guardar (lógica pendiente de implementar)
+        - Se pasan las cuentas y categorías para que el modal pueda mostrar opciones de selección
+        - mode: se pasa el modo actual para que el botón aparezcomo por defecto del tipo correcto (gasto o ingreso)
       */}
       <AddTransactionModal
         open={openModal}
@@ -105,6 +107,7 @@ export function VistaMensualPageClient() {
           setOpenModal(false)
           // TODO: Implementar lógica de guardado del movimiento
         }}
+        mode={mode}
       />
       <EditTransactionModal
         open={openEditModal}
@@ -128,6 +131,7 @@ export function VistaMensualPageClient() {
           setOpenEditModal(false)
           // TODO: Implementar lógica de edición del movimiento
         }}
+        mode={mode}
       />
     </div>
   )

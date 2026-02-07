@@ -1,4 +1,4 @@
-import { BaseCurrencyValue } from "./transaction-types";
+import { BaseCurrency } from "./transaction-types";
 
 export enum AccountType {
   AHORROS = "Ahorros",                    // Savings Account
@@ -24,7 +24,7 @@ export interface Account {
     name: string
     type: AccountTypeValue
     balance: string
-    currency: BaseCurrencyValue
+    currency: BaseCurrency
     number?: string
     order?: number
     isActive: boolean
