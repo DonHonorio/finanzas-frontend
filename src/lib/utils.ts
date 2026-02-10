@@ -13,12 +13,25 @@ export const months: Month[] = [
   'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
 ]
 
+// Array de nombres de meses (mismo contenido que months pero sin tipo específico)
+export const monthNames = [
+  'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+  'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+] as const
+
 // Formatea números como moneda en formato español (€)
 export function formatCurrency(value: number) {
   return new Intl.NumberFormat('es-ES', {
     style: 'currency',
     currency: 'EUR',
   }).format(value)
+}
+
+// Formatea una fecha ISO a formato español dd/mm/yyyy
+export function formatDate(dateString: string) {
+  if (!dateString) return ''
+  const date = new Date(dateString)
+  return date.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })
 }
 
 // Opciones de icono

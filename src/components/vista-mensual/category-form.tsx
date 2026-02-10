@@ -24,6 +24,7 @@ type Props = {
         icon: string
         color: string
         isActive: boolean
+        withSubcategory: boolean
         categoryId?: string
     }
     action: (prevState: ActionStateType, formData: FormData) => Promise<{ errors: string[]; success: string }>
@@ -56,6 +57,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
     const [icon, setIcon] = useState(initialData?.icon || iconOptions[0])
     const [color, setColor] = useState(initialData?.color || colorOptions[0])
     const [isActive, setIsActive] = useState(initialData?.isActive ?? true)
+    const [withSubcategory, setWithSubcategory] = useState(initialData?.withSubcategory ?? false)
     const [categoryId, setCategoryId] = useState(initialData?.categoryId || "")
 
     // Función para resetear el formulario (solo para createCategory)
@@ -69,6 +71,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
             setIcon(iconOptions[0])
             setColor(colorOptions[0])
             setIsActive(true)
+            setWithSubcategory(false)
         }
     }
 
@@ -276,6 +279,16 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
                         <ActiveToggle
                             isActive={isActive}
                             onToggle={() => setIsActive((value) => !value)}
+                        />
+                    </div>
+
+                    {/* Con Subcategorías */}
+                    <div className="flex items-center justify-start gap-10">
+                        <label className="text-[15px] font-semibold text-gray-700">Con Subcategorías</label>
+                        <input type="hidden" name="withSubcategory" value={String(withSubcategory)} />
+                        <ActiveToggle
+                            isActive={withSubcategory}
+                            onToggle={() => setWithSubcategory((value) => !value )}
                         />
                     </div>
                 </div>

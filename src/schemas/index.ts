@@ -50,6 +50,7 @@ export const DraftCategorySchema = z.object({
         z.coerce.number().int("El orden debe ser un número entero").optional()
     ),
     isActive: z.boolean(),
+    withSubcategory: z.boolean(),
 })
 
 // Esquema para la creación/edición de una transacción (borrador antes de ser guardado en BD)

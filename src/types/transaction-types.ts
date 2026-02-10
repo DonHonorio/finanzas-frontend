@@ -70,4 +70,5 @@ export interface Transaction {
     updatedAt: string
     accountId: string
     categoryId: string
+    subcategoryId?: number
 }

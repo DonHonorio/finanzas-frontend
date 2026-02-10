@@ -6,15 +6,17 @@ import { ActionStateType } from "../types/action-types";
 
 export default async function deleteTransaction(prevState: ActionStateType, formData: FormData) {
   const transactionId = formData.get("transactionId");
-  if (!transactionId) {
+  const categoryId = formData.get("categoryId");
+
+  if (!transactionId || !categoryId) {
     return {
-      errors: ["ID de transacción no proporcionado."],
+      errors: ["ID de transacción o categoría no proporcionado."],
       success: "",
     };
   }
 
   const token = await getToken();
-  const url = `${process.env.API_URL}/transactions/${transactionId}`;
+  const url = `${process.env.API_URL}/categories/${categoryId}/transactions/${transactionId}`;
   const req = await fetch(url, {
     method: "DELETE",
     headers: {
@@ -22,6 +24,7 @@ export default async function deleteTransaction(prevState: ActionStateType, form
     },
   });
 
+  console.log('JSON ERROR: ', await req)
   const json = await req.json();
   if (!req.ok) {
     const { error } = ErrorResponseSchema.parse(json);

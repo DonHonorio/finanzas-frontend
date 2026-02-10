@@ -15,6 +15,7 @@ export default async function updateCategory(prevState: ActionStateType, formDat
     icon: formData.get('icon'),
     color: formData.get('color'),
     isActive: formData.get('isActive') === 'true',
+    withSubcategory: formData.get('withSubcategory') === 'true',
   }
 
   const category = DraftCategorySchema.safeParse(categoryData)

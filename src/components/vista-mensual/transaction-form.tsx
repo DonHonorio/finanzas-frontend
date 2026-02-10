@@ -22,6 +22,7 @@ interface TransactionFormProps {
     onSuccess: () => void
     onCancel: () => void
     mode: "expenses" | "incomes"  // Usado solo para establecer valor inicial del tipo
+    defaultCategoryId?: string | number
 }
 
 // Convierte fecha ISO a formato YYYY-MM-DD para input date
@@ -34,7 +35,7 @@ const toDateInputValue = (value?: string) => {
     return `${yyyy}-${mm}-${dd}`
 }
 
-export function TransactionForm({ initialData, accounts, categories, action, onSuccess, onCancel, mode }: TransactionFormProps) {
+export function TransactionForm({ initialData, accounts, categories, action, onSuccess, onCancel, mode, defaultCategoryId }: TransactionFormProps) {
     // Estado para la acción principal (crear/editar)
     const [state, dispatch, isPending] = useActionState(action, {
         errors: [],
@@ -46,7 +47,7 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
     const [type, setType] = useState<'expense' | 'income'>(initialData?.type || (mode === "expenses" ? "expense" : "income"))
 
     const [account, setAccount] = useState(initialData?.accountId || '')
-    const [category, setCategory] = useState(initialData?.categoryId || '')
+    const [category, setCategory] = useState(initialData?.categoryId || defaultCategoryId || '')
     const [currency, setCurrency] = useState(initialData?.currency || '')
 
     const [date, setDate] = useState(() => toDateInputValue(initialData?.date))
@@ -121,6 +122,7 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
         if (!initialData?.transactionId) return
         const formData = new FormData()
         formData.append("transactionId", initialData.transactionId)
+        formData.append("categoryId", initialData.categoryId)
 
         React.startTransition(() => {
             deleteDispatch(formData)

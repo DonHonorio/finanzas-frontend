@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Dashboard } from "@/src/components/vista-mensual/dashboard"
 import { VistaMensualHeader } from "@/src/components/vista-mensual/vista-mensual-header"
-import { AddTransactionModal } from './add-transaction-modal'
+import { AddTransactionButton } from "@/src/components/ui/add-transaction-button"
 import { EditTransactionModal } from './edit-transaction-modal'
 import { getAccounts } from '@/src/actions/get-accounts-action'
 import { Account } from '@/src/types/account-types'
@@ -17,7 +17,6 @@ import { Category } from '@/src/types/category-types'
  */
 export function VistaMensualPageClient() {
   // Controla la apertura/cierre del modal para añadir movimientos
-  const [openModal, setOpenModal] = useState(false)
   const [openEditModal, setOpenEditModal] = useState(false)
 
   // Determina si se visualizan gastos o ingresos en el dashboard
@@ -80,12 +79,14 @@ export function VistaMensualPageClient() {
           >
             Editar Movimiento (Demo)
           </button>
-          <button
-            onClick={() => setOpenModal(true)}
-            className="w-60 bg-primary hover:bg-primary/90 text-primary-foreground text-lg rounded-lg transition select-none"
-          >
-            + Añadir Movimiento
-          </button>
+          
+          <AddTransactionButton
+            accounts={accounts}
+            categories={categories}
+            mode={mode}
+            // TODO: Implementar lógica de refresco tras guardar
+            onTransactionAdded={() => { console.log('Transacción añadida, refrescar dashboard...') }}
+          />
         </footer>
       </div>
 
@@ -98,17 +99,6 @@ export function VistaMensualPageClient() {
         - Se pasan las cuentas y categorías para que el modal pueda mostrar opciones de selección
         - mode: se pasa el modo actual para que el botón aparezcomo por defecto del tipo correcto (gasto o ingreso)
       */}
-      <AddTransactionModal
-        open={openModal}
-        accounts={accounts}
-        categories={categories}
-        onCancel={() => setOpenModal(false)}
-        onAccept={() => {
-          setOpenModal(false)
-          // TODO: Implementar lógica de guardado del movimiento
-        }}
-        mode={mode}
-      />
       <EditTransactionModal
         open={openEditModal}
         transaction={{

@@ -5,7 +5,7 @@ export type Month =
 
 // Estructura de datos para una fila de categoría en el dashboard
 export type CategoryRow = {
-  categoryId: string
+  categoryId: number
   name: string
   budget: number
   frequency: string
@@ -15,6 +15,7 @@ export type CategoryRow = {
   color: string
   order: number
   isActive: boolean
+  withSubcategory: boolean
   months: Record<Month, number>
 }
 

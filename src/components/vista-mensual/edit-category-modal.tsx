@@ -26,7 +26,8 @@ export function EditCategoryModal({ open, category, onCancel, onAccept }: Props)
           icon: category.icon,
           color: category.color,
           isActive: category.isActive,
-          categoryId: category.categoryId,
+          withSubcategory: category.withSubcategory,
+          categoryId: category.categoryId.toString(),
         }}
         action={updateCategory}
         onSuccess={onAccept}
