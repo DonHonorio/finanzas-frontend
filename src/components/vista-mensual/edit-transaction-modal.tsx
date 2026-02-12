@@ -44,5 +44,5 @@ export function EditTransactionModal({ open, transaction, accounts, categories, 
                 subcategories={subcategories}
             />
         </Modal>
-    );
+    )
 }

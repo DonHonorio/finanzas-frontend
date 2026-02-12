@@ -30,7 +30,7 @@ export async function crearNombre(prevState: number, formData: FormData) {
         },
         body: JSON.stringify({ name })
     })
-    const json = await req.json()
+    // const json = await req.json()
 
     if(!req.ok)  {
         const error = new Error('Error en el servidor')

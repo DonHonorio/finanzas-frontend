@@ -1,4 +1,4 @@
-import useSWR from 'swr';
+import useSWR from 'swr'
 
 // prefijo de la api local de nextjs (porque en el servidor /api le causa causa problema al proxy)
 const apiPrefix = process.env.NEXT_PUBLIC_LOCAL_API_PREFIX || ''
@@ -7,12 +7,12 @@ const apiPrefix = process.env.NEXT_PUBLIC_LOCAL_API_PREFIX || ''
 export function useDashboardData(mode: "expenses" | "incomes", year: number) {
     // Fetcher que lanza error si la respuesta HTTP no es exitosa
     const fetcher = async (url: string) => {
-        const res = await fetch(url);
+        const res = await fetch(url)
         if (!res.ok) {
             throw new Error(`HTTP ${res.status}: ${res.statusText}`)
         }
-        return await res.json();
-    };
+        return await res.json()
+    }
 
     // Configuración de SWR con optimizaciones para el dashboard
     const { data, error, isLoading, mutate } = useSWR(
@@ -26,7 +26,7 @@ export function useDashboardData(mode: "expenses" | "incomes", year: number) {
             revalidateOnReconnect: false, // No revalida al recuperar conexión
             revalidateIfStale: false     // No revalida datos automáticamente
         }
-    );
+    )
 
     return {
         data: data || [],  // Siempre devuelve array (vacío si no hay datos)
@@ -34,5 +34,5 @@ export function useDashboardData(mode: "expenses" | "incomes", year: number) {
         error,
         mutate,            // Para revalidar manualmente (botón "reintentar")
         isError: !!error,  // Booleano conveniente
-    };
+    }
 }

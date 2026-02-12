@@ -1,9 +1,9 @@
-import z from "zod";
+import z from "zod"
 import { rrulestr } from "rrule"
-import { AccountType } from "../types/account-types";
-import { BaseCurrency, currencies } from "../types/transaction-types";
+import { AccountType } from "../types/account-types"
+import { BaseCurrency, currencies } from "../types/transaction-types"
 
-const CURRENCY_VALUES = currencies.map(c => c.currency) as [BaseCurrency, ...BaseCurrency[]];
+const CURRENCY_VALUES = currencies.map(c => c.currency) as [BaseCurrency, ...BaseCurrency[]]
 
 // Esquema para respuestas de éxito de la API
 export const SuccessSchema = z.string()
@@ -60,13 +60,13 @@ export const DraftTransactionSchema = z.object({
     amount: z
         .string()
         .pipe(z.string().refine((val) => {
-            const num = Number(val);
-            return !isNaN(num) && num > 0;
+            const num = Number(val)
+            return !isNaN(num) && num > 0
         }, { message: "La cantidad debe ser un número positivo válido" }))
         .pipe(z.string().refine((val) => /^\d+(\.\d{1,2})?$/.test(val), { message: "La cantidad debe tener máximo 2 decimales" }))
         .pipe(z.string().refine((val) => {
-            const parts = val.split('.');
-            return parts[0].length <= 18;
+            const parts = val.split('.')
+            return parts[0].length <= 18
         }, { message: "La cantidad excede el límite de dígitos permitidos" })),
     description: z.string().max(500, "La descripción no puede superar los 500 caracteres").optional(),
     type: z.enum(["income", "expense"], { message: "El tipo de transacción es obligatorio" }),
@@ -77,7 +77,7 @@ export const DraftTransactionSchema = z.object({
         (val) => (typeof val === "string" && val.trim().length === 0 ? null : val),
         z.string().nullable().optional()
     ),
-});
+})
 
 // Esquema para la creación/edición de una cuenta (borrador antes de ser guardado en BD)
 export const DraftAccountSchema = z.object({
@@ -88,9 +88,9 @@ export const DraftAccountSchema = z.object({
         .refine((val) => !isNaN(Number(val)), { message: "El saldo debe ser un número válido" })
         .pipe(z.string().refine((val) => /^-?\d+(\.\d{1,2})?$/.test(val), { message: "El saldo debe tener máximo 2 decimales" }))
         .pipe(z.string().refine((val) => {
-            const parts = val.split('.');
-            const intPart = parts[0].replace('-', '');
-            return intPart.length <= 18;
+            const parts = val.split('.')
+            const intPart = parts[0].replace('-', '')
+            return intPart.length <= 18
         }, { message: "El saldo excede el límite de dígitos permitidos" })),
     currency: z.enum(CURRENCY_VALUES, { message: "La moneda es obligatoria" }),
     number: z.preprocess(
@@ -112,13 +112,13 @@ export const DraftSubcategorySchema = z.object({
     budget: z
         .string()
         .pipe(z.string().refine((val) => {
-            const num = Number(val);
-            return !isNaN(num) && num >= 0;
+            const num = Number(val)
+            return !isNaN(num) && num >= 0
         }, { message: "El presupuesto debe ser un número válido no negativo" }))
         .pipe(z.string().refine((val) => /^\d+(\.\d{1,2})?$/.test(val), { message: "El presupuesto debe tener máximo 2 decimales" }))
         .pipe(z.string().refine((val) => {
-            const parts = val.split('.');
-            return parts[0].length <= 18;
+            const parts = val.split('.')
+            return parts[0].length <= 18
         }, { message: "El presupuesto excede el límite de dígitos permitidos" })),
     color: z.preprocess(
         (val) => (typeof val === "string" && val.trim().length === 0 ? undefined : val),

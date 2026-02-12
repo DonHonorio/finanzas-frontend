@@ -1,7 +1,7 @@
-import { flexRender, Table } from "@tanstack/react-table";
-import { categoryColumnTitle } from "./dashboard";
-import { CategoryRow } from "@/src/types/dashboard-types";
-import { columnWidths } from "@/src/helpers/dashboard-helpers";
+import { flexRender, Table } from "@tanstack/react-table"
+import { categoryColumnTitle } from "./dashboard"
+import { CategoryRow } from "@/src/types/dashboard-types"
+import { columnWidths } from "@/src/helpers/dashboard-helpers"
 
 /**
  * Componente TableHeader - Renderiza la cabecera de la tabla usando react-table

@@ -1,4 +1,4 @@
-import { BaseCurrency } from "./transaction-types";
+import { BaseCurrency } from "./transaction-types"
 
 /**
  * Enumeración de tipos de cuentas bancarias y financieras soportadas.

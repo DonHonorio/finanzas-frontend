@@ -1,5 +1,5 @@
-import Boton from "@/src/components/prueba/Boton";
-import ListaNombres from "@/src/components/prueba/ListaNombres";
+import Boton from "@/src/components/prueba/Boton"
+import ListaNombres from "@/src/components/prueba/ListaNombres"
 
 export default async function Home() {
 
@@ -25,5 +25,5 @@ export default async function Home() {
 
       </div>
     </>
-  );
+  )
 }

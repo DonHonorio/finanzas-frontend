@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Modal } from "./modal"
 import { cn } from "@/src/lib/utils"
 import { toast } from "react-toastify"
@@ -33,13 +33,6 @@ export function DeleteConfirmationModal({
 }: DeleteConfirmationModalProps) {
     const [inputValue, setInputValue] = useState("")
 
-    // Reinicia el campo de texto cada vez que se abre el modal
-    useEffect(() => {
-        if (isOpen) {
-            setInputValue("")
-        }
-    }, [isOpen])
-
     // Valida que el texto ingresado coincida exactamente antes de ejecutar onConfirm
     const handleConfirm = () => {
         if (inputValue.trim() !== validationText.trim()) {
@@ -49,10 +42,16 @@ export function DeleteConfirmationModal({
         onConfirm()
     }
 
+    // Maneja el cierre del modal y resetea el input
+    const handleClose = () => {
+        setInputValue("")
+        onClose()
+    }
+
     return (
         <Modal
             open={isOpen}
-            onCancel={onClose}
+            onCancel={handleClose}
             className="w-[90vw] max-w-lg rounded-2xl p-6"
         >
             {/* título */}
@@ -73,7 +72,7 @@ export function DeleteConfirmationModal({
             <div className="flex justify-end gap-4 mt-6">
                 <button
                     type="button"
-                    onClick={onClose}
+                    onClick={handleClose}
                     className="px-6 py-2.5 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
                 >
                     {cancelButtonText}

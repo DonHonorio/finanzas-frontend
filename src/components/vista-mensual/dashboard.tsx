@@ -43,7 +43,7 @@ export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", 
 
     // Hook personalizado para obtener datos del dashboard con SWR
     // Incluye mutación para reintentar peticiones en caso de error
-    const { data = [], isLoading, error, mutate } = useDashboardData(mode, actualYear);
+    const { data = [], isLoading, error, mutate } = useDashboardData(mode, actualYear)
 
     /**
      * Efecto para logging de datos (solo en desarrollo)
@@ -56,7 +56,7 @@ export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", 
             console.log(`📊 Datos actuales (${tipoDato}):`, data.length, 'registros')
             console.log('Data: ', data)
         }
-    }, [data, mode, isLoading])
+    }, [data, mode, isLoading, tipoDato])
 
     // Log de errores en consola para debugging
     if (error) {
@@ -115,6 +115,7 @@ export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", 
      * Instancia de react-table que maneja la lógica de la tabla
      * Se pasa data directamente, useReactTable maneja el estado vacío internamente
      */
+    // eslint-disable-next-line react-hooks/incompatible-library
     const table = useReactTable({
         data: data, // useReactTable maneja data vacía internamente
         columns,

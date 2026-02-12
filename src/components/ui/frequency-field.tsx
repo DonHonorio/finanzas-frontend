@@ -114,6 +114,7 @@ export function FrequencyField({
     setValue(next.value)
     setCustomCount(next.customCount)
     setCustomUnit(next.customUnit)
+   
   }, [frequency])
 
   const isCustom = value === "custom"

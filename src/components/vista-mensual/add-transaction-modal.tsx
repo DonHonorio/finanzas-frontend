@@ -32,5 +32,5 @@ export function AddTransactionModal({ open, accounts, categories, onAccept, onCa
         subcategories={subcategories}
       />
     </Modal>
-  );
+  )
 }

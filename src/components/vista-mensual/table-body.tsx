@@ -1,10 +1,10 @@
-import { flexRender, Table } from "@tanstack/react-table";
-import { categoryColumnTitle } from "./dashboard";
-import { CategoryRow } from "@/src/types/dashboard-types";
-import { cn } from "@/src/lib/utils";
-import { Button } from "../ui/button";
-import { Edit2, Eye } from "lucide-react";
-import { columnWidths, getCellColor } from "@/src/helpers/dashboard-helpers";
+import { flexRender, Table } from "@tanstack/react-table"
+import { categoryColumnTitle } from "./dashboard"
+import { CategoryRow } from "@/src/types/dashboard-types"
+import { cn } from "@/src/lib/utils"
+import { Button } from "../ui/button"
+import { Edit2, Eye } from "lucide-react"
+import { columnWidths, getCellColor } from "@/src/helpers/dashboard-helpers"
 
 type Props = {
     table: Table<CategoryRow>

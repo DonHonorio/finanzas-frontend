@@ -6,6 +6,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ type
     const token = process.env.JWT || ''
     
     // Alternativa comentada: endpoint falso para testing sin backend
+    console.log(`${process.env.API_URL}/categories/dashboard/?type=${type}&year=${year}`)
     const url = `${process.env.API_URL}/categories/dashboard/?type=${type}&year=${year}`
     // const url = `${process.env.API_URL}/categories/dashboardFake` // PARA TESTING LOCAL
     

@@ -52,22 +52,6 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
     const [color, setColor] = useState(initialData?.color || colorOptions[0])
     const [isActive, setIsActive] = useState(initialData?.isActive ?? true)
     const [withSubcategory, setWithSubcategory] = useState(initialData?.withSubcategory ?? false)
-    const [categoryId, setCategoryId] = useState(initialData?.categoryId || "")
-
-    // Función para resetear el formulario (solo para createCategory)
-    const resetForm = () => {
-        if (!initialData) {
-            setName("")
-            setBudget("")
-            setFrequency("")
-            setDtstart("")
-            setType("expense")
-            setIcon(iconOptions[0])
-            setColor(colorOptions[0])
-            setIsActive(true)
-            setWithSubcategory(false)
-        }
-    }
 
     // Flags de UI
     const isFormValid =
@@ -92,6 +76,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
         if (state.errors.length > 0) {
             state.errors.forEach((error) => toast.error(error))
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state])
 
     // Manejar el resultado de la eliminación
@@ -103,6 +88,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
         if (deleteState.errors.length > 0) {
             deleteState.errors.forEach((error) => toast.error(error))
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [deleteState])
 
     // Función para manejar la eliminación de la categoría
@@ -123,7 +109,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
             className="flex-1 p-6 overflow-hidden"
             action={dispatch}
         >
-            <input type="hidden" name="categoryId" value={categoryId} />
+            <input type="hidden" name="categoryId" value={initialData?.categoryId || ""} />
             {/* Mensajes de error */}
             {state.errors.length > 0 && (
                 <div className="px-6 pt-5">

@@ -1,9 +1,9 @@
-import { clsx } from "clsx"
+import { clsx, ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { Month } from "../types/dashboard-types"
 
 // Combina clases CSS condicionales y resuelve conflictos de Tailwind
-export function cn(...inputs: any[]) {
+export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 

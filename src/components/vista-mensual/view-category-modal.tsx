@@ -3,7 +3,7 @@
 import { Modal } from "@/src/components/ui/modal"
 import { CategoryRow } from "@/src/types/dashboard-types"
 import { Category } from "@/src/types/category-types"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { getAccounts } from "@/src/actions/get-accounts-action"
 import { getCategories } from "@/src/actions/get-categories-action"
 import { Account } from "@/src/types/account-types"
@@ -74,6 +74,7 @@ export function ViewCategoryModal({ open, category, onCancel, onDataChanged }: P
         if (open && category.categoryId) {
             fetchCategoryData()
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, category.categoryId])
 
     const handleDelete = async () => {

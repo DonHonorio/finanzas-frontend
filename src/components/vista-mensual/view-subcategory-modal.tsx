@@ -58,6 +58,7 @@ export function ViewSubcategoryModal({ open, subcategory, categoryType, onCancel
             getCategories().then(setAllCategories)
             fetchTransactions(subcategory.categoryId, subcategory.subcategoryId, sortOrder)
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, subcategory.subcategoryId, sortOrder])
 
     // Alterna el orden de clasificación de las transacciones

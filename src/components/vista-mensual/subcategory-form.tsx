@@ -62,6 +62,7 @@ export function SubcategoryForm({ initialData, categoryId, action, onSuccess, on
         if (state.errors.length > 0) {
             state.errors.forEach((error) => toast.error(error))
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state])
 
     // Mostrar toast notifications según resultado de la acción de eliminación
@@ -73,6 +74,7 @@ export function SubcategoryForm({ initialData, categoryId, action, onSuccess, on
         if (deleteState.errors.length > 0) {
             deleteState.errors.forEach((error) => toast.error(error))
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [deleteState])
 
     // Maneja el envío de la acción de eliminación
