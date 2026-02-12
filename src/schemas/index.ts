@@ -72,7 +72,11 @@ export const DraftTransactionSchema = z.object({
     type: z.enum(["income", "expense"], { message: "El tipo de transacción es obligatorio" }),
     currency: z.enum(CURRENCY_VALUES, { message: "La moneda es obligatoria" }),
     accountId: z.string().min(1, "La cuenta es obligatoria"),
-    categoryId: z.string().min(1, "La categoría es obligatoria")
+    categoryId: z.string().min(1, "La categoría es obligatoria"),
+    subcategoryId: z.preprocess(
+        (val) => (typeof val === "string" && val.trim().length === 0 ? null : val),
+        z.string().nullable().optional()
+    ),
 });
 
 // Esquema para la creación/edición de una cuenta (borrador antes de ser guardado en BD)
@@ -99,4 +103,31 @@ export const DraftAccountSchema = z.object({
     ),
     isActive: z.boolean(),
     bankId: z.coerce.number().int("El banco es obligatorio").min(1, "Debes seleccionar un banco válido")
+})
+
+// Esquema para la creación/edición de una subcategoría (borrador antes de ser guardado en BD)
+export const DraftSubcategorySchema = z.object({
+    name: z.string().min(1, "El nombre es obligatorio").max(50, "El nombre no puede superar 50 caracteres"),
+    description: z.string().max(255, "La descripción no puede superar 255 caracteres").optional(),
+    budget: z
+        .string()
+        .pipe(z.string().refine((val) => {
+            const num = Number(val);
+            return !isNaN(num) && num >= 0;
+        }, { message: "El presupuesto debe ser un número válido no negativo" }))
+        .pipe(z.string().refine((val) => /^\d+(\.\d{1,2})?$/.test(val), { message: "El presupuesto debe tener máximo 2 decimales" }))
+        .pipe(z.string().refine((val) => {
+            const parts = val.split('.');
+            return parts[0].length <= 18;
+        }, { message: "El presupuesto excede el límite de dígitos permitidos" })),
+    color: z.preprocess(
+        (val) => (typeof val === "string" && val.trim().length === 0 ? undefined : val),
+        z.string().regex(/^#[0-9A-Fa-f]{6}$/, "El color debe ser hexadecimal").optional()
+    ),
+    order: z.preprocess(
+        (val) => (typeof val === "string" && val.trim().length === 0 ? undefined : val),
+        z.coerce.number().int("El orden debe ser un número entero").optional()
+    ),
+    isActive: z.boolean(),
+    categoryId: z.coerce.number().int("El ID de categoría debe ser un número entero").optional(),
 })

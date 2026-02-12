@@ -1,5 +1,8 @@
 import useSWR from 'swr';
 
+// prefijo de la api local de nextjs (porque en el servidor /api le causa causa problema al proxy)
+const apiPrefix = process.env.NEXT_PUBLIC_LOCAL_API_PREFIX || ''
+
 // Hook personalizado para datos del dashboard
 export function useDashboardData(mode: "expenses" | "incomes", year: number) {
     // Fetcher que lanza error si la respuesta HTTP no es exitosa
@@ -13,7 +16,7 @@ export function useDashboardData(mode: "expenses" | "incomes", year: number) {
 
     // Configuración de SWR con optimizaciones para el dashboard
     const { data, error, isLoading, mutate } = useSWR(
-        `${process.env.NEXT_PUBLIC_URL}/api/dashboard/${mode}/${year}`,
+        `${process.env.NEXT_PUBLIC_URL}/${apiPrefix}/dashboard/${mode}/${year}`,
         fetcher,
         {
             keepPreviousData: true,      // Evita parpadeo al cambiar datos

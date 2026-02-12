@@ -42,7 +42,7 @@ export function useCategoryData(category: CategoryRow) {
                 subcatTransactions.forEach(t => {
                     const date = new Date(t.date)
                     const month = monthNames[date.getMonth()]
-                    monthlyData[month] += Number(t.amount)
+                    monthlyData[month] += Math.abs(Number(t.amount))
                 })
 
                 processedItems.push({
@@ -52,7 +52,8 @@ export function useCategoryData(category: CategoryRow) {
                     name: subcat.name,
                     budget: Number(subcat.budget),
                     monthlyData,
-                    color: subcat.color
+                    color: subcat.color,
+                    originalSubcategory: subcat
                 })
             }
 
@@ -69,7 +70,7 @@ export function useCategoryData(category: CategoryRow) {
                     mayo: 0, junio: 0, julio: 0, agosto: 0,
                     septiembre: 0, octubre: 0, noviembre: 0, diciembre: 0
                 }
-                monthlyData[month] = Number(transaction.amount)
+                monthlyData[month] = Math.abs(Number(transaction.amount))
 
                 processedItems.push({
                     id: `trans-${transaction.transactionId}`,

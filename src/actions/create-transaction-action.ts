@@ -5,7 +5,6 @@ import { DraftTransactionSchema, ErrorResponseSchema, SuccessSchema } from "../s
 import { ActionStateType } from "../types/action-types";
 
 export default async function createTransaction(prevState: ActionStateType, formData: FormData) {
-  console.log('FORM DATA: ', formData)
   
   // Extrae valores del FormData para validación con Zod
   const transactionData = {
@@ -16,8 +15,10 @@ export default async function createTransaction(prevState: ActionStateType, form
     type: formData.get("type"),
     currency: formData.get("currency"),
     accountId: formData.get("account"),
-    categoryId: formData.get("category")
+    categoryId: formData.get("category"),
+    subcategoryId: formData.get("subcategory") || null,
   }
+  console.log('DATA: ', transactionData)
 
   // Validación del lado del servidor con Zod
   const transaction = DraftTransactionSchema.safeParse(transactionData);

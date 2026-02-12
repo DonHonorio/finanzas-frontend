@@ -17,11 +17,18 @@ import { CategoryTableRows } from "../vista-category/category-table-rows"
 import { DeleteTransactionModal } from "@/src/components/ui/delete-transaction-modal"
 import { useCategoryData } from "@/src/hooks/use-category-data"
 import { ColumnConfig } from "@/src/types/general-types"
+import { AddSubcategoryModal } from "./add-subcategory-modal"
+import { useColumnResize } from "@/src/hooks/use-column-resize"
+import { EditSubcategoryModal } from "./edit-subcategory-modal"
+import { Subcategory } from "@/src/types/category-types"
+import { ViewSubcategoryModal } from "./view-subcategory-modal"
+import { CloseButton } from "@/src/components/ui/close-button"
 
 type Props = {
     open: boolean
     category: CategoryRow
     onCancel: () => void
+    onDataChanged?: () => void
 }
 
 // Configuración en PORCENTAJES (suma aproximada < 90% para compensar el gap-2 y paddings)
@@ -34,12 +41,10 @@ const COLUMNS_SETUP: ColumnConfig[] = [
 ]
 // Suma total: 6 + 18 + 6 + 54 + 6 = 90%
 
-export function ViewCategoryModal({ open, category, onCancel }: Props) {
+export function ViewCategoryModal({ open, category, onCancel, onDataChanged }: Props) {
     const { items, loading, fetchCategoryData, sortItems } = useCategoryData(category)
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
-    const [colWidths, setColWidths] = useState<number[]>(COLUMNS_SETUP.map(c => c.initial))
-    const resizingRef = useRef<{ index: number, startX: number, startWidth: number, otherWidthsSum: number } | null>(null)
-    const tableContainerRef = useRef<HTMLDivElement>(null)
+    const { colWidths, tableContainerRef, startResize } = useColumnResize(COLUMNS_SETUP)
 
     const [accounts, setAccounts] = useState<Account[]>([])
     const [allCategories, setAllCategories] = useState<Category[]>([])
@@ -48,6 +53,18 @@ export function ViewCategoryModal({ open, category, onCancel }: Props) {
     const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null)
     const [deletingId, setDeletingId] = useState<string | null>(null)
     const [isDeleting, setIsDeleting] = useState(false)
+    
+    // Estado para subcategorías
+    const [openAddSubcategoryModal, setOpenAddSubcategoryModal] = useState(false)
+    // sirve para mostrar el modal de edición de subcategoría al hacer click en el icono de lápiz de una subcategoría, se le pasa la subcategoría que se quiere editar
+    const [editingSubcategory, setEditingSubcategory] = useState<Subcategory | null>(null)
+    // sirve para mostrar el modal vista de subcategoría al hacer click en el icono de ojo de una subcategoría, se le pasa la subcategoría que se quiere ver
+    const [viewingSubcategory, setViewingSubcategory] = useState<Subcategory | null>(null)
+
+    // Extraer subcategorías de items para pasarlas al formulario
+    const subcategories = items
+        .filter(item => item.type === 'subcategory' && item.originalSubcategory)
+        .map(item => item.originalSubcategory!)
 
     useEffect(() => {
         if (open) {
@@ -58,71 +75,6 @@ export function ViewCategoryModal({ open, category, onCancel }: Props) {
             fetchCategoryData()
         }
     }, [open, category.categoryId])
-
-    useEffect(() => {
-        const handleMouseMove = (e: MouseEvent) => {
-            if (!resizingRef.current || !tableContainerRef.current) return
-            
-            const { index, startX, startWidth, otherWidthsSum } = resizingRef.current
-            const containerWidth = tableContainerRef.current.clientWidth
-            
-            // Calculamos el ancho del contenido real restando el padding horizontal (px-6 = 24px * 2 = 48px)
-            const contentWidth = containerWidth - 48
-            
-            // Convertir diferencia de píxeles a porcentaje relativo al contenido
-            const diffPixel = e.clientX - startX
-            const diffPercent = (diffPixel / contentWidth) * 100
-            
-            const minWidth = COLUMNS_SETUP[index]?.min ?? 2
-            
-            // Cálculo del límite máximo
-            // Restamos el espacio ocupado por los gaps (15 gaps de 0.5rem/8px) convertido a porcentaje
-            const gapsPx = 15 * 8
-            const gapsPercent = (gapsPx / contentWidth) * 100
-            
-            // El nuevo ancho no debe hacer que la suma total supere el 100% (menos gaps y un pequeño margen de seguridad)
-            const maxAllowedTotal = 100 - gapsPercent - 0.1
-            const maxWidth = Math.max(minWidth, maxAllowedTotal - otherWidthsSum)
-            
-            const newWidth = Math.min(maxWidth, Math.max(minWidth, startWidth + diffPercent))
-
-            setColWidths(prev => {
-                const next = [...prev]
-                next[index] = newWidth
-                return next
-            })
-        }
-
-        const handleMouseUp = () => {
-             if (resizingRef.current) {
-                resizingRef.current = null
-                document.body.style.cursor = ''
-             }
-        }
-
-        window.addEventListener('mousemove', handleMouseMove)
-        window.addEventListener('mouseup', handleMouseUp)
-        return () => {
-            window.removeEventListener('mousemove', handleMouseMove)
-            window.removeEventListener('mouseup', handleMouseUp)
-        }
-    }, [])
-
-    const startResize = (index: number, e: React.MouseEvent) => {
-        e.preventDefault()
-        e.stopPropagation()
-
-        // Sumar el ancho de todas las columnas EXCEPTO la que estamos redimensionando
-        const otherWidthsSum = colWidths.reduce((sum, w, i) => i === index ? sum : sum + w, 0)
-        
-        resizingRef.current = {
-            index,
-            startX: e.clientX,
-            startWidth: colWidths[index],
-            otherWidthsSum
-        }
-        document.body.style.cursor = 'col-resize'
-    }
 
     const handleDelete = async () => {
         if (!deletingId) return
@@ -141,6 +93,7 @@ export function ViewCategoryModal({ open, category, onCancel }: Props) {
                 toast.success('Transacción eliminada correctamente')
                 setDeletingId(null)
                 fetchCategoryData()
+                onDataChanged?.()
             }
         } catch (error) {
             console.error('Error deleting transaction:', error)
@@ -150,11 +103,13 @@ export function ViewCategoryModal({ open, category, onCancel }: Props) {
         }
     }
 
+    // Alterna el orden de clasificación de las transacciones
     const toggleSort = () => {
         setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')
         sortItems(sortOrder === 'asc' ? 'desc' : 'asc')
     }
 
+    // Estilo dinámico para el grid de la tabla basado en los anchos de columna
     const gridStyle = {
         gridTemplateColumns: colWidths.map(w => `${w}%`).join(' ')
     }
@@ -178,20 +133,29 @@ export function ViewCategoryModal({ open, category, onCancel }: Props) {
                         accounts={accounts}
                         categories={allCategories}
                         mode={category.type === 'expense' ? 'expenses' : 'incomes'}
-                        onTransactionAdded={fetchCategoryData}
+                        onTransactionAdded={() => {
+                            fetchCategoryData()
+                            onDataChanged?.()
+                        }}
                         variant="default"
                         className="w-auto px-4 py-2 text-sm h-9"
                         defaultCategoryId={category.categoryId}
+                        subcategories={subcategories}
                     />
+                    
+                    {/* Botón de crear subcategoría (solo si withSubcategory es true) */}
+                    {category.withSubcategory && (
+                        <button
+                            onClick={() => setOpenAddSubcategoryModal(true)}
+                            className="w-auto px-4 py-2 text-sm h-9 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-lg transition select-none"
+                        >
+                            + Crear Subcategoría
+                        </button>
+                    )}
                 </div>
 
                 {/* Botón de Cerrar */}
-                <button
-                    onClick={onCancel}
-                    className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
-                >
-                    ×
-                </button>
+                <CloseButton onClick={onCancel} />
             </div>
 
             {/* CONTENIDO */}
@@ -221,6 +185,8 @@ export function ViewCategoryModal({ open, category, onCancel }: Props) {
                             gridStyle={gridStyle}
                             onEditTransaction={setEditingTransaction}
                             onDeleteTransaction={setDeletingId}
+                            onEditSubcategory={setEditingSubcategory}
+                            onViewSubcategory={setViewingSubcategory}
                         />
                     </div>
                 )}
@@ -237,8 +203,10 @@ export function ViewCategoryModal({ open, category, onCancel }: Props) {
                     onAccept={() => {
                         setEditingTransaction(null)
                         fetchCategoryData()
+                        onDataChanged?.()
                     }}
                     mode={category.type === 'expense' ? 'expenses' : 'incomes'}
+                    subcategories={subcategories}
                 />
             )}
 
@@ -249,6 +217,47 @@ export function ViewCategoryModal({ open, category, onCancel }: Props) {
                 onCancel={() => setDeletingId(null)}
                 onConfirm={handleDelete}
             />
+            
+            {/* Modal de Añadir Subcategoría */}
+            <AddSubcategoryModal
+                open={openAddSubcategoryModal}
+                categoryId={category.categoryId}
+                onCancel={() => setOpenAddSubcategoryModal(false)}
+                onAccept={() => {
+                    setOpenAddSubcategoryModal(false)
+                    fetchCategoryData()
+                    onDataChanged?.()
+                }}
+            />
+            
+            {/* Modal de Editar Subcategoría */}
+            {editingSubcategory && (
+                <EditSubcategoryModal
+                    open={true}
+                    subcategory={editingSubcategory}
+                    onCancel={() => setEditingSubcategory(null)}
+                    onAccept={() => {
+                        setEditingSubcategory(null)
+                        fetchCategoryData()
+                        onDataChanged?.()
+                    }}
+                />
+            )}
+            
+            {/* Modal de Ver Subcategoría */}
+            {viewingSubcategory && (
+                <ViewSubcategoryModal
+                    open={true}
+                    subcategory={{ ...viewingSubcategory, categoryId: category.categoryId }}
+                    categoryType={category.type}
+                    onCancel={() => setViewingSubcategory(null)}
+                    onTransactionChanged={() => {
+                        fetchCategoryData()
+                        onDataChanged?.()
+                    }}
+                    subcategories={subcategories}
+                />
+            )}
         </Modal>
     )
 }

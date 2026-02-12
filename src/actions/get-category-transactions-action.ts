@@ -3,10 +3,13 @@
 import { getToken } from "../auth/token"
 import { Transaction } from "../types/transaction-types"
 
+// Server action para obtener transacciones de una categoría específica
 export async function getCategoryTransactions(categoryId: number): Promise<Transaction[]> {
     const token = await getToken()
+
+    // Endpoint anidado: GET /categories/{categoryId}/transactions
     const url = `${process.env.API_URL}/categories/${categoryId}/transactions`
-    
+
     if (!token) return []
 
     try {
@@ -22,7 +25,7 @@ export async function getCategoryTransactions(categoryId: number): Promise<Trans
         }
 
         const data = await req.json()
-        return data.transactions || []
+        return data.transactions || [] // API devuelve { transactions: [...] }
     } catch (error) {
         console.error("Error in getCategoryTransactions action:", error)
         return []

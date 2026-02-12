@@ -5,7 +5,10 @@ import { DraftCategorySchema, ErrorResponseSchema, SuccessSchema } from "../sche
 import { ActionStateType } from "../types/action-types"
 
 export default async function updateCategory(prevState: ActionStateType, formData: FormData) {
-  const categoryId = formData.get('categoryId') // Asegúrate de incluir el ID en el formulario
+  // Obtiene el ID de la categoría a actualizar
+  const categoryId = formData.get('categoryId')
+
+  // Extrae todos los campos editables del formulario
   const categoryData = {
     name: formData.get('name'),
     budget: formData.get('budget'),
@@ -18,6 +21,7 @@ export default async function updateCategory(prevState: ActionStateType, formDat
     withSubcategory: formData.get('withSubcategory') === 'true',
   }
 
+  // Validación de datos con Zod
   const category = DraftCategorySchema.safeParse(categoryData)
   if (!category.success) {
     return {
@@ -27,6 +31,8 @@ export default async function updateCategory(prevState: ActionStateType, formDat
   }
 
   const token = await getToken()
+
+  // Endpoint PUT para actualizar categoría existente
   const url = `${process.env.API_URL}/categories/${categoryId}`
   const req = await fetch(url, {
     method: 'PUT',
@@ -38,6 +44,8 @@ export default async function updateCategory(prevState: ActionStateType, formDat
   })
 
   const json = await req.json()
+
+  // Manejo de errores
   if (!req.ok) {
     const { error } = ErrorResponseSchema.parse(json)
     return {
@@ -46,6 +54,7 @@ export default async function updateCategory(prevState: ActionStateType, formDat
     }
   }
 
+  // Menaje de éxito
   const success = SuccessSchema.parse(json.message)
   return {
     errors: [],

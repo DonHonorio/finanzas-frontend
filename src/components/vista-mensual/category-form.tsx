@@ -12,6 +12,9 @@ import deleteCategory from "@/src/actions/delete-category-action"
 import React from "react"
 import { DeleteButton } from "@/src/components/ui/delete-button"
 import { DeleteConfirmationModal } from "@/src/components/ui/delete-confirmation-modal"
+import { CancelButton } from "@/src/components/ui/cancel-button"
+import { SaveButton } from "@/src/components/ui/save-button"
+import { toDateInputValue } from '@/src/helpers/date-helpers'
 
 // Props
 type Props = {
@@ -31,15 +34,6 @@ type Props = {
     onSuccess: () => void
     onCancel: () => void
     mode?: "expenses" | "incomes"
-}
-
-const toDateInputValue = (value?: string) => {
-    if (!value) return ""
-    const date = new Date(value)
-    const yyyy = date.getFullYear()
-    const mm = String(date.getMonth() + 1).padStart(2, "0")
-    const dd = String(date.getDate()).padStart(2, "0")
-    return `${yyyy}-${mm}-${dd}`
 }
 
 export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }: Props) {
@@ -100,6 +94,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
         }
     }, [state])
 
+    // Manejar el resultado de la eliminación
     useEffect(() => {
         if (deleteState.success) {
             toast.success(deleteState.success)
@@ -110,6 +105,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
         }
     }, [deleteState])
 
+    // Función para manejar la eliminación de la categoría
     const handleDelete = () => {
         if (!initialData?.categoryId) return
         const formData = new FormData()
@@ -325,28 +321,16 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
             {/* Footer */}
             <div className="px-6 py-4 flex justify-end gap-4 border-t border-gray-200">
                 {/* Botón cancelar */}
-                <button
-                    type="button"
-                    onClick={onCancel}
-                    className="px-12 py-2.5 rounded-lg bg-[#F3F2F2] text-[15px] text-gray-700 hover:bg-[#EAEAEA]"
-                >
-                    Cancelar
-                </button>
+                <CancelButton onClick={onCancel} className="px-12" />
 
                 {/* Botón guardar/crear */}
-                <button
-                    type="submit"
+                <SaveButton 
+                    isPending={isPending} 
+                    isValid={isFormValid}
+                    label={initialData ? "Guardar" : "Crear"}
                     form="category-form"
-                    disabled={!isFormValid || isPending}
-                    className={cn(
-                        "px-12 py-2.5 rounded-lg text-[15px] text-gray-900 transition",
-                        isFormValid && !isPending
-                            ? "bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer"
-                            : "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
-                    )}
-                >
-                    {isPending ? "Guardando..." : initialData ? "Guardar" : "Crear"}
-                </button>
+                    className="px-12"
+                />
             </div>
         </form>
     )

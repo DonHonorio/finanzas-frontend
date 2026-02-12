@@ -4,18 +4,25 @@ import React, { useState, useEffect, useActionState } from 'react'
 import { toast } from "react-toastify"
 import deleteTransaction from '@/src/actions/delete-transaction-action'
 import { ActionStateType } from '@/src/types/action-types'
-import { Transaction, currencies } from '@/src/types/transaction-types'
+import { Transaction } from '@/src/types/transaction-types'
 import { Account } from '@/src/types/account-types'
-import { Category } from '@/src/types/category-types'
+import { Category, Subcategory } from '@/src/types/category-types'
 import { cn } from "@/src/lib/utils"
 import { ToggleButton } from "@/src/components/ui/toggle-button"
 import { DeleteButton } from "@/src/components/ui/delete-button"
 import { DeleteConfirmationModal } from "@/src/components/ui/delete-confirmation-modal"
-import { DesmarcarButton } from "@/src/components/ui/desmarcar-button"
+import { CancelButton } from "@/src/components/ui/cancel-button"
+import { SaveButton } from "@/src/components/ui/save-button"
+import { toDateInputValue } from '@/src/helpers/date-helpers'
+import { useSubcategoriesForCategory } from '@/src/hooks/use-subcategories-for-category'
+import { AccountSelector } from './account-selector'
+import { CategorySelector } from './category-selector'
+import { SubcategorySelector } from './subcategory-selector'
+import { CurrencySelector } from './currency-selector'
 import ErrorMessage from '../ui/ErrorMessage'
 
 interface TransactionFormProps {
-    initialData?: Pick<Transaction, 'transactionId' | 'name' | 'date' | 'amount' | 'description' | 'type' | 'currency' | 'updatedAt' | 'accountId' | 'categoryId'>
+    initialData?: Pick<Transaction, 'transactionId' | 'name' | 'date' | 'amount' | 'description' | 'type' | 'currency' | 'updatedAt' | 'accountId' | 'categoryId' | 'subcategoryId'>
     accounts: Account[]
     categories: Category[]  // Debe incluir categorías de ambos tipos (expenses/incomes)
     action: (prevState: ActionStateType, formData: FormData) => Promise<{ errors: string[]; success: string }>
@@ -23,19 +30,11 @@ interface TransactionFormProps {
     onCancel: () => void
     mode: "expenses" | "incomes"  // Usado solo para establecer valor inicial del tipo
     defaultCategoryId?: string | number
+    defaultSubcategoryId?: number
+    subcategories?: Subcategory[]  // Subcategorías precargadas (opcional)
 }
 
-// Convierte fecha ISO a formato YYYY-MM-DD para input date
-const toDateInputValue = (value?: string) => {
-    if (!value) return ""
-    const date = new Date(value)
-    const yyyy = date.getFullYear()
-    const mm = String(date.getMonth() + 1).padStart(2, "0")
-    const dd = String(date.getDate()).padStart(2, "0")
-    return `${yyyy}-${mm}-${dd}`
-}
-
-export function TransactionForm({ initialData, accounts, categories, action, onSuccess, onCancel, mode, defaultCategoryId }: TransactionFormProps) {
+export function TransactionForm({ initialData, accounts, categories, action, onSuccess, onCancel, mode, defaultCategoryId, defaultSubcategoryId, subcategories }: TransactionFormProps) {
     // Estado para la acción principal (crear/editar)
     const [state, dispatch, isPending] = useActionState(action, {
         errors: [],
@@ -46,10 +45,16 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
     const [name, setName] = useState(initialData?.name || '')
     const [type, setType] = useState<'expense' | 'income'>(initialData?.type || (mode === "expenses" ? "expense" : "income"))
 
+    // campos relacionados entre sí (cuenta/divisa y categoría/subcategoría) se manejan con handlers específicos para actualizar su estado de forma coordinada
     const [account, setAccount] = useState(initialData?.accountId || '')
     const [category, setCategory] = useState(initialData?.categoryId || defaultCategoryId || '')
+    const [subcategory, setSubcategory] = useState<string>(initialData?.subcategoryId?.toString() || defaultSubcategoryId?.toString() || '')
     const [currency, setCurrency] = useState(initialData?.currency || '')
 
+    // Hook para cargar subcategorías según la categoría seleccionada
+    const availableSubcategories = useSubcategoriesForCategory(category, categories, subcategories)
+
+    // Estados para campos individuales
     const [date, setDate] = useState(() => toDateInputValue(initialData?.date))
     const [amount, setAmount] = useState(initialData?.amount?.toString() || '')
     const [description, setDescription] = useState(initialData?.description || '')
@@ -60,10 +65,6 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
         errors: [],
         success: "",
     })
-
-    useEffect(() => {
-        console.log('ACCOUNT: ', account)
-    }, [account])
 
     // Handler para el cambio de cuenta
     const handleAccountChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -79,17 +80,18 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
         }
     }
 
+    // Handler para el cambio de categoría
+    const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const newCategory = e.target.value
+        setCategory(newCategory)
+        setSubcategory('') // Limpiar subcategoría al cambiar de categoría
+    }
+
     // Handler para el cambio de divisa
     const handleCurrencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newCurrency = e.target.value
         setCurrency(newCurrency)
     }
-
-    // Filtrar cuentas por la divisa seleccionada
-    // Si hay una cuenta seleccionada, mostramos todas para permitir cambiar a otra divisa
-    const filteredAccounts = account
-        ? accounts
-        : accounts.filter(acc => !currency || acc.currency === currency)
 
     // Validación: todos los campos requeridos deben tener valor
     // const isFormValid = name.trim().length > 0 && type && account && category && date && amount && currency;
@@ -139,6 +141,7 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
             <input type="hidden" name="transactionId" value={initialData?.transactionId || ""} />
             {/* A la hora de actualizar sirve para enviarlo al endpoint e identificar la categoría previa, por si se actualiza a una nueva categoría */}
             <input type="hidden" name="previousCategoryId" value={initialData?.categoryId || ""} />
+            <input type="hidden" name="previousSubcategoryId" value={initialData?.subcategoryId || ""} />
 
             {/* Mensajes de error de la acción principal */}
             {state.errors.length > 0 && (
@@ -197,60 +200,31 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
                 </div>
 
                 {/* Selector de cuenta */}
-                <div>
-                    <label className="block text-[15px] font-semibold text-gray-700 mb-1">Cuenta</label>
-                    <div className="relative gap-0">
-                        <select
-                            key={`account-${account}`}
-                            name="account"
-                            value={account}
-                            onChange={handleAccountChange}
-                            disabled={filteredAccounts.length === 0}
-                            className={cn(
-                                "w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary bg-white",
-                                filteredAccounts.length === 0 && "bg-gray-100 text-gray-500 cursor-not-allowed",
-                                account && "pr-10"
-                            )}
-                        >
-                            <option value="">
-                                {filteredAccounts.length === 0
-                                    ? "No hay cuentas con esta divisa"
-                                    : "Selecciona una cuenta"}
-                            </option>
-                            {filteredAccounts.map(acc => (
-                                <option key={acc.accountId} value={acc.accountId}>
-                                    {acc.name} - {acc.currency}
-                                </option>
-                            ))}
-                        </select>
-
-                        {account && (
-                            <DesmarcarButton
-                                onClick={() => setAccount("")}
-                                title="Quitar cuenta seleccionada"
-                            />
-                        )}
-                    </div>
-                </div>
+                <AccountSelector
+                    account={account}
+                    accounts={accounts}
+                    currency={currency}
+                    onChange={handleAccountChange}
+                    onClear={() => setAccount("")}
+                />
 
                 {/* Selector de categoría (filtrada por tipo) */}
-                <div>
-                    <label className="block text-[15px] font-semibold text-gray-700 mb-1">Categoría</label>
-                    <select
-                        key={`category-${category}`}
-                        name="category"
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                        className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary bg-white"
-                    >
-                        <option value="">Selecciona una categoría</option>
-                        {categories.filter(cat => cat.type === type).map(cat => (
-                            <option key={cat.categoryId} value={cat.categoryId}>
-                                {cat.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                <CategorySelector
+                    category={category}
+                    categories={categories}
+                    type={type}
+                    disabled={!!defaultSubcategoryId}
+                    onChange={handleCategoryChange}
+                />
+
+                {/* Selector de subcategoría (solo si la categoría tiene subcategorías) */}
+                <SubcategorySelector
+                    subcategory={subcategory}
+                    availableSubcategories={availableSubcategories}
+                    disabled={!!defaultSubcategoryId}
+                    onChange={(e) => setSubcategory(e.target.value)}
+                    onClear={() => setSubcategory("")}
+                />
 
                 {/* Input fecha */}
                 <div>
@@ -283,38 +257,12 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
                 </div>
 
                 {/* Selector de divisa */}
-                <div>
-                    <label className="block text-[15px] font-semibold text-gray-700 mb-1">Divisa</label>
-                    {/* Input hidden para enviar el valor cuando el select está deshabilitado */}
-                    {account && <input type="hidden" name="currency" value={currency} />}
-                    <div className="relative">
-                        <select
-                            key={`currency-${currency}`}
-                            name={account ? undefined : "currency"} // Evitar duplicidad de name si está habilitado
-                            value={currency}
-                            onChange={handleCurrencyChange}
-                            disabled={!!account}
-                            className={cn(
-                                "w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary bg-white",
-                                account && "bg-gray-100 text-gray-500 cursor-not-allowed", // Estilo visual "fondo gris claro"
-                                !account && currency && "pr-10"
-                            )}
-                        >
-                            <option value="">Selecciona una divisa</option>
-                            {currencies.map((curr) => (
-                                <option key={curr.currency} value={curr.currency}>
-                                    {curr.currency} - {curr.description}
-                                </option>
-                            ))}
-                        </select>
-                        {!account && currency && (
-                            <DesmarcarButton
-                                onClick={() => setCurrency("")}
-                                title="Quitar divisa seleccionada"
-                            />
-                        )}
-                    </div>
-                </div>
+                <CurrencySelector
+                    currency={currency}
+                    account={account}
+                    onChange={handleCurrencyChange}
+                    onClear={() => setCurrency("")}
+                />
 
                 {/* Textarea descripción */}
                 <div>
@@ -362,25 +310,12 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
 
             {/* Botones de acción del formulario */}
             <div className="mt-6 pt-4 flex justify-end gap-4 border-t border-gray-200">
-                <button
-                    type="button"
-                    onClick={onCancel}
-                    className="px-8 py-2.5 rounded-lg bg-gray-100 text-[15px] text-gray-700 hover:bg-gray-200 transition-colors"
-                >
-                    Cancelar
-                </button>
-                <button
-                    type="submit"
-                    disabled={!isFormValid || isPending}
-                    className={cn(
-                        "px-8 py-2.5 rounded-lg text-[15px] text-white transition-colors",
-                        isFormValid && !isPending
-                            ? "bg-primary hover:bg-primary/90"
-                            : "bg-gray-400 cursor-not-allowed opacity-70"
-                    )}
-                >
-                    {isPending ? "Guardando..." : "Guardar"}
-                </button>
+                <CancelButton onClick={onCancel} />
+                <SaveButton
+                    isPending={isPending}
+                    isValid={isFormValid}
+                    label="Guardar"
+                />
             </div>
         </form>
     )

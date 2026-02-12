@@ -1,21 +1,25 @@
 import { formatCurrency, formatDate, monthNames } from "@/src/lib/utils"
-import { CategoryItem } from "@/src/types/category-types"
+import { CategoryItem, Subcategory } from "@/src/types/category-types"
 import { Transaction } from "@/src/types/transaction-types"
-import { Pencil, Trash2 } from "lucide-react"
+import { Eye, Pencil, Trash2 } from "lucide-react"
 import { Button } from "@/src/components/ui/button"
 
 type CategoryTableRowsProps = {
-    items: CategoryItem[]
-    gridStyle: React.CSSProperties
+    items: CategoryItem[]  // Array unificado: puede contener subcategorías o transacciones
+    gridStyle: React.CSSProperties  // Anchos de columna dinámicos
     onEditTransaction: (transaction: Transaction) => void
     onDeleteTransaction: (transactionId: string) => void
+    onEditSubcategory: (subcategory: Subcategory) => void
+    onViewSubcategory?: (subcategory: Subcategory) => void
 }
 
 export function CategoryTableRows({ 
     items, 
     gridStyle, 
     onEditTransaction, 
-    onDeleteTransaction 
+    onDeleteTransaction,
+    onEditSubcategory,
+    onViewSubcategory
 }: CategoryTableRowsProps) {
     const calculateYearTotal = (monthlyData: CategoryItem['monthlyData']) => {
         return Object.values(monthlyData).reduce((sum, val) => sum + val, 0)
@@ -31,12 +35,12 @@ export function CategoryTableRows({
                         className="grid gap-2 items-center hover:bg-gray-50 rounded-lg p-2 transition-colors text-sm group"
                         style={gridStyle}
                     >
-                        {/* Fecha */}
+                        {/* Fecha - solo relevante para transacciones */}
                         <div className="text-gray-500 text-xs truncate text-center">
                             {formatDate(item.date)}
                         </div>
 
-                        {/* Nombre */}
+                        {/* Nombre con indicadores visuales */}
                         <div className="flex items-center justify-start gap-2 font-medium text-gray-700 truncate pr-2">
                             {item.color && (
                                 <div
@@ -45,13 +49,49 @@ export function CategoryTableRows({
                                 />
                             )}
                             <span className="truncate" title={item.name}>{item.name}</span>
+                            
+                            {/* Badge identificador para subcategorías */}
                             {item.type === 'subcategory' && (
                                 <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded-full shrink-0">
                                     Sub
                                 </span>
                             )}
                             
-                            {/* Botones de acción (visibles en hover) */}
+                            {/* Botones de acción - aparecen en hover según el tipo de item */}
+                            
+                            {/* Para SUBCATEGORÍAS: ver y editar */}
+                            {item.type === 'subcategory' && item.originalSubcategory && (
+                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-auto shrink-0">
+                                    {onViewSubcategory && (
+                                        <Button 
+                                            variant="ghost" 
+                                            size="sm" 
+                                            onClick={(e) => { 
+                                                e.stopPropagation()
+                                                onViewSubcategory(item.originalSubcategory!)
+                                            }}
+                                            title="Ver transacciones de subcategoría"
+                                            className="h-7 w-7 p-0"
+                                        >
+                                            <Eye className="h-4 w-4 text-primary" />
+                                        </Button>
+                                    )}
+                                    <Button 
+                                        variant="ghost" 
+                                        size="sm" 
+                                        onClick={(e) => { 
+                                            e.stopPropagation()
+                                            onEditSubcategory(item.originalSubcategory!)
+                                        }}
+                                        title="Editar subcategoría"
+                                        className="h-7 w-7 p-0"
+                                    >
+                                        <Pencil className="h-4 w-4 text-primary" />
+                                    </Button>
+                                </div>
+                            )}
+                            
+                            {/* Para TRANSACCIONES: editar y eliminar */}
                             {item.type === 'transaction' && item.originalTransaction && (
                                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-auto shrink-0">
                                     <Button 
@@ -83,7 +123,7 @@ export function CategoryTableRows({
                             )}
                         </div>
 
-                        {/* Presupuesto */}
+                        {/* Presupuesto - solo visible para subcategorías con presupuesto */}
                         <div className="text-center font-medium truncate">
                             {item.type === 'subcategory' && item.budget > 0 ? (
                                 <span className="text-gray-900">{formatCurrency(item.budget)}</span>
@@ -92,7 +132,7 @@ export function CategoryTableRows({
                             )}
                         </div>
 
-                        {/* Months */}
+                        {/* Columnas de meses (12) - con color diferenciado si hay actividad */}
                         {monthNames.map(month => {
                             const amount = item.monthlyData[month]
                             const isActive = amount > 0
@@ -115,7 +155,7 @@ export function CategoryTableRows({
                             )
                         })}
 
-                        {/* Total */}
+                        {/* Total anual */}
                         <div className="text-center font-bold text-gray-900 truncate">
                             {yearTotal > 0 && formatCurrency(yearTotal)}
                         </div>

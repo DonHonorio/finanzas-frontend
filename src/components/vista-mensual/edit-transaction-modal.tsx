@@ -3,7 +3,7 @@ import { TransactionForm } from "./transaction-form"
 import updateTransaction from "@/src/actions/update-transaction-action"
 import { Transaction } from "@/src/types/transaction-types"
 import { Account } from "@/src/types/account-types"
-import { Category } from "@/src/types/category-types"
+import { Category, Subcategory } from "@/src/types/category-types"
 
 type Props = {
     open: boolean
@@ -13,10 +13,11 @@ type Props = {
     onCancel: () => void
     onAccept: () => void
     mode: "expenses" | "incomes"      // Determina el tipo inicial del formulario
+    subcategories?: Subcategory[]     // Subcategorías precargadas (opcional)
 }
 
 // Modal wrapper para editar transacción existente
-export function EditTransactionModal({ open, transaction, accounts, categories, onCancel, onAccept, mode }: Props) {
+export function EditTransactionModal({ open, transaction, accounts, categories, onCancel, onAccept, mode, subcategories }: Props) {
     return (
         <Modal open={open} onCancel={onCancel} className="w-[75vw] max-w-2xl rounded-2xl overflow-hidden">
             <TransactionForm
@@ -31,7 +32,8 @@ export function EditTransactionModal({ open, transaction, accounts, categories, 
                     currency: transaction.currency,
                     updatedAt: transaction.updatedAt,
                     accountId: transaction.accountId,
-                    categoryId: transaction.categoryId
+                    categoryId: transaction.categoryId,
+                    subcategoryId: transaction.subcategoryId
                 }}
                 accounts={accounts}
                 categories={categories}
@@ -39,6 +41,7 @@ export function EditTransactionModal({ open, transaction, accounts, categories, 
                 onSuccess={onAccept}
                 onCancel={onCancel}
                 mode={mode}
+                subcategories={subcategories}
             />
         </Modal>
     );

@@ -182,6 +182,7 @@ export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", 
                     open={modalType === "view"} // Se envía open como true para que el componente "Modal" básico (del cual está formado ViewCategoryModal) se pueda abrir
                     category={selectedCategory}
                     onCancel={handleCloseModal}
+                    onDataChanged={mutate}
                 />
             )}
 

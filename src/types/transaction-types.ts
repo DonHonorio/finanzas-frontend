@@ -1,4 +1,15 @@
-// Definición de tipos relacionados con transacciones, incluyendo la lista de monedas comunes y la interfaz para una transacción
+/**
+ * Tipo que define todas las monedas soportadas en el sistema.
+ * Incluye las principales monedas internacionales y algunas regionales.
+ * 
+ * Uso principal:
+ * - Account: cada cuenta bancaria tiene una moneda asociada
+ * - Transaction: cada transacción se registra en la moneda de su cuenta
+ * - CurrencySelector: selector de divisa al crear transacciones sin cuenta
+ * 
+ * Nota: Las transacciones heredan la moneda de la cuenta seleccionada.
+ * La lista currencies (abajo) proporciona descripciones legibles para UI.
+ */
 export type BaseCurrency = 
     | "USD" | "EUR" | "GBP" | "JPY" | "RUB" | "CNY" | "CAD" | "AUD" 
     | "CHF" | "INR" | "MXN" | "BRL" | "SGD" | "HKD" | "NOK" | "SEK" 
@@ -7,7 +18,16 @@ export type BaseCurrency =
     | "ILS" | "SAR" | "AED" | "PKR" | "BGN" | "RON" | "DOP" | "EGP" 
     | "GHS" | "ISK" | "MAD" | "TWD" | "UAH" | "UYU" | "VND"
 
-// Lista de monedas comunes para usar en el sistema, con su descripción para mostrar en la UI
+/**
+ * Array de objetos con código de moneda y su descripción en español.
+ * Usado para poblar selectores de divisa en la interfaz.
+ * 
+ * Uso principal:
+ * - CurrencySelector: desplegable para seleccionar moneda al crear transacciones
+ * - AccountSelector: muestra "nombre - moneda" en cada opción de cuenta
+ * 
+ * Formato: { currency: código ISO 4217, description: "País - Nombre moneda" }
+ */
 export const currencies: { currency: BaseCurrency; description: string }[] = [
     { currency: "USD", description: "Estados Unidos - Dólar" },
     { currency: "EUR", description: "Unión Europea - Euro" },
@@ -58,17 +78,33 @@ export const currencies: { currency: BaseCurrency; description: string }[] = [
     { currency: "VND", description: "Vietnam - Dong" }
 ]
 
+/**
+ * Representa un movimiento financiero individual (gasto o ingreso).
+ * Es la unidad básica de registro en el sistema.
+ * 
+ * Uso principal:
+ * - TransactionForm: formulario para crear/editar movimientos
+ * - ViewCategoryModal: lista transacciones dentro de una categoría
+ * - ViewSubcategoryModal: lista transacciones de una subcategoría
+ * - Dashboard: agregación de transacciones por categoría y mes
+ * - EditTransactionModal: modal para editar transacción existente
+ * 
+ * Relaciones:
+ * - Pertenece a una Account (cuenta bancaria)
+ * - Se clasifica en una Category
+ * - Opcionalmente en una Subcategory
+ */
 export interface Transaction {
-    transactionId: string
-    name: string
-    date: string
-    amount: number
-    description?: string
-    type: 'expense' | 'income'
-    currency: BaseCurrency
-    createdAt: string
-    updatedAt: string
-    accountId: string
-    categoryId: string
-    subcategoryId?: number
+    transactionId: string        // Identificador único de la transacción
+    name: string                 // Nombre descriptivo del movimiento (ej: "Compra supermercado")
+    date: string                 // Fecha del movimiento en formato ISO
+    amount: number               // Monto (positivo para ingresos, negativo para gastos)
+    description?: string         // Descripción opcional adicional (máx 500 caracteres)
+    type: 'expense' | 'income'   // Tipo: gasto o ingreso
+    currency: BaseCurrency       // Moneda del movimiento (heredada de la cuenta)
+    createdAt: string            // Fecha de creación del registro (ISO)
+    updatedAt: string            // Fecha de última actualización (ISO)
+    accountId: string            // ID de la cuenta bancaria asociada
+    categoryId: string           // ID de la categoría en la que se clasifica
+    subcategoryId?: number       // ID de la subcategoría (opcional)
 }

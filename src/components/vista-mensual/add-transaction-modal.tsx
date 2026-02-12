@@ -2,7 +2,7 @@ import { Modal } from "@/src/components/ui/modal"
 import { TransactionForm } from "./transaction-form"
 import createTransaction from "@/src/actions/create-transaction-action"
 import { Account } from "@/src/types/account-types"
-import { Category } from "@/src/types/category-types"
+import { Category, Subcategory } from "@/src/types/category-types"
 
 type Props = {
   open: boolean
@@ -12,10 +12,12 @@ type Props = {
   onAccept: () => void
   mode: "expenses" | "incomes"  // Para que el formulario empiece por defecto con el tipo correcto seleccionado (gasto o ingreso)
   defaultCategoryId?: string | number  // Categoría preseleccionada
+  defaultSubcategoryId?: number // Subcategoría preseleccionada
+  subcategories?: Subcategory[] // Subcategorías precargadas (opcional)
 }
 
 // Modal wrapper que contiene el formulario de transacción para añadir un nuevo movimiento
-export function AddTransactionModal({ open, accounts, categories, onAccept, onCancel, mode, defaultCategoryId }: Props) {
+export function AddTransactionModal({ open, accounts, categories, onAccept, onCancel, mode, defaultCategoryId, defaultSubcategoryId, subcategories }: Props) {
   return (
     <Modal open={open} onCancel={onCancel} className="w-[75vw] max-w-2xl rounded-2xl overflow-hidden">
       <TransactionForm
@@ -26,6 +28,8 @@ export function AddTransactionModal({ open, accounts, categories, onAccept, onCa
         onCancel={onCancel}
         mode={mode}
         defaultCategoryId={defaultCategoryId}
+        defaultSubcategoryId={defaultSubcategoryId}
+        subcategories={subcategories}
       />
     </Modal>
   );

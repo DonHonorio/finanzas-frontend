@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { AddTransactionModal } from "@/src/components/vista-mensual/add-transaction-modal"
 import { Account } from "@/src/types/account-types"
-import { Category } from "@/src/types/category-types"
+import { Category, Subcategory } from "@/src/types/category-types"
 import { cn } from "@/src/lib/utils"
 
 interface AddTransactionButtonProps {
@@ -11,11 +11,14 @@ interface AddTransactionButtonProps {
   categories: Category[]
   onTransactionAdded?: () => void
   mode?: "expenses" | "incomes"
-  variant?: "default" | "floating"
+  variant?: "default" | "floating"   // Dos estilos: botón normal en footer o botón flotante (+)
   className?: string
-  defaultCategoryId?: string | number
+  defaultCategoryId?: string | number  // Para pre-seleccionar categoría (edición desde categoría)
+  defaultSubcategoryId?: number        // Para pre-seleccionar subcategoría
+  subcategories?: Subcategory[]        // Subcategorías de la categoría por defecto
 }
 
+// Componente de botón que llama al modal para añadir un nuevo movimiento (gasto o ingreso)
 export function AddTransactionButton({
   accounts,
   categories,
@@ -23,7 +26,9 @@ export function AddTransactionButton({
   mode = "expenses",
   variant = "default",
   className,
-  defaultCategoryId
+  defaultCategoryId,
+  defaultSubcategoryId,
+  subcategories
 }: AddTransactionButtonProps) {
   const [open, setOpen] = useState(false)
 
@@ -44,17 +49,20 @@ export function AddTransactionButton({
         {isFloating ? "+" : "+ Añadir Movimiento"}
       </button>
 
+
       <AddTransactionModal
         open={open}
         accounts={accounts}
         categories={categories}
         onCancel={() => setOpen(false)}
         onAccept={() => {
-            setOpen(false)
-            onTransactionAdded?.()
+          setOpen(false)
+          onTransactionAdded?.()  // Callback para refrescar datos después de añadir
         }}
         mode={mode}
         defaultCategoryId={defaultCategoryId}
+        defaultSubcategoryId={defaultSubcategoryId}
+        subcategories={subcategories}
       />
     </>
   )
