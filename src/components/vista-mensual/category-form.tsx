@@ -127,7 +127,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
             </h2>
 
             {/* Grilla principal */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(72vh-260px)]">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* COLUMNA IZQUIERDA */}
                 <div className="space-y-4">
                     {/* Nombre */}
@@ -265,7 +265,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
                     </div>
 
                     {/* Con Subcategorías */}
-                    <div className="flex items-center justify-start gap-10">
+                    <div className="flex items-center justify-start gap-10 mb-5">
                         <label className="text-[15px] font-semibold text-gray-700">Con Subcategorías</label>
                         <input type="hidden" name="withSubcategory" value={String(withSubcategory)} />
                         <ActiveToggle
