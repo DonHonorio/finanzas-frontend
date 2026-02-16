@@ -1,9 +1,9 @@
 'use client'
 
-import { ChevronLeft } from 'lucide-react'
 import { useState } from 'react'
 import { ToggleButton } from '../ui/toggle-button'
 import { YearSelector } from '../ui/year-selector'
+import { BackButton } from '../ui/back-button'
 
 type Props = {
   mode: "expenses" | "incomes"
@@ -20,24 +20,13 @@ export function VistaMensualHeader({ mode, setMode, actualYear, setActualYear }:
   // Estado local para el año mostrado en el selector (puede diferir del año aplicado)
   const [year, setYear] = useState(actualYear)
 
-  // TODO: Implementar lógica de navegación atrás (router.back() o navegación personalizada)
-  const onBack = () => {
-    // placeholder - se implementará con la lógica de navegación real
-  }
-
   return (
     <div className="mb-6">
 
       {/* 1. Fila superior: Botón volver y título */}
       <div className="flex items-center mb-6">
         {/* Botón "Volver" - Navegación a vista anterior */}
-        <button
-          onClick={onBack}
-          className="flex items-center gap-2 px-4 py-2 border-border rounded-md text-sm text-gray-600 hover:text-gray-900 hover:bg-accent active:-translate-x-0.5 transition select-none"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          Volver
-        </button>
+        <BackButton />
 
         {/* Título principal centrado automáticamente con mx-auto */}
         <h1 className="mx-auto text-3xl font-bold">
