@@ -1,20 +1,15 @@
 'use client'
 
 import { PiggyBank } from "lucide-react"
-import { Logo } from "@/src/components/ui/logo"
+import { Header } from "@/src/components/menu-principal/header"
 import { BackButton } from "@/src/components/ui/back-button"
+import ToastNotification from "@/src/components/ui/ToastNotification"
 
 export default function AhorrosPage() {
   return (
     <div className="h-screen flex flex-col bg-gray-50">
       {/* Header */}
-      <header className="w-full px-8 py-4 flex items-center justify-between bg-white border-b border-gray-200">
-        <Logo />
-        
-        <button className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition font-medium">
-          Iniciar Sesión
-        </button>
-      </header>
+      <Header />
 
       {/* Contenido Principal */}
       <main className="flex-1 p-10">
@@ -34,6 +29,7 @@ export default function AhorrosPage() {
           </div>
         </div>
       </main>
+      <ToastNotification />
     </div>
   )
 }

@@ -131,3 +131,19 @@ export const DraftSubcategorySchema = z.object({
     isActive: z.boolean(),
     categoryId: z.coerce.number().int("El ID de categoría debe ser un número entero").optional(),
 })
+
+// Esquema para inicio de sesión
+export const LoginSchema = z.object({
+    email: z.email("El email no es válido"),
+    password: z.string().min(1, "La contraseña es obligatoria"),
+})
+
+// Esquema para crear una cuenta (registro)
+export const CreateAccountSchema = z.object({
+    email: z.email("El email no es válido"),
+    name: z.string().min(1, "El nombre es obligatorio").max(50, "El nombre no puede superar 50 caracteres"),
+    fullName: z.string().min(1, "El nombre completo es obligatorio").max(120, "El nombre completo no puede superar 120 caracteres"),
+    password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+    baseCurrency: z.enum(CURRENCY_VALUES, { message: "La moneda base es obligatoria" }),
+    timeZone: z.string().min(1, "La zona horaria es obligatoria"),
+})

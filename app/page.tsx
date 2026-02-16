@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { CalendarDays, TrendingUp, PiggyBank, CreditCard } from "lucide-react"
-import { Logo } from "@/src/components/ui/logo"
+import { Header } from "@/src/components/menu-principal/header"
 import { AddTransactionButton } from "@/src/components/ui/add-transaction-button"
 import ToastNotification from "@/src/components/ui/ToastNotification"
 import { useState, useEffect } from "react"
@@ -11,6 +11,7 @@ import { getCategories } from "@/src/actions/get-categories-action"
 import { Account } from "@/src/types/account-types"
 import { Category } from "@/src/types/category-types"
 
+// Página principal del frontend, con enlaces a las diferentes secciones de la aplicación
 export default function Home() {
   const [accounts, setAccounts] = useState<Account[]>([])
   const [categories, setCategories] = useState<Category[]>([])
@@ -23,13 +24,7 @@ export default function Home() {
   return (
     <div className="h-screen w-full flex flex-col bg-gray-50">
       {/* Header */}
-      <header className="w-full px-8 py-4 flex items-center justify-between bg-white border-b border-gray-200">
-        <Logo />
-
-        <button className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition font-medium">
-          Iniciar Sesión
-        </button>
-      </header>
+      <Header />
 
       {/* Contenido Principal */}
       <main className="flex-1 flex flex-col items-center justify-between py-12 px-8">
@@ -108,6 +103,7 @@ export default function Home() {
           />
         </div>
       </main>
+
       <ToastNotification />
     </div>
   )
