@@ -27,6 +27,13 @@ export default async function createSubcategory(prevState: ActionStateType, form
 
     // Crear subcategoría en la base de datos
     const token = await getToken()
+    if (!token) {
+        return {
+            errors: ['No autenticado. Por favor, inicia sesión.'],
+            success: ''
+        }
+    }
+
     const url = `${process.env.API_URL}/categories/${categoryId}/subcategories`
     const req = await fetch(url, {
         method: 'POST',

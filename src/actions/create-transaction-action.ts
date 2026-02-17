@@ -31,6 +31,12 @@ export default async function createTransaction(prevState: ActionStateType, form
 
   // Autenticación con token JWT
   const token = await getToken()
+  if (!token) {
+    return {
+      errors: ['No autenticado. Por favor, inicia sesión.'],
+      success: ''
+    }
+  }
   
   const categoryId = formData.get("category")
   

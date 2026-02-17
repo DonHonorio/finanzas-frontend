@@ -16,6 +16,13 @@ export default async function deleteCategory(prevState: ActionStateType, formDat
 
   // Autenticación y petición DELETE a la API externa
   const token = await getToken()
+  if (!token) {
+    return {
+      errors: ['No autenticado. Por favor, inicia sesión.'],
+      success: ''
+    }
+  }
+
   const url = `${process.env.API_URL}/categories/${categoryId}`
   const req = await fetch(url, {
     method: 'DELETE',

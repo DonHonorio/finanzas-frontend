@@ -31,6 +31,12 @@ export default async function updateCategory(prevState: ActionStateType, formDat
   }
 
   const token = await getToken()
+  if (!token) {
+    return {
+      errors: ['No autenticado. Por favor, inicia sesión.'],
+      success: ''
+    }
+  }
 
   // Endpoint PUT para actualizar categoría existente
   const url = `${process.env.API_URL}/categories/${categoryId}`

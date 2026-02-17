@@ -28,6 +28,12 @@ export default async function updateSubcategory(prevState: ActionStateType, form
   const subcategoryId = formData.get('subcategoryId')
 
   const token = await getToken()
+  if (!token) {
+    return {
+      errors: ['No autenticado. Por favor, inicia sesión.'],
+      success: ''
+    }
+  }
   
   // Endpoint anidado: PUT /categories/{categoryId}/subcategories/{subcategoryId}
   const url = `${process.env.API_URL}/categories/${categoryId}/subcategories/${subcategoryId}`

@@ -147,3 +147,15 @@ export const CreateAccountSchema = z.object({
     baseCurrency: z.enum(CURRENCY_VALUES, { message: "La moneda base es obligatoria" }),
     timeZone: z.string().min(1, "La zona horaria es obligatoria"),
 })
+
+// Esquema para el usuario autenticado
+export const UserSchema = z.object({
+    userId: z.number(),
+    email: z.email("El email no es válido"),
+    name: z.string(),
+    fullName: z.string(),
+    avatar: z.string().nullable().optional(),
+    baseCurrency: z.enum(CURRENCY_VALUES),
+    timeZone: z.string(),
+    isActive: z.boolean(),
+})

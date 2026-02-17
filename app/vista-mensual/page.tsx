@@ -1,11 +1,13 @@
 import ToastNotification from "@/src/components/ui/ToastNotification"
 import { VistaMensualPageClient } from "@/src/components/vista-mensual/page-client"
+import { verifySession } from "@/src/auth/dal"
 
-export default function Page() {
-  // Devuelve un componente para usar funcionalidades de cliente
+export default async function VistaMensualPage() {
+  const user = await verifySession()
+  
   return (
     <>
-      <VistaMensualPageClient />
+      <VistaMensualPageClient user={user?.user} />
       <ToastNotification />
     </>
   )

@@ -17,6 +17,12 @@ export default async function deleteSubcategory(prevState: ActionStateType, form
   }
 
   const token = await getToken()
+  if (!token) {
+    return {
+      errors: ['No autenticado. Por favor, inicia sesión.'],
+      success: ''
+    }
+  }
   
   // Endpoint anidado: DELETE /categories/{categoryId}/subcategories/{subcategoryId}
   const url = `${process.env.API_URL}/categories/${categoryId}/subcategories/${subcategoryId}`

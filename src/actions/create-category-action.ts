@@ -28,6 +28,13 @@ export default async function createCategory(prevState: ActionStateType, formDat
 
     // Generar categoría en la base de datos
     const token = await getToken()
+    if (!token) {
+        return {
+            errors: ['No autenticado. Por favor, inicia sesión.'],
+            success: ''
+        }
+    }
+
     const url = `${process.env.API_URL}/categories`
     const req = await fetch(url, {
         method: 'POST',

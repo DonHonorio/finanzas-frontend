@@ -31,6 +31,12 @@ export default async function updateTransaction(prevState: ActionStateType, form
   }
 
   const token = await getToken()
+  if (!token) {
+    return {
+      errors: ['No autenticado. Por favor, inicia sesión.'],
+      success: ''
+    }
+  }
   
   // Usa previousCategoryId para la URL porque la transacción PUEDE cambiar de categoría
   // Si usáramos transactionData.categoryId y está cambiando, la URL sería inválida

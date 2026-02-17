@@ -1,14 +1,12 @@
 import { cookies } from "next/headers"
 
-// Obtiene el token JWT de autenticación desde las cookies de la petición
-// Se ejecuta en la parte del servidor de nextjs (server action o route handler)
+// Obtiene el token desde la cookie FINANZAS_TOKEN
 export const getToken = async () => {
   const cookieStore = await cookies()
   return cookieStore.get('FINANZAS_TOKEN')?.value
 }
 
-// Establece el token JWT de autenticación en una cookie
-// Se ejecuta en la parte del servidor de nextjs (server action)
+// Guarda el token en la cookie FINANZAS_TOKEN con duración de 1 año
 export const setToken = async (token: string) => {
   const cookieStore = await cookies()
   const oneYear = 365 * 24 * 60 * 60 // Un año en segundos

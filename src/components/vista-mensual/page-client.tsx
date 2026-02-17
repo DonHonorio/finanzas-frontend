@@ -1,20 +1,29 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { z } from 'zod'
 import { Dashboard } from "@/src/components/vista-mensual/dashboard"
 import { VistaMensualHeader } from "@/src/components/vista-mensual/vista-mensual-header"
 import { AddTransactionButton } from "@/src/components/ui/add-transaction-button"
+import { Header } from "@/src/components/menu-principal/header"
 import { getAccounts } from '@/src/actions/get-accounts-action'
 import { Account } from '@/src/types/account-types'
 import { getCategories } from '@/src/actions/get-categories-action'
 import { Category } from '@/src/types/category-types'
+import { UserSchema } from '@/src/schemas'
+
+type User = z.infer<typeof UserSchema>
+
+interface VistaMensualPageClientProps {
+  user?: User | null
+}
 
 /**
  * Componente principal de la página de Vista Mensual.
  * Gestiona el estado global de la vista (tipo de vista, año, modales)
  * y organiza la estructura de los componentes hijos.
  */
-export function VistaMensualPageClient() {
+export function VistaMensualPageClient({ user }: VistaMensualPageClientProps) {
   // Determina si se visualizan gastos o ingresos en el dashboard
   const [mode, setMode] = useState<"expenses" | "incomes">("expenses")
 
@@ -35,18 +44,22 @@ export function VistaMensualPageClient() {
   }, [])
 
   return (
-    <div className="h-screen p-10">
+    <div className="h-screen flex flex-col bg-gray-50">
+      {/* Header con navegación y autenticación */}
+      <Header user={user} />
 
-      {/* En este div está el contenido que se ve a simple vista */}
-      <div className="h-full flex flex-col">
-        {/* 
-          Cabecera con controles de navegación:
-          - Botón de volver (onBack)
-          - Título
-          - Selector entre Gastos/Ingresos (mode)
-          - Selector de año (actualYear)
-        */}
-        <VistaMensualHeader
+      {/* Contenido principal */}
+      <div className="flex-1 p-10 overflow-hidden">
+        {/* En este div está el contenido que se ve a simple vista */}
+        <div className="h-full flex flex-col">
+          {/* 
+            Cabecera con controles de navegación:
+            - Botón de volver (onBack)
+            - Título
+            - Selector entre Gastos/Ingresos (mode)
+            - Selector de año (actualYear)
+          */}
+          <VistaMensualHeader
           mode={mode}
           setMode={setMode}
           actualYear={actualYear}
@@ -79,6 +92,7 @@ export function VistaMensualPageClient() {
             onTransactionAdded={() => { console.log('Transacción añadida, refrescar dashboard...') }}
           />
         </footer>
+      </div>
       </div>
     </div>
   )
