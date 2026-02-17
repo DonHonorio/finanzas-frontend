@@ -37,11 +37,17 @@ export function VistaMensualPageClient({ user }: VistaMensualPageClientProps) {
   const [categories, setCategories] = useState<Category[]>([])
 
   useEffect(() => {
-    // Cargar cuentas en background
+    // Resetear datos si no hay usuario
+    if (!user) {
+      setAccounts([])
+      setCategories([])
+      return
+    }
+    
+    // Cargar datos cuando hay usuario o cambia el usuario
     getAccounts().then(data => setAccounts(data))
-    // Cargar categorías en background
     getCategories().then(data => setCategories(data))
-  }, [])
+  }, [user?.userId])
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">

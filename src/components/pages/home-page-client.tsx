@@ -25,9 +25,17 @@ export function HomePageClient({ user }: HomePageClientProps) {
   const [categories, setCategories] = useState<Category[]>([])
 
   useEffect(() => {
+    // Resetear datos si no hay usuario
+    if (!user) {
+      setAccounts([])
+      setCategories([])
+      return
+    }
+    
+    // Cargar datos cuando hay usuario o cambia el usuario
     getAccounts().then(setAccounts)
     getCategories().then(setCategories)
-  }, [])
+  }, [user?.userId])
 
   return (
     <div className="h-screen w-full flex flex-col bg-gray-50">
