@@ -151,11 +151,24 @@ export const CreateAccountSchema = z.object({
 // Esquema para el usuario autenticado
 export const UserSchema = z.object({
     userId: z.number(),
-    email: z.email("El email no es válido"),
-    name: z.string(),
-    fullName: z.string(),
-    avatar: z.string().nullable().optional(),
-    baseCurrency: z.enum(CURRENCY_VALUES),
-    timeZone: z.string(),
+    email: z.email("El email no es válido").max(50, "El email no puede superar 50 caracteres"),
+    name: z.string().min(1, "El nombre es obligatorio").max(50, "El nombre no puede superar 50 caracteres"),
+    fullName: z.string().min(1, "El nombre completo es obligatorio").max(120, "El nombre completo no puede superar 120 caracteres"),
+    avatar: z.preprocess(
+        (val) => (typeof val === "string" && val.trim().length === 0 ? null : val),
+        z.string().max(2500, "La URL del avatar es demasiado larga").nullable().optional()
+    ),
+    baseCurrency: z.enum(CURRENCY_VALUES, { message: "La moneda base es obligatoria" }),
+    timeZone: z.string().min(1, "La zona horaria es obligatoria").max(100, "La zona horaria no puede superar 100 caracteres"),
     isActive: z.boolean(),
+})
+
+// Esquema para actualizar usuario (campos editables) - basado en UserSchema
+export const UpdateUserSchema = UserSchema.pick({
+    name: true,
+    fullName: true,
+    email: true,
+    baseCurrency: true,
+    timeZone: true,
+    avatar: true,
 })

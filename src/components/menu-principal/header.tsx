@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { z } from 'zod'
 import { Logo } from '../ui/logo'
 import { AuthModal } from '../auth/auth-modal'
-import { UserProfile } from '../ui/user-profile'
+import { UserProfile } from '../profile/user-profile'
 import { UserSchema } from '@/src/schemas'
 
 type User = z.infer<typeof UserSchema>

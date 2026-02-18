@@ -5,6 +5,8 @@ import { User, LogOut, Settings } from 'lucide-react'
 import { z } from 'zod'
 import { UserSchema } from '@/src/schemas'
 import { logoutAction } from '@/src/actions/logout-action'
+import { EditProfileModal } from './edit-profile-modal'
+import { useRouter } from 'next/navigation'
 
 type User = z.infer<typeof UserSchema>
 
@@ -15,10 +17,24 @@ interface UserProfileProps {
 // Muestra el resumen del usuario autenticado y un menú desplegable de acciones.
 export function UserProfile({ user }: UserProfileProps) {
     const [isOpen, setIsOpen] = useState(false)
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+    const router = useRouter()
 
     // Cierra la sesión del usuario actual.
     const handleLogout = async () => {
         await logoutAction()
+    }
+
+    // Abre el modal de edición de perfil
+    const handleEditProfile = () => {
+        setIsOpen(false)
+        setIsEditModalOpen(true)
+    }
+
+    // Maneja el éxito de la actualización
+    const handleUpdateSuccess = () => {
+        setIsEditModalOpen(false)
+        router.refresh() // Refresca la página para obtener los datos actualizados
     }
 
     return (
@@ -60,15 +76,11 @@ export function UserProfile({ user }: UserProfileProps) {
                         </div>
                         
                         <button
-                            onClick={() => {
-                                setIsOpen(false)
-                                // TODO: Implementar navegación a perfil
-                                console.log('Ir a perfil')
-                            }}
+                            onClick={handleEditProfile}
                             className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                         >
                             <Settings className="w-4 h-4" />
-                            Configuración
+                            Editar Perfil
                         </button>
                         
                         <button
@@ -81,6 +93,14 @@ export function UserProfile({ user }: UserProfileProps) {
                     </div>
                 </>
             )}
+
+            {/* Modal de edición de perfil */}
+            <EditProfileModal
+                open={isEditModalOpen}
+                user={user}
+                onCancel={() => setIsEditModalOpen(false)}
+                onSuccess={handleUpdateSuccess}
+            />
         </div>
     )
 }
