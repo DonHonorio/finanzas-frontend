@@ -23,13 +23,10 @@ export function VistaMensualHeader({ mode, setMode, actualYear, setActualYear }:
   return (
     <div className="mb-6">
 
-      {/* 1. Fila superior: Botón volver y título */}
-      <div className="flex items-center mb-6">
-        {/* Botón "Volver" - Navegación a vista anterior */}
-        <BackButton />
-
-        {/* Título principal centrado automáticamente con mx-auto */}
-        <h1 className="mx-auto text-3xl font-bold">
+      {/* 1. Fila superior: Título */}
+      <div className="flex items-center justify-center mb-6">
+        {/* Título principal */}
+        <h1 className="text-3xl font-bold">
           Vista Mensual
         </h1>
 

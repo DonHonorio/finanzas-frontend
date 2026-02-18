@@ -23,11 +23,6 @@ export function AhorrosPageClient({ user }: AhorrosPageClientProps) {
             {/* Contenido Principal */}
             <main className="flex-1 p-10">
                 <div className="h-full flex flex-col">
-                    {/* Botón Volver */}
-                    <div className="mb-6">
-                        <BackButton />
-                    </div>
-
                     {/* Área de contenido */}
                     <div className="flex-1 bg-white rounded-2xl border border-gray-200 flex flex-col items-center justify-center gap-6">
                         <div className="w-24 h-24 bg-primary/10 rounded-2xl flex items-center justify-center">
