@@ -7,6 +7,7 @@ import { Header } from "@/src/components/menu-principal/header"
 import { AddTransactionButton } from "@/src/components/ui/add-transaction-button"
 import ToastNotification from "@/src/components/ui/ToastNotification"
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { getAccounts } from "@/src/actions/get-accounts-action"
 import { getCategories } from "@/src/actions/get-categories-action"
 import { Account } from "@/src/types/account-types"
@@ -19,10 +20,21 @@ interface HomePageClientProps {
   user?: User | null
 }
 
+// Clave usada en localStorage para registrar que el usuario ya completó el onboarding
+const ONBOARDING_KEY = 'fp_onboarding_completed'
+
 // Página principal del frontend, con enlaces a las diferentes secciones de la aplicación
 export function HomePageClient({ user }: HomePageClientProps) {
+  const router = useRouter()
   const [accounts, setAccounts] = useState<Account[]>([])
   const [categories, setCategories] = useState<Category[]>([])
+
+  // Redirigir a bienvenida solo si no hay usuario (no registrado) y es la primera vez en este navegador
+  useEffect(() => {
+    if (!user && !localStorage.getItem(ONBOARDING_KEY)) {
+      router.replace('/bienvenida')
+    }
+  }, [user, router])
 
   useEffect(() => {
     // Resetear datos si no hay usuario
