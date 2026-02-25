@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from "react"
+import { useSWRConfig } from "swr"
 import { AddTransactionModal } from "@/src/components/vista-mensual/add-transaction-modal"
 import { Account } from "@/src/types/account-types"
 import { Category, Subcategory } from "@/src/types/category-types"
@@ -31,6 +32,7 @@ export function AddTransactionButton({
   subcategories
 }: AddTransactionButtonProps) {
   const [open, setOpen] = useState(false)
+  const { mutate: globalMutate } = useSWRConfig()
 
   const isFloating = variant === "floating"
 
@@ -57,6 +59,12 @@ export function AddTransactionButton({
         onCancel={() => setOpen(false)}
         onAccept={() => {
           setOpen(false)
+          // Revalida todas las keys de dashboard para reflejar el movimiento recién creado.
+          void globalMutate(
+            (key) => Array.isArray(key) && key[0] === "dashboard",
+            undefined,
+            { revalidate: true }
+          )
           onTransactionAdded?.()  // Callback para refrescar datos después de añadir
         }}
         mode={mode}

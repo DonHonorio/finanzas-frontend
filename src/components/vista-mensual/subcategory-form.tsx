@@ -10,7 +10,7 @@ import { DeleteButton } from "@/src/components/ui/delete-button"
 import { DeleteConfirmationModal } from "@/src/components/ui/delete-confirmation-modal"
 import { CancelButton } from "@/src/components/ui/cancel-button"
 import { SaveButton } from '@/src/components/ui/save-button'
-import deleteSubcategory from "@/src/actions/delete-subcategory-action"
+import { deleteSubcategory } from "@/src/data-layer/subcategories"
 
 type Props = {
     initialData?: {

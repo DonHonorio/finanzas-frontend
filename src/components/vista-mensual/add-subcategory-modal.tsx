@@ -2,7 +2,7 @@
 
 import { Modal } from "@/src/components/ui/modal"
 import { SubcategoryForm } from "./subcategory-form"
-import createSubcategory from "@/src/actions/create-subcategory-action"
+import { createSubcategory } from "@/src/data-layer/subcategories"
 
 type Props = {
   open: boolean

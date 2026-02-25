@@ -4,13 +4,13 @@ import { Modal } from "@/src/components/ui/modal"
 import { CategoryRow } from "@/src/types/dashboard-types"
 import { Category } from "@/src/types/category-types"
 import { useEffect, useState } from "react"
-import { getAccounts } from "@/src/actions/get-accounts-action"
-import { getCategories } from "@/src/actions/get-categories-action"
+import { getAccounts } from "@/src/data-layer/accounts"
+import { getCategories } from "@/src/data-layer/categories"
 import { Account } from "@/src/types/account-types"
 import { AddTransactionButton } from "@/src/components/ui/add-transaction-button"
 import { Transaction } from "@/src/types/transaction-types"
 import { EditTransactionModal } from "./edit-transaction-modal"
-import deleteTransaction from "@/src/actions/delete-transaction-action"
+import { deleteTransaction } from "@/src/data-layer/transactions"
 import { toast } from "react-toastify"
 import { CategoryTableHeader } from "../vista-category/category-table-header"
 import { CategoryTableRows } from "../vista-category/category-table-rows"
@@ -148,7 +148,7 @@ export function ViewCategoryModal({ open, category, onCancel, onDataChanged }: P
                     {category.withSubcategory && (
                         <button
                             onClick={() => setOpenAddSubcategoryModal(true)}
-                            className="w-auto px-4 py-2 text-sm h-9 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-lg transition select-none"
+                            className="w-auto px-4 py-2 text-sm h-9 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition select-none"
                         >
                             + Crear Subcategoría
                         </button>

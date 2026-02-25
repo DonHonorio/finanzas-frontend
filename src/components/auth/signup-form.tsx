@@ -2,10 +2,15 @@
 
 import { useState, useEffect, useActionState, useRef } from 'react'
 import { createAccountAction } from '@/src/actions/create-account-action'
+import { loginAction } from '@/src/actions/login-action'
 import { currencies } from '@/src/types/transaction-types'
 import { CancelButton } from '../ui/cancel-button'
 import { SaveButton } from '../ui/save-button'
 import { toast } from 'react-toastify'
+import { syncLocalDataToBackend } from '@/src/data-layer/local-backend-migration'
+import { clearLocalSessionIndicators } from '@/src/auth/clear-local-session'
+import { emitSessionCacheInvalidate } from '@/src/auth/session-cache-events'
+import { rollbackNewAccountAction } from '@/src/actions/rollback-new-account-action'
 
 interface SignupFormProps {
     onClose: () => void;
@@ -36,15 +41,21 @@ export function SignupForm({ onClose, onSuccess }: SignupFormProps) {
     const [password, setPassword] = useState('')
     const [baseCurrency, setBaseCurrency] = useState('')
     const [timeZone, setTimeZone] = useState('')
+    const [migrateLocalData, setMigrateLocalData] = useState(false)
+    const [isLocalSessionDetected, setIsLocalSessionDetected] = useState(false)
     const [availableTimeZones, setAvailableTimeZones] = useState<string[]>([])
     const [signupState, signupFormAction, isSignupPending] = useActionState<SignupActionState, FormData>(createAccountAction, null)
     const formRef = useRef<HTMLFormElement>(null)
+    // Evita ejecutar dos veces el flujo post-signup cuando React re-renderiza con el mismo resultado.
+    const lastHandledSignupUserRef = useRef<number | null>(null)
 
     // Detectar la zona horaria del navegador y obtener lista de zonas
     useEffect(() => {
+        setIsLocalSessionDetected(Boolean(localStorage.getItem('localToken')))
+
         const detectedTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
         setTimeZone(detectedTimeZone)
-        
+
         // Obtener todas las zonas horarias disponibles
         try {
             // @ts-ignore - supportedValuesOf puede no estar en todos los tipos
@@ -65,20 +76,74 @@ export function SignupForm({ onClose, onSuccess }: SignupFormProps) {
 
     // Manejar el éxito del signup
     useEffect(() => {
-        if (signupState?.success) {
+        if (!signupState?.success) return
+
+        const signupUserId = signupState.userId ?? null
+        if (signupUserId && lastHandledSignupUserRef.current === signupUserId) return
+        lastHandledSignupUserRef.current = signupUserId
+
+        void (async () => {
             toast.success(signupState.message || 'Cuenta creada exitosamente')
-            // Reset de los estados
+
+            // Flujo opcional de migración: login backend temporal + migración + rollback si algo falla.
+            if (migrateLocalData && isLocalSessionDetected) {
+                let mustRollback = false
+
+                try {
+                    const loginFormData = new FormData()
+                    loginFormData.append('email', email)
+                    loginFormData.append('password', password)
+                    loginFormData.append('preserveLocalSession', 'true')
+
+                    const loginResult = await loginAction(null, loginFormData)
+
+                    if (!loginResult?.success) {
+                        mustRollback = true
+                        toast.error('No se pudo iniciar sesión en backend para migrar datos. Se revertirá la cuenta.')
+                    } else {
+                        const migrationResult = await syncLocalDataToBackend()
+
+                        if (!migrationResult.success) {
+                            mustRollback = true
+                            toast.warn(migrationResult.message)
+                            if (migrationResult.errors.length > 0) {
+                                toast.error(migrationResult.errors[0])
+                            }
+                        } else {
+                            toast.success(migrationResult.message)
+                        }
+                    }
+                } catch {
+                    mustRollback = true
+                    toast.error('Error inesperado durante la migración. Se revertirá la cuenta.')
+                }
+
+                if (mustRollback) {
+                    const rollbackResult = await rollbackNewAccountAction()
+                    if (!rollbackResult.success) {
+                        toast.error(rollbackResult.message)
+                    }
+                    return
+                }
+            }
+
+            // Solo en éxito completo se limpia el estado local y se notifica invalidez de caché de sesión.
+            clearLocalSessionIndicators()
+            emitSessionCacheInvalidate()
+
             setEmail('')
             setName('')
             setFullName('')
             setPassword('')
             setBaseCurrency('')
             setTimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone)
+            setMigrateLocalData(false)
+
             if (onSuccess) {
                 onSuccess()
             }
-        }
-    }, [signupState, onSuccess])
+        })()
+    }, [signupState, onSuccess, migrateLocalData, isLocalSessionDetected, email, password])
 
     return (
         <form ref={formRef} action={signupFormAction} className="p-6 space-y-4">
@@ -219,6 +284,25 @@ export function SignupForm({ onClose, onSuccess }: SignupFormProps) {
                 )}
                 <p className="text-xs text-gray-500 mt-1">Se detectó automáticamente tu zona horaria</p>
             </div>
+
+            {isLocalSessionDetected && (
+                // Switch explícito para decidir si se copia data local al nuevo perfil backend.
+                <div className="flex items-center justify-between rounded-md border border-gray-300 px-3 py-2">
+                    <div className="pr-3">
+                        <p className="text-sm font-medium text-gray-700">Migrar datos locales a backend</p>
+                        <p className="text-xs text-gray-500">Si lo activas, se copiarán cuentas, categorías, subcategorías y transacciones de IndexedDB.</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                            type="checkbox"
+                            className="sr-only peer"
+                            checked={migrateLocalData}
+                            onChange={(e) => setMigrateLocalData(e.target.checked)}
+                        />
+                        <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-primary after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full" />
+                    </label>
+                </div>
+            )}
 
             {/* Botones */}
             <div className="flex gap-3 pt-4">

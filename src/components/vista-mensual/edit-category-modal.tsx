@@ -2,7 +2,7 @@
 
 import { Modal } from "@/src/components/ui/modal"
 import { CategoryForm } from "./category-form"
-import updateCategory from "@/src/actions/update-category-action"
+import { updateCategory } from "@/src/data-layer/categories"
 import { CategoryRow } from "@/src/types/dashboard-types"
 
 // Props

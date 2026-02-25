@@ -2,7 +2,7 @@
 
 import { Modal } from "@/src/components/ui/modal"
 import { SubcategoryForm } from "./subcategory-form"
-import updateSubcategory from "@/src/actions/update-subcategory-action"
+import { updateSubcategory } from "@/src/data-layer/subcategories"
 import { Subcategory } from "@/src/types/category-types"
 
 type Props = {

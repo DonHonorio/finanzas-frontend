@@ -29,7 +29,16 @@ export const categoryColumnTitle = 'name'
  * Componente principal del Dashboard que muestra datos de gastos/ingresos
  * Gestiona la tabla de datos, modales y estados de carga/error
  */
-export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", actualYear: number }) {
+export function Dashboard({
+    mode,
+    actualYear,
+    // Identificador de sesión/usuario para segmentar caché del dashboard.
+    userCacheKey
+}: {
+    mode: "expenses" | "incomes"
+    actualYear: number
+    userCacheKey: string
+}) {
     // Estado para controlar la apertura del modal de añadir categoría
     const [openAddCategoryModal, setOpenAddCategoryModal] = useState(false)
 
@@ -43,7 +52,7 @@ export function Dashboard({ mode, actualYear }: { mode: "expenses" | "incomes", 
 
     // Hook personalizado para obtener datos del dashboard con SWR
     // Incluye mutación para reintentar peticiones en caso de error
-    const { data = [], isLoading, error, mutate } = useDashboardData(mode, actualYear)
+    const { data = [], isLoading, error, mutate } = useDashboardData(mode, actualYear, userCacheKey)
 
     /**
      * Efecto para logging de datos (solo en desarrollo)

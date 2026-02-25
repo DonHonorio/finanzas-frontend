@@ -3,22 +3,25 @@
 import { CreditCard } from "lucide-react"
 import { z } from 'zod'
 import { Header } from "@/src/components/menu-principal/header"
-import { BackButton } from "@/src/components/ui/back-button"
 import ToastNotification from "@/src/components/ui/ToastNotification"
 import { UserSchema } from '@/src/schemas'
+import { useResolvedSessionUser } from "@/src/hooks/use-resolved-session-user"
 
 type User = z.infer<typeof UserSchema>
 
 interface CuentasPageClientProps {
     user?: User | null
+    source?: "backend" | "local" | "none"
 }
 
 // Pantalla placeholder de Cuentas: reutiliza header con usuario y vista de próxima funcionalidad.
-export function CuentasPageClient({ user }: CuentasPageClientProps) {
+export function CuentasPageClient({ user, source }: CuentasPageClientProps) {
+    const resolvedUser = useResolvedSessionUser(user, source)
+
     return (
         <div className="h-screen flex flex-col bg-gray-50">
             {/* Header */}
-            <Header user={user} />
+            <Header user={resolvedUser} source={source} />
 
             {/* Contenido Principal */}
             <main className="flex-1 p-10">

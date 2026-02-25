@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useActionState } from 'react'
 import { toast } from "react-toastify"
-import deleteTransaction from '@/src/actions/delete-transaction-action'
+import { deleteTransaction } from '@/src/data-layer/transactions'
 import { ActionStateType } from '@/src/types/action-types'
 import { Transaction } from '@/src/types/transaction-types'
 import { Account } from '@/src/types/account-types'

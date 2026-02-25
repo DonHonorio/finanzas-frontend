@@ -6,16 +6,18 @@ import { Dashboard } from "@/src/components/vista-mensual/dashboard"
 import { VistaMensualHeader } from "@/src/components/vista-mensual/vista-mensual-header"
 import { AddTransactionButton } from "@/src/components/ui/add-transaction-button"
 import { Header } from "@/src/components/menu-principal/header"
-import { getAccounts } from '@/src/actions/get-accounts-action'
+import { getAccounts } from '@/src/data-layer/accounts'
 import { Account } from '@/src/types/account-types'
-import { getCategories } from '@/src/actions/get-categories-action'
+import { getCategories } from '@/src/data-layer/categories'
 import { Category } from '@/src/types/category-types'
 import { UserSchema } from '@/src/schemas'
+import { useResolvedSessionUser } from "@/src/hooks/use-resolved-session-user"
 
 type User = z.infer<typeof UserSchema>
 
 interface VistaMensualPageClientProps {
   user?: User | null
+  source?: "backend" | "local" | "none"
 }
 
 /**
@@ -23,7 +25,11 @@ interface VistaMensualPageClientProps {
  * Gestiona el estado global de la vista (tipo de vista, año, modales)
  * y organiza la estructura de los componentes hijos.
  */
-export function VistaMensualPageClient({ user }: VistaMensualPageClientProps) {
+export function VistaMensualPageClient({ user, source }: VistaMensualPageClientProps) {
+  // Usuario efectivo según origen de sesión (backend/local).
+  const resolvedUser = useResolvedSessionUser(user, source)
+  // Aísla caché SWR por sesión+usuario para evitar mezclas entre login/local/backend.
+  const dashboardUserCacheKey = `${source ?? "none"}:${resolvedUser?.userId ?? "anonymous"}`
   // Determina si se visualizan gastos o ingresos en el dashboard
   const [mode, setMode] = useState<"expenses" | "incomes">("expenses")
 
@@ -38,21 +44,22 @@ export function VistaMensualPageClient({ user }: VistaMensualPageClientProps) {
 
   useEffect(() => {
     // Resetear datos si no hay usuario
-    if (!user) {
+    if (!resolvedUser) {
       setAccounts([])
       setCategories([])
       return
     }
     
     // Cargar datos cuando hay usuario o cambia el usuario
+    // Carga vía data-layer para mantener compatibilidad local/backend.
     getAccounts().then(data => setAccounts(data))
     getCategories().then(data => setCategories(data))
-  }, [user?.userId])
+  }, [resolvedUser?.userId])
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">
       {/* Header con navegación y autenticación */}
-      <Header user={user} />
+      <Header user={resolvedUser} source={source} />
 
       {/* Contenido principal */}
       <div className="flex-1 p-10 overflow-hidden">
@@ -79,7 +86,7 @@ export function VistaMensualPageClient({ user }: VistaMensualPageClientProps) {
           - evita que el scroll esté fuera de la tabla, se ajusta al tamaño disponible automáticamente
         */}
         <main className="flex-1 overflow-hidden">
-          <Dashboard mode={mode} actualYear={actualYear} />
+          <Dashboard mode={mode} actualYear={actualYear} userCacheKey={dashboardUserCacheKey} />
         </main>
 
         <footer className="h-10 mt-4 flex justify-end shrink-0">

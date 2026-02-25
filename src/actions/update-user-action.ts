@@ -12,9 +12,9 @@ export default async function updateUser(prevState: ActionStateType, formData: F
         email: formData.get('email'),
         baseCurrency: formData.get('baseCurrency'),
         timeZone: formData.get('timeZone'),
-        avatar: formData.get('avatar') ? formData.get('avatar') : undefined, // Avatar es opcional, si no se proporciona se envía como undefined
+        avatar: formData.get('avatar'),
     }
-    console.log('Datos recibidos para actualización: ', userData)
+    
     // Validación de datos con Zod
     const user = UpdateUserSchema.safeParse(userData)
     if (!user.success) {

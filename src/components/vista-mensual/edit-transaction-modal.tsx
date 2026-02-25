@@ -1,6 +1,6 @@
 import { Modal } from "@/src/components/ui/modal"
 import { TransactionForm } from "./transaction-form"
-import updateTransaction from "@/src/actions/update-transaction-action"
+import { updateTransaction } from "@/src/data-layer/transactions"
 import { Transaction } from "@/src/types/transaction-types"
 import { Account } from "@/src/types/account-types"
 import { Category, Subcategory } from "@/src/types/category-types"

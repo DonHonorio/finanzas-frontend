@@ -4,5 +4,5 @@ import { PatrimonioPageClient } from "@/src/components/pages/patrimonio-page-cli
 export default async function PatrimonioPage() {
     const user = await verifySession()
     
-    return <PatrimonioPageClient user={user?.user} />
+    return <PatrimonioPageClient user={user?.user} source={user?.source ?? "none"} />
 }

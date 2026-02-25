@@ -1,6 +1,6 @@
 import { Modal } from "@/src/components/ui/modal"
 import { CategoryForm } from "./category-form"
-import createCategory from "@/src/actions/create-category-action"
+import { createCategory } from "@/src/data-layer/categories"
 
 // Props
 type Props = {

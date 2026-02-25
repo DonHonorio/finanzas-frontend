@@ -7,7 +7,7 @@ export default async function VistaMensualPage() {
   
   return (
     <>
-      <VistaMensualPageClient user={user?.user} />
+      <VistaMensualPageClient user={user?.user} source={user?.source ?? "none"} />
       <ToastNotification />
     </>
   )

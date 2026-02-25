@@ -2,6 +2,7 @@
 
 import { LoginSchema } from "@/src/schemas"
 import { setToken } from "@/src/auth/token"
+import { cookies } from "next/headers"
 
 // action para iniciar sesión
 export const loginAction = async (prevState: unknown, formData: FormData) => {
@@ -20,6 +21,9 @@ export const loginAction = async (prevState: unknown, formData: FormData) => {
             message: 'Error de validación'
         }
     }
+
+    // Flag opcional para flujos transaccionales (signup+migración) donde no se debe limpiar local aún.
+    const preserveLocalSession = String(formData.get('preserveLocalSession') ?? 'false') === 'true'
 
     try {
         const response = await fetch(`${process.env.API_URL}/auth/login`, {
@@ -42,6 +46,13 @@ export const loginAction = async (prevState: unknown, formData: FormData) => {
 
         // Guardar el token en una cookie
         await setToken(result.token)
+        // En login normal, al entrar en backend se eliminan marcadores de sesión local.
+        if (!preserveLocalSession) {
+            const cookieStore = await cookies()
+            cookieStore.delete('localToken')
+            cookieStore.delete('localBaseCurrency')
+            cookieStore.delete('localTimeZone')
+        }
 
         return {
             success: true,

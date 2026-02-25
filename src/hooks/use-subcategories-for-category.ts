@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Category, Subcategory } from '@/src/types/category-types'
-import { getSubcategories } from '@/src/actions/get-subcategories-action'
+import { getSubcategories } from '@/src/data-layer/subcategories'
 
 // Hook para cargar y gestionar subcategorías según la categoría seleccionada en el formulario de transacción.
 export function useSubcategoriesForCategory(

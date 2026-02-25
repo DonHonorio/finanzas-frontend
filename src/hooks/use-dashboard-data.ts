@@ -1,22 +1,35 @@
-import useSWR from 'swr'
-
-// prefijo de la api local de nextjs (porque en el servidor /api le causa causa problema al proxy)
-const apiPrefix = process.env.NEXT_PUBLIC_LOCAL_API_PREFIX || ''
+import { useEffect } from 'react'
+import useSWR, { useSWRConfig } from 'swr'
+import { getDashboardData } from '@/src/data-layer/dashboard'
+import { SESSION_CACHE_INVALIDATE_EVENT } from '@/src/auth/session-cache-events'
 
 // Hook personalizado para datos del dashboard
-export function useDashboardData(mode: "expenses" | "incomes", year: number) {
-    // Fetcher que lanza error si la respuesta HTTP no es exitosa
-    const fetcher = async (url: string) => {
-        const res = await fetch(url)
-        if (!res.ok) {
-            throw new Error(`HTTP ${res.status}: ${res.statusText}`)
+export function useDashboardData(mode: "expenses" | "incomes", year: number, userCacheKey: string) {
+    // Fetcher único que delega en data-layer (backend/local).
+    const fetcher = async () => getDashboardData(mode, year)
+    const { mutate: globalMutate } = useSWRConfig()
+
+    useEffect(() => {
+        // Limpia caché de dashboard cuando cambian indicadores de sesión.
+        const clearDashboardCache = () => {
+            globalMutate(
+                (key) => Array.isArray(key) && key[0] === 'dashboard',
+                undefined,
+                { revalidate: false }
+            )
         }
-        return await res.json()
-    }
+
+        window.addEventListener(SESSION_CACHE_INVALIDATE_EVENT, clearDashboardCache)
+
+        return () => {
+            window.removeEventListener(SESSION_CACHE_INVALIDATE_EVENT, clearDashboardCache)
+        }
+    }, [globalMutate])
 
     // Configuración de SWR con optimizaciones para el dashboard
     const { data, error, isLoading, mutate } = useSWR(
-        `${process.env.NEXT_PUBLIC_URL}/${apiPrefix}/dashboard/${mode}/${year}`,
+        // Key con userCacheKey para separar caché por usuario/sesión.
+        ['dashboard', userCacheKey, mode, year],
         fetcher,
         {
             keepPreviousData: true,      // Evita parpadeo al cambiar datos

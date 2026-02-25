@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Transaction } from '@/src/types/transaction-types'
-import { getSubcategoryTransactions } from '@/src/actions/get-subcategory-transactions-action'
+import { getSubcategoryTransactions } from '@/src/data-layer/transactions'
 
 /**
  * Hook para manejar la obtención de transacciones de una subcategoría

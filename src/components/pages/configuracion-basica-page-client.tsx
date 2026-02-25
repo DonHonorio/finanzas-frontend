@@ -3,9 +3,12 @@
 import { Globe, Clock } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { currencies } from "@/src/types/transaction-types"
+import { createAccountAction } from "@/src/indexdb/users"
+import { emitSessionCacheInvalidate } from "@/src/auth/session-cache-events"
 
 // Clave usada en localStorage para registrar que el usuario ya completó el onboarding
 const ONBOARDING_KEY = 'fp_onboarding_completed'
+const LOCAL_TOKEN_KEY = 'localToken'
 
 // Pantalla de configuración básica: primera selección de moneda y zona horaria.
 // Al confirmar guarda el flag en localStorage y redirige al inicio.
@@ -13,9 +16,21 @@ export function ConfiguracionBasicaPageClient() {
     const router = useRouter()
     const timeZones = Intl.supportedValuesOf('timeZone')
 
-    function handleContinuar(e: React.FormEvent<HTMLFormElement>) {
+    async function handleContinuar(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
+        const formData = new FormData(e.currentTarget)
+        const baseCurrency = String(formData.get('baseCurrency') ?? 'EUR')
+        const timeZone = String(formData.get('timeZone') ?? 'Europe/Madrid')
+        // Crea/actualiza usuario local base con moneda y zona horaria elegidas.
+        await createAccountAction(null, formData)
         localStorage.setItem(ONBOARDING_KEY, 'true')
+        localStorage.setItem(LOCAL_TOKEN_KEY, 'true')
+        // Persiste marcadores locales también en cookies para detección server-side.
+        document.cookie = `${LOCAL_TOKEN_KEY}=true; path=/; max-age=31536000; samesite=lax`
+        document.cookie = `localBaseCurrency=${encodeURIComponent(baseCurrency)}; path=/; max-age=31536000; samesite=lax`
+        document.cookie = `localTimeZone=${encodeURIComponent(timeZone)}; path=/; max-age=31536000; samesite=lax`
+        // Notifica a listeners globales para refrescar estado de sesión/caché.
+        emitSessionCacheInvalidate()
         router.replace('/')
     }
 

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import deleteTransaction from '@/src/actions/delete-transaction-action'
+import { deleteTransaction } from '@/src/data-layer/transactions'
 import { toast } from 'react-toastify'
 
 /**

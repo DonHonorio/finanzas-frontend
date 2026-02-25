@@ -1,9 +1,18 @@
+"use server"
+
 import { cookies } from "next/headers"
 
 // Obtiene el token desde la cookie FINANZAS_TOKEN
 export const getToken = async () => {
   const cookieStore = await cookies()
   return cookieStore.get('FINANZAS_TOKEN')?.value
+}
+
+// Obtiene el token local desde la cookie localToken
+export const getLocalToken = async () => {
+  // Se usa para detectar sesión local en ejecución server.
+  const cookieStore = await cookies()
+  return cookieStore.get('localToken')?.value
 }
 
 // Guarda el token en la cookie FINANZAS_TOKEN con duración de 1 año

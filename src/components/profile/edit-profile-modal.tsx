@@ -1,10 +1,9 @@
 'use client'
 
-import { useState, useActionState, useEffect, startTransition } from 'react'
+import { useState, useActionState, useEffect, startTransition, useRef } from 'react'
 import { Modal } from "@/src/components/ui/modal"
 import { z } from 'zod'
 import { UserSchema } from '@/src/schemas'
-import updateUser from '@/src/actions/update-user-action'
 import deleteUser from '@/src/actions/delete-user-action'
 import { DeleteConfirmationModal } from "@/src/components/ui/delete-confirmation-modal"
 import { ChangePasswordModal } from "@/src/components/profile/change-password-modal"
@@ -15,6 +14,7 @@ import { SaveButton } from "@/src/components/ui/save-button"
 import { DeleteButton } from "@/src/components/ui/delete-button"
 import ErrorMessage from "@/src/components/ui/ErrorMessage"
 import { Key } from 'lucide-react'
+import { getUpdateProfileAction } from '@/src/data-layer/profile.client'
 
 type User = z.infer<typeof UserSchema>
 
@@ -37,8 +37,12 @@ interface EditProfileModalProps {
  * Los campos del formulario están en ProfileFormFields para mantener este componente limpio.
  */
 export function EditProfileModal({ open, user, onCancel, onSuccess }: EditProfileModalProps) {
+    // console.log('RENDERIZANDO PROFILE MODAL')
+    // Usa action backend vía data-layer para mantener patrón unificado de origen.
+    const updateAction = getUpdateProfileAction("backend")
+
     // Estado para la acción de actualización
-    const [updateState, updateDispatch, isUpdating] = useActionState(updateUser, {
+    const [updateState, updateDispatch, isUpdating] = useActionState(updateAction, {
         errors: [],
         success: "",
     })
@@ -57,23 +61,47 @@ export function EditProfileModal({ open, user, onCancel, onSuccess }: EditProfil
     const [timeZone, setTimeZone] = useState(user.timeZone)
     const [avatar, setAvatar] = useState(user.avatar || '')
 
+    // Sincroniza los campos cuando cambia el usuario recibido por props
+    useEffect(() => {
+        if (!open) return
+
+        setName(user.name)
+        setFullName(user.fullName)
+        setEmail(user.email)
+        setBaseCurrency(user.baseCurrency)
+        setTimeZone(user.timeZone)
+        setAvatar(user.avatar || '')
+    }, [open, user])
+
     // Estado para modal de confirmación de eliminación
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
     // Estado para modal de cambiar contraseña
     const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false)
 
+    const wasUpdatingRef = useRef(false)
+
     // Mostrar toast notifications según resultado de actualización
     useEffect(() => {
+        // Marca ciclo real de submit para no disparar toasts en render inicial.
+        if (isUpdating) {
+            wasUpdatingRef.current = true
+            return
+        }
+
+        if (!wasUpdatingRef.current) return
+        wasUpdatingRef.current = false
+
         if (updateState.success) {
             toast.success(updateState.success)
             onSuccess()
+            return
         }
+
         if (updateState.errors.length > 0) {
             updateState.errors.forEach((error) => toast.error(error))
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [updateState])
+    }, [isUpdating, updateState.success, updateState.errors, onSuccess])
 
     // Mostrar toast notifications según resultado de eliminación
     useEffect(() => {

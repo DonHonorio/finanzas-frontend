@@ -1,44 +1,54 @@
 import "server-only"
 import { redirect } from "next/navigation"
-import { UserSchema } from "../schemas"
 import { cache } from "react"
-import { getToken } from "./token"
+import { getSessionType } from "@/src/data-layer/session"
+import { getUserAction as getBackendUser } from "@/src/actions/get-user-action"
+import { UserSchema } from "@/src/schemas"
+import { z } from "zod"
+
+type User = z.infer<typeof UserSchema>
+
+export type VerifySessionResult = {
+    user: User | null
+    isAuth: boolean
+    sessionType: "backend" | "local"
+    source: "backend" | "local"
+}
 
 // Verifica la sesión y redirige a / si no está autenticado
-export const verifySession = cache(async (redirectOnFail: boolean = true) => {
-    const token = await getToken()
-    
-    !token && redirectOnFail ? redirect('/') : null
-
-    const url = `${process.env.API_URL}/auth/user`
-    
+export const verifySession = cache(async (redirectOnFail: boolean = true): Promise<VerifySessionResult | null> => {
     try {
-        const req = await fetch(url, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
-            cache: 'no-store'
-        })
+        // Primero se detecta el origen real de sesión para decidir si consultar backend o no.
+        const sessionType = await getSessionType()
 
-        if (!req.ok) {
-            if (redirectOnFail) {
-                redirect('/')
-            }
-
-            return null
+        if (sessionType === "none") {
+            return redirectOnFail ? redirect('/') : null
         }
 
-        const session = await req.json()
-        const result = UserSchema.safeParse(session)
+        if (sessionType === "local") {
+            // En local no existe perfil backend; el user final se resuelve en cliente.
+            return {
+                user: null,
+                isAuth: true,
+                sessionType,
+                source: "local"
+            }
+        }
 
-        !result.success && redirectOnFail ? redirect('/') : null
+        const user = await getBackendUser()
+
+        if (!user) {
+            return redirectOnFail ? redirect('/') : null
+        }
 
         return {
-            user: result.data,
-            isAuth: true
+            user,
+            isAuth: true,
+            sessionType,
+            source: "backend"
         }
     } catch (error) {
         console.error('Error verificando sesión:', error)
-        redirectOnFail ? redirect('/') : null
+        return redirectOnFail ? redirect('/') : null
     }
 })

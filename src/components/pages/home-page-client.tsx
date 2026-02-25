@@ -8,51 +8,56 @@ import { AddTransactionButton } from "@/src/components/ui/add-transaction-button
 import ToastNotification from "@/src/components/ui/ToastNotification"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { getAccounts } from "@/src/actions/get-accounts-action"
-import { getCategories } from "@/src/actions/get-categories-action"
+import { getAccounts } from "@/src/data-layer/accounts"
+import { getCategories } from "@/src/data-layer/categories"
 import { Account } from "@/src/types/account-types"
 import { Category } from "@/src/types/category-types"
 import { UserSchema } from '@/src/schemas'
+import { useResolvedSessionUser } from "@/src/hooks/use-resolved-session-user"
 
 type User = z.infer<typeof UserSchema>
 
 interface HomePageClientProps {
   user?: User | null
+  source?: "backend" | "local" | "none"
 }
 
 // Clave usada en localStorage para registrar que el usuario ya completó el onboarding
 const ONBOARDING_KEY = 'fp_onboarding_completed'
 
 // Página principal del frontend, con enlaces a las diferentes secciones de la aplicación
-export function HomePageClient({ user }: HomePageClientProps) {
+export function HomePageClient({ user, source }: HomePageClientProps) {
   const router = useRouter()
+  // Normaliza usuario efectivo (backend directo o local resuelto en cliente).
+  const resolvedUser = useResolvedSessionUser(user, source)
   const [accounts, setAccounts] = useState<Account[]>([])
   const [categories, setCategories] = useState<Category[]>([])
 
   // Redirigir a bienvenida solo si no hay usuario (no registrado) y es la primera vez en este navegador
   useEffect(() => {
-    if (!user && !localStorage.getItem(ONBOARDING_KEY)) {
+    if (source === "none" && !resolvedUser && !localStorage.getItem(ONBOARDING_KEY)) {
       router.replace('/bienvenida')
     }
-  }, [user, router])
+  }, [resolvedUser, router, source])
 
   useEffect(() => {
     // Resetear datos si no hay usuario
-    if (!user) {
+    if (!resolvedUser) {
       setAccounts([])
       setCategories([])
       return
     }
     
     // Cargar datos cuando hay usuario o cambia el usuario
+    // Se usa data-layer para soportar backend/local con misma API.
     getAccounts().then(setAccounts)
     getCategories().then(setCategories)
-  }, [user?.userId])
+  }, [resolvedUser?.userId])
 
   return (
     <div className="h-screen w-full flex flex-col bg-gray-50">
       {/* Header */}
-      <Header user={user} />
+      <Header user={resolvedUser} source={source} />
 
       {/* Contenido Principal */}
       <main className="flex-1 flex flex-col items-center justify-between py-12 px-8">

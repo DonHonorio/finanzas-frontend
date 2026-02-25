@@ -1,8 +1,8 @@
 import { useState } from "react"
 import { CategoryItem, Subcategory } from "@/src/types/category-types"
 import { CategoryRow } from "@/src/types/dashboard-types"
-import { getSubcategories } from "@/src/actions/get-subcategories-action"
-import { getCategoryTransactions } from "@/src/actions/get-category-transactions-action"
+import { getSubcategories } from "@/src/data-layer/subcategories"
+import { getCategoryTransactions } from "@/src/data-layer/transactions"
 import { MonthlyData } from "@/src/types/general-types"
 import { monthNames } from "@/src/lib/utils"
 

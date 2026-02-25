@@ -3,22 +3,25 @@
 import { PiggyBank } from "lucide-react"
 import { z } from 'zod'
 import { Header } from "@/src/components/menu-principal/header"
-import { BackButton } from "@/src/components/ui/back-button"
 import ToastNotification from "@/src/components/ui/ToastNotification"
 import { UserSchema } from '@/src/schemas'
+import { useResolvedSessionUser } from "@/src/hooks/use-resolved-session-user"
 
 type User = z.infer<typeof UserSchema>
 
 interface AhorrosPageClientProps {
     user?: User | null
+    source?: "backend" | "local" | "none"
 }
 
 // Pantalla placeholder de Ahorros: mantiene layout estándar y muestra contenido temporal.
-export function AhorrosPageClient({ user }: AhorrosPageClientProps) {
+export function AhorrosPageClient({ user, source }: AhorrosPageClientProps) {
+    const resolvedUser = useResolvedSessionUser(user, source)
+
     return (
         <div className="h-screen flex flex-col bg-gray-50">
             {/* Header */}
-            <Header user={user} />
+            <Header user={resolvedUser} source={source} />
 
             {/* Contenido Principal */}
             <main className="flex-1 p-10">
