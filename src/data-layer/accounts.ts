@@ -1,6 +1,7 @@
+import { ActionStateType } from "@/src/types/action-types"
+
 type SessionType = "backend" | "local" | "none"
 
-// Resuelve el tipo de sesión en cliente (rápido) o servidor (cookies).
 async function resolveSessionType(): Promise<SessionType> {
   if (typeof window !== "undefined") {
     return window.localStorage.getItem("localToken") ? "local" : "backend"
@@ -10,14 +11,12 @@ async function resolveSessionType(): Promise<SessionType> {
   return getSessionType()
 }
 
-// Protege llamadas locales cuando el código se ejecuta en servidor.
 function assertClientForLocalSession(sessionType: SessionType) {
   if (sessionType === "local" && typeof window === "undefined") {
     throw new Error("LOCAL_SESSION_REQUIRES_CLIENT")
   }
 }
 
-// Obtiene cuentas según origen de sesión activo.
 export async function getAccounts() {
   const sessionType = await resolveSessionType()
 
@@ -36,20 +35,73 @@ export async function getAccounts() {
   throw new Error("SESSION_NONE")
 }
 
-// Crea cuenta en backend o local según la sesión activa.
-export async function createAccountAction(prevState: unknown, formData: FormData) {
+export async function createAccount(prevState: ActionStateType, formData: FormData) {
   const sessionType = await resolveSessionType()
 
   if (sessionType === "backend") {
-    const { createAccountAction } = await import("@/src/actions/create-account-action")
-    return createAccountAction(prevState, formData)
+    const { default: createAccount } = await import("@/src/actions/create-financial-account-action")
+    return createAccount(prevState, formData)
   }
 
   assertClientForLocalSession(sessionType)
 
   if (sessionType === "local") {
-    const { createAccountAction } = await import("@/src/indexdb/users")
-    return createAccountAction(prevState, formData)
+    const { createAccount } = await import("@/src/indexdb/accounts")
+    return createAccount(prevState, formData)
+  }
+
+  throw new Error("SESSION_NONE")
+}
+
+export async function updateAccount(prevState: ActionStateType, formData: FormData) {
+  const sessionType = await resolveSessionType()
+
+  if (sessionType === "backend") {
+    const { default: updateAccount } = await import("@/src/actions/update-financial-account-action")
+    return updateAccount(prevState, formData)
+  }
+
+  assertClientForLocalSession(sessionType)
+
+  if (sessionType === "local") {
+    const { updateAccount } = await import("@/src/indexdb/accounts")
+    return updateAccount(prevState, formData)
+  }
+
+  throw new Error("SESSION_NONE")
+}
+
+export async function deleteAccount(prevState: ActionStateType, formData: FormData) {
+  const sessionType = await resolveSessionType()
+
+  if (sessionType === "backend") {
+    const { default: deleteAccount } = await import("@/src/actions/delete-financial-account-action")
+    return deleteAccount(prevState, formData)
+  }
+
+  assertClientForLocalSession(sessionType)
+
+  if (sessionType === "local") {
+    const { deleteAccount } = await import("@/src/indexdb/accounts")
+    return deleteAccount(prevState, formData)
+  }
+
+  throw new Error("SESSION_NONE")
+}
+
+export async function toggleAccountActive(prevState: ActionStateType, formData: FormData) {
+  const sessionType = await resolveSessionType()
+
+  if (sessionType === "backend") {
+    const { default: toggleAccountActive } = await import("@/src/actions/toggle-account-active-action")
+    return toggleAccountActive(prevState, formData)
+  }
+
+  assertClientForLocalSession(sessionType)
+
+  if (sessionType === "local") {
+    const { toggleAccountActive } = await import("@/src/indexdb/accounts")
+    return toggleAccountActive(prevState, formData)
   }
 
   throw new Error("SESSION_NONE")

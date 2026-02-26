@@ -33,7 +33,14 @@ export enum AccountType {
  * Tipo auxiliar que extrae las claves del enum AccountType.
  * Usado para tipar el campo 'type' en Account.
  */
-type AccountTypeValue = keyof typeof AccountType
+export type AccountTypeKey = keyof typeof AccountType
+export type AccountTypeLabel = (typeof AccountType)[AccountTypeKey]
+export type AccountTypeValue = AccountTypeKey | AccountTypeLabel
+
+export const accountTypeOptions = Object.entries(AccountType).map(([key, label]) => ({
+  key: key as AccountTypeKey,
+  label: label as AccountTypeLabel
+}))
 
 /**
  * Representa una cuenta bancaria o financiera del usuario.

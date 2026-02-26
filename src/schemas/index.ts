@@ -4,6 +4,8 @@ import { AccountType } from "../types/account-types"
 import { BaseCurrency, currencies } from "../types/transaction-types"
 
 const CURRENCY_VALUES = currencies.map(c => c.currency) as [BaseCurrency, ...BaseCurrency[]]
+const ACCOUNT_TYPE_VALUES = Object.values(AccountType) as [string, ...string[]]
+const ACCOUNT_TYPE_KEYS = Object.keys(AccountType) as [keyof typeof AccountType, ...(keyof typeof AccountType)[]]
 
 // Esquema para respuestas de éxito de la API
 export const SuccessSchema = z.string()
@@ -82,7 +84,10 @@ export const DraftTransactionSchema = z.object({
 // Esquema para la creación/edición de una cuenta (borrador antes de ser guardado en BD)
 export const DraftAccountSchema = z.object({
     name: z.string().min(1, "El nombre es obligatorio").max(100, "El nombre no puede superar 100 caracteres"),
-    type: z.enum(Object.values(AccountType) as [string, ...string[]], { message: "El tipo de cuenta es inválido" }),
+    type: z.union([
+        z.enum(ACCOUNT_TYPE_VALUES, { message: "El tipo de cuenta es inválido" }),
+        z.enum(ACCOUNT_TYPE_KEYS, { message: "El tipo de cuenta es inválido" })
+    ]).transform((value) => value in AccountType ? AccountType[value as keyof typeof AccountType] : value),
     balance: z
         .string()
         .refine((val) => !isNaN(Number(val)), { message: "El saldo debe ser un número válido" })
