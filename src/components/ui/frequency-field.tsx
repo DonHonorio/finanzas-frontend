@@ -2,6 +2,7 @@
 
 import { cn } from "@/src/lib/utils"
 import { useEffect, useState } from "react"
+import { useTranslations } from "next-intl"
 
 export type FrequencyValue = "once" | "daily" | "weekly" | "monthly" | "yearly" | "custom"
 export type FrequencyUnit = "days" | "weeks" | "months" | "years"
@@ -102,6 +103,8 @@ export function FrequencyField({
   customUnitName,
   className
 }: Props) {
+  const t = useTranslations("Frequency")
+
   // Estados internos para manejar la UI
   const parsed = parseRRule(frequency)
   const [value, setValue] = useState<FrequencyValue>(parsed.value)
@@ -148,12 +151,12 @@ export function FrequencyField({
         value={value}
         onChange={(event) => handleValueChange(event.target.value as FrequencyValue)}
       >
-        <option value="once">Una sola vez</option>
-        <option value="daily">Diariamente</option>
-        <option value="weekly">Semanalmente</option>
-        <option value="monthly">Mensualmente</option>
-        <option value="yearly">Anualmente</option>
-        <option value="custom">Personalizado</option>
+        <option value="once">{t("once")}</option>
+        <option value="daily">{t("daily")}</option>
+        <option value="weekly">{t("weekly")}</option>
+        <option value="monthly">{t("monthly")}</option>
+        <option value="yearly">{t("yearly")}</option>
+        <option value="custom">{t("custom")}</option>
       </select>
 
       {/* Campos adicionales solo para modo "personalizado" */}
@@ -181,10 +184,10 @@ export function FrequencyField({
               commit(value, customCount, next)
             }}
           >
-            <option value="days">Días</option>
-            <option value="weeks">Semanas</option>
-            <option value="months">Meses</option>
-            <option value="years">Años</option>
+            <option value="days">{t("days")}</option>
+            <option value="weeks">{t("weeks")}</option>
+            <option value="months">{t("months")}</option>
+            <option value="years">{t("years")}</option>
           </select>
         </div>
       )}

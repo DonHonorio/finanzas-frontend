@@ -1,8 +1,11 @@
+'use client'
+
 import { formatCurrency, formatDate, monthNames } from "@/src/lib/utils"
 import { CategoryItem, Subcategory } from "@/src/types/category-types"
 import { Transaction } from "@/src/types/transaction-types"
 import { Eye, Pencil, Trash2 } from "lucide-react"
 import { Button } from "@/src/components/ui/button"
+import { useLocale, useTranslations } from "next-intl"
 
 type CategoryTableRowsProps = {
     items: CategoryItem[]  // Array unificado: puede contener subcategorías o transacciones
@@ -21,6 +24,9 @@ export function CategoryTableRows({
     onEditSubcategory,
     onViewSubcategory
 }: CategoryTableRowsProps) {
+    const t = useTranslations("CategoryTable")
+    const locale = useLocale()
+
     const calculateYearTotal = (monthlyData: CategoryItem['monthlyData']) => {
         return Object.values(monthlyData).reduce((sum, val) => sum + val, 0)
     }
@@ -53,7 +59,7 @@ export function CategoryTableRows({
                             {/* Badge identificador para subcategorías */}
                             {item.type === 'subcategory' && (
                                 <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded-full shrink-0">
-                                    Sub
+                                    {t("subBadge")}
                                 </span>
                             )}
                             
@@ -70,7 +76,7 @@ export function CategoryTableRows({
                                                 e.stopPropagation()
                                                 onViewSubcategory(item.originalSubcategory!)
                                             }}
-                                            title="Ver transacciones de subcategoría"
+                                            title={t("viewSubcategoryTransactions")}
                                             className="h-7 w-7 p-0"
                                         >
                                             <Eye className="h-4 w-4 text-primary" />
@@ -83,7 +89,7 @@ export function CategoryTableRows({
                                             e.stopPropagation()
                                             onEditSubcategory(item.originalSubcategory!)
                                         }}
-                                        title="Editar subcategoría"
+                                        title={t("editSubcategory")}
                                         className="h-7 w-7 p-0"
                                     >
                                         <Pencil className="h-4 w-4 text-primary" />
@@ -101,7 +107,7 @@ export function CategoryTableRows({
                                             e.stopPropagation()
                                             onEditTransaction(item.originalTransaction!)
                                         }}
-                                        title="Editar"
+                                        title={t("edit")}
                                         className="h-7 w-7 p-0"
                                     >
                                         <Pencil className="h-4 w-4 text-primary" />
@@ -114,7 +120,7 @@ export function CategoryTableRows({
                                             e.stopPropagation()
                                             onDeleteTransaction(item.originalTransaction!.transactionId)
                                         }}
-                                        title="Eliminar"
+                                        title={t("delete")}
                                         className="h-7 w-7 p-0"
                                     >
                                         <Trash2 className="h-4 w-4 text-destructive" />
@@ -148,8 +154,8 @@ export function CategoryTableRows({
                                     `}
                                 >
                                     {isActive 
-                                        ? amount.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                                        : '0,00'
+                                        ? amount.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                                        : (0).toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                                     }
                                 </div>
                             )

@@ -1,7 +1,10 @@
+'use client'
+
 import { columnWidths } from "@/src/helpers/dashboard-helpers"
 import { formatCurrency, months } from "@/src/lib/utils"
 import { CategoryRow, Month } from "@/src/types/dashboard-types"
 import { Table } from "@tanstack/react-table"
+import { useTranslations } from "next-intl"
 
 // Calcula el total gastado/ingresado para un mes específico
 // Suma todos los valores de ese mes en cada categoría
@@ -20,6 +23,8 @@ type Props = {
 }
 
 export function TableFooter({ table, data }: Props) {
+  const t = useTranslations("CategoryTable")
+
   return (
     // Tabla independiente que alinea sus columnas con la tabla principal
     // table-fixed + mismo colgroup garantiza alineación perfecta
@@ -42,7 +47,7 @@ export function TableFooter({ table, data }: Props) {
       <tfoot>
         <tr>
           {/* Celda "TOTAL" - ocupa la columna de categorías */}
-          <td className="px-4 py-3 text-left">TOTAL</td>
+          <td className="px-4 py-3 text-left">{t("total")}</td>
           
           {/* Total de presupuestos - formateado como moneda */}
           <td className="px-4 py-3 text-right">

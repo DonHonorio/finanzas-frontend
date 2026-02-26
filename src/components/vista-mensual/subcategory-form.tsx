@@ -11,6 +11,7 @@ import { DeleteConfirmationModal } from "@/src/components/ui/delete-confirmation
 import { CancelButton } from "@/src/components/ui/cancel-button"
 import { SaveButton } from '@/src/components/ui/save-button'
 import { deleteSubcategory } from "@/src/data-layer/subcategories"
+import { useTranslations } from "next-intl"
 
 type Props = {
     initialData?: {
@@ -28,6 +29,8 @@ type Props = {
 }
 
 export function SubcategoryForm({ initialData, categoryId, action, onSuccess, onCancel }: Props) {
+    const t = useTranslations("SubcategoryForm")
+    const tCommon = useTranslations("CommonButtons")
     const [state, dispatch, isPending] = useActionState(action, {
         errors: [],
         success: ''
@@ -112,18 +115,18 @@ export function SubcategoryForm({ initialData, categoryId, action, onSuccess, on
 
             {/* Título dinámico */}
             <h2 className="text-[26px] font-semibold mb-4">
-                {initialData ? "Editar Subcategoría" : "Crear Subcategoría"}
+                {initialData ? t("editTitle") : t("createTitle")}
             </h2>
 
             {/* Contenido del formulario */}
             <div className="space-y-4 h-[calc(55vh-260px)]">
                 {/* Nombre */}
                 <div>
-                    <label className="block text-[15px] font-semibold text-gray-700 mb-1">Nombre</label>
+                    <label className="block text-[15px] font-semibold text-gray-700 mb-1">{t("name")}</label>
                     <input
                         type="text"
                         name="name"
-                        placeholder="Nombre de la subcategoría"
+                        placeholder={t("namePlaceholder")}
                         value={name}
                         onChange={(event) => setName(event.target.value)}
                         className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary"
@@ -132,10 +135,10 @@ export function SubcategoryForm({ initialData, categoryId, action, onSuccess, on
 
                 {/* Descripción */}
                 <div>
-                    <label className="block text-[15px] font-semibold text-gray-700 mb-1">Descripción (opcional)</label>
+                    <label className="block text-[15px] font-semibold text-gray-700 mb-1">{t("descriptionOptional")}</label>
                     <textarea
                         name="description"
-                        placeholder="Descripción de la subcategoría"
+                        placeholder={t("descriptionPlaceholder")}
                         value={description}
                         onChange={(event) => setDescription(event.target.value)}
                         className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary resize-none"
@@ -145,7 +148,7 @@ export function SubcategoryForm({ initialData, categoryId, action, onSuccess, on
 
                 {/* Presupuesto */}
                 <div>
-                    <label className="block text-[15px] font-semibold text-gray-700 mb-1">Presupuesto</label>
+                    <label className="block text-[15px] font-semibold text-gray-700 mb-1">{t("budget")}</label>
                     <input
                         type="number"
                         min={0}
@@ -160,7 +163,7 @@ export function SubcategoryForm({ initialData, categoryId, action, onSuccess, on
 
                 {/* Color */}
                 <div>
-                    <label className="block text-[15px] font-semibold text-gray-700 mb-2">Color</label>
+                    <label className="block text-[15px] font-semibold text-gray-700 mb-2">{t("color")}</label>
                     <input type="hidden" name="color" value={color} />
                     <div className="flex flex-wrap gap-2">
                         {colorOptions.map((item, index) => (
@@ -183,7 +186,7 @@ export function SubcategoryForm({ initialData, categoryId, action, onSuccess, on
 
                 {/* Activo */}
                 <div className="flex items-center justify-start gap-10 mt-6">
-                    <label className="text-[15px] font-semibold text-gray-700">Activo</label>
+                    <label className="text-[15px] font-semibold text-gray-700">{t("active")}</label>
                     <input type="hidden" name="isActive" value={String(isActive)} />
                     <ActiveToggle
                         isActive={isActive}
@@ -197,7 +200,7 @@ export function SubcategoryForm({ initialData, categoryId, action, onSuccess, on
                 <div className="mt-6">
                     <DeleteButton
                         onClick={() => setIsDeleteModalOpen(true)}
-                        label="Eliminar Subcategoría"
+                        label={t("delete")}
                         className="w-1/2"
                     />
                 </div>
@@ -209,20 +212,20 @@ export function SubcategoryForm({ initialData, categoryId, action, onSuccess, on
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDelete}
                 isDeleting={isDeleting}
-                title="Confirmar Eliminación"
+                title={t("deleteTitle")}
                 description={
                     <div>
                         <p className="mb-3">
-                            Escribe el nombre de la subcategoría <strong>{initialData?.name}</strong> para confirmar la eliminación.
+                            {t("deleteDescription", { name: initialData?.name ?? "" })}
                         </p>
                         <p className="text-red-600 font-semibold">
-                            ⚠️ Advertencia: Se eliminarán por completo todas las transacciones asociadas a esta subcategoría. Si deseas conservarlas, quítalas de la subcategoría antes de eliminarla.
+                            {t("deleteWarning")}
                         </p>
                     </div>
                 }
                 validationText={initialData?.name || ""}
-                inputPlaceholder="Nombre de la subcategoría"
-                confirmButtonText="Eliminar"
+                inputPlaceholder={t("deletePlaceholder")}
+                confirmButtonText={tCommon("delete")}
             />
 
             {/* Footer */}
@@ -231,7 +234,7 @@ export function SubcategoryForm({ initialData, categoryId, action, onSuccess, on
                 <SaveButton 
                     isPending={isPending} 
                     isValid={isFormValid}
-                    label={initialData ? "Guardar" : "Crear"}
+                    label={initialData ? t("save") : t("create")}
                     form="subcategory-form"
                     className="px-12"
                 />

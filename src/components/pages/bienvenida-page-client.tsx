@@ -5,9 +5,12 @@ import { Wallet, X } from "lucide-react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { LoginForm } from "@/src/components/auth/login-form"
+import { useTranslations } from "next-intl"
 
 // Pantalla de bienvenida: se muestra al usuario la primera vez que accede sin cuenta.
 export function BienvenidaPageClient() {
+    const t = useTranslations("WelcomePage")
+    const headlineLines = t("headline").split("\n")
     const [showLogin, setShowLogin] = useState(false)
     const router = useRouter()
 
@@ -24,12 +27,12 @@ export function BienvenidaPageClient() {
             {/* Barra superior con botón de login */}
             <div className="fixed top-0 left-0 right-0 flex justify-end items-center px-8 py-4">
                 <div className="flex items-center gap-3">
-                    <span className="text-sm text-gray-500">¿Ya tienes cuenta?</span>
+                    <span className="text-sm text-gray-500">{t("alreadyHaveAccount")}</span>
                     <button
                         onClick={() => setShowLogin(true)}
                         className="text-sm font-semibold text-primary border border-primary px-4 py-2 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
                     >
-                        Iniciar sesión
+                        {t("signIn")}
                     </button>
                 </div>
             </div>
@@ -40,11 +43,11 @@ export function BienvenidaPageClient() {
                     <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4">
                         {/* Cabecera del modal */}
                         <div className="flex items-center justify-between px-6 pt-6 pb-2">
-                            <h2 className="text-xl font-bold text-gray-900">Iniciar sesión</h2>
+                            <h2 className="text-xl font-bold text-gray-900">{t("modalTitle")}</h2>
                             <button
                                 onClick={() => setShowLogin(false)}
                                 className="text-gray-400 hover:text-gray-600 transition"
-                                aria-label="Cerrar"
+                                aria-label={t("close")}
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -65,31 +68,31 @@ export function BienvenidaPageClient() {
                         <Wallet className="w-14 h-14 text-white" />
                     </div>
                     <p className="text-sm font-semibold tracking-widest text-primary uppercase">
-                        Finanzas Personales
+                        {t("brand")}
                     </p>
                 </div>
 
                 {/* Mensaje principal */}
                 <div className="text-center flex flex-col gap-6">
                     <h1 className="text-4xl font-bold text-gray-900 leading-tight">
-                        Bienvenido/a a tu nuevo<br />espacio financiero
+                        {headlineLines.map((line, index) => (
+                            <span key={`${line}-${index}`}>
+                                {line}
+                                {index < headlineLines.length - 1 && <br />}
+                            </span>
+                        ))}
                     </h1>
 
                     <p className="text-gray-600 text-lg leading-relaxed">
-                        Tu dinero, claro y bajo control. Registra tus ingresos y gastos,
-                        asigna presupuestos a tus categorías y descubre en qué se va tu
-                        dinero cada mes. Gestiona tus finanzas de forma simple, visual
-                        y adaptada a ti.
+                        {t("description")}
                     </p>
 
                     <p className="text-gray-500 text-base leading-relaxed">
-                        Empieza a tomar el control de tus finanzas personales con una
-                        visión clara, organizada y sin complicaciones.
+                        {t("description2")}
                     </p>
 
                     <p className="text-gray-500 text-base leading-relaxed">
-                        Da el primer paso hacia una gestión más consciente y eficiente
-                        de tu dinero.
+                        {t("description3")}
                     </p>
                 </div>
 
@@ -98,7 +101,7 @@ export function BienvenidaPageClient() {
                     href="/configuracion-basica"
                     className="bg-primary hover:bg-primary/90 text-white font-semibold text-lg px-10 py-4 rounded-xl shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-100"
                 >
-                    Empezar
+                    {t("start")}
                 </Link>
 
             </div>

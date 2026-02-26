@@ -17,6 +17,7 @@ import { formatCurrency, months } from '@/src/lib/utils'
 import { DataLoading } from '../ui/data-loading'
 import { DataError } from '../ui/data-error'
 import { NoData } from '../ui/no-data'
+import { useTranslations } from 'next-intl'
 
 /**
  * Nombre del campo que se usará como título de la primera columna llamada: 'categoría' en la tabla
@@ -39,11 +40,13 @@ export function Dashboard({
     actualYear: number
     userCacheKey: string
 }) {
+    const t = useTranslations("Dashboard")
+    const tMonth = useTranslations("MonthShort")
     // Estado para controlar la apertura del modal de añadir categoría
     const [openAddCategoryModal, setOpenAddCategoryModal] = useState(false)
 
     // Srive para mostrar el tipo de dato en la UI 
-    const tipoDato = mode === "expenses" ? "gastos" : "ingresos"
+    const tipoDato = mode === "expenses" ? t("expenses") : t("incomes")
 
     // Estados para gestionar los modales de vista/edición de categorías
     // Para abrir un modal en una categoría específica
@@ -99,26 +102,26 @@ export function Dashboard({
     const columns = useMemo<ColumnDef<CategoryRow>[]>(() => [
         {
             accessorKey: categoryColumnTitle, // key de la columna
-            header: 'CATEGORÍAS', // Título que ve el usuario
+            header: t("categories"), // Título que ve el usuario
             meta: {
                 align: 'center' // estilo aplicado
             }
         },
         {
             accessorKey: 'budget',
-            header: 'PRESUPUESTO',
+            header: t("budget"),
             // Formatea el valor numérico como moneda
             cell: info => formatCurrency(info.getValue<number>()), // estilo aplicado a las celdas de esta columna (ahorrando hacerlo después)
         },
         // Genera columnas dinámicas para cada mes
         ...months.map(month => ({
             id: month, // 'enero', 'febrero'...
-            header: month.toUpperCase(), // poniendo en mayúscula el título de columnas
+            header: tMonth(month), // poniendo en mayúscula el título de columnas
             // Función para acceder al valor del mes en el objeto months, es decir -> busca un accessorKey en las claves del objeto months del array de categories
             accessorFn: row => row.months[month],
             cell: info => formatCurrency(info.getValue<number>()),
         } as ColumnDef<CategoryRow>)),
-    ], [])
+    ], [t, tMonth])
 
     /**
      * Instancia de react-table que maneja la lógica de la tabla
@@ -171,7 +174,7 @@ export function Dashboard({
                     className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-2 select-none"
                 >
                     <span className="text-lg">＋</span>
-                    Añadir categoría
+                    {t("addCategory")}
                 </button>
             </div>
 

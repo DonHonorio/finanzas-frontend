@@ -8,6 +8,7 @@ import { CancelButton } from "@/src/components/ui/cancel-button"
 import { SaveButton } from "@/src/components/ui/save-button"
 import ErrorMessage from "@/src/components/ui/ErrorMessage"
 import { Eye, EyeOff } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 interface ChangePasswordModalProps {
     open: boolean
@@ -26,6 +27,7 @@ interface ChangePasswordModalProps {
  * - Notificaciones toast de éxito/error
  */
 export function ChangePasswordModal({ open, onCancel, onSuccess }: ChangePasswordModalProps) {
+    const t = useTranslations("ChangePasswordModal")
     // Estado para la acción de actualización de contraseña
     const [state, dispatch, isPending] = useActionState(updatePassword, {
         errors: [],
@@ -65,7 +67,7 @@ export function ChangePasswordModal({ open, onCancel, onSuccess }: ChangePasswor
     const handleConfirmPasswordChange = (value: string) => {
         setConfirmPassword(value)
         if (value && value !== newPassword) {
-            setConfirmError('Las contraseñas no coinciden')
+            setConfirmError(t('mismatch'))
         } else {
             setConfirmError('')
         }
@@ -75,7 +77,7 @@ export function ChangePasswordModal({ open, onCancel, onSuccess }: ChangePasswor
     const handleNewPasswordChange = (value: string) => {
         setNewPassword(value)
         if (confirmPassword && confirmPassword !== value) {
-            setConfirmError('Las contraseñas no coinciden')
+            setConfirmError(t('mismatch'))
         } else {
             setConfirmError('')
         }
@@ -105,13 +107,13 @@ export function ChangePasswordModal({ open, onCancel, onSuccess }: ChangePasswor
                 )}
 
                 {/* Título */}
-                <h2 className="text-[26px] font-semibold mb-6">Cambiar Contraseña</h2>
+                <h2 className="text-[26px] font-semibold mb-6">{t("title")}</h2>
 
                 <div className="flex flex-col gap-4">
                     {/* Input contraseña actual */}
                     <div>
                         <label className="block text-[15px] font-semibold text-gray-700 mb-1">
-                            Contraseña Actual
+                            {t("currentPassword")}
                         </label>
                         <div className="relative">
                             <input
@@ -136,7 +138,7 @@ export function ChangePasswordModal({ open, onCancel, onSuccess }: ChangePasswor
                     {/* Input nueva contraseña */}
                     <div>
                         <label className="block text-[15px] font-semibold text-gray-700 mb-1">
-                            Nueva Contraseña
+                            {t("newPassword")}
                         </label>
                         <div className="relative">
                             <input
@@ -158,14 +160,14 @@ export function ChangePasswordModal({ open, onCancel, onSuccess }: ChangePasswor
                             </button>
                         </div>
                         <p className="text-xs text-gray-500 mt-1">
-                            Mínimo 6 caracteres
+                            {t("minLength")}
                         </p>
                     </div>
 
                     {/* Input confirmar nueva contraseña */}
                     <div>
                         <label className="block text-[15px] font-semibold text-gray-700 mb-1">
-                            Confirmar Nueva Contraseña
+                            {t("confirmPassword")}
                         </label>
                         <div className="relative">
                             <input
@@ -196,7 +198,7 @@ export function ChangePasswordModal({ open, onCancel, onSuccess }: ChangePasswor
                     <SaveButton
                         isPending={isPending}
                         isValid={isValid}
-                        label="Actualizar Contraseña"
+                        label={t("update")}
                     />
                 </div>
             </form>

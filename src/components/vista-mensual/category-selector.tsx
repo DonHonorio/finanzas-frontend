@@ -1,5 +1,8 @@
+'use client'
+
 import { Category } from '@/src/types/category-types'
 import { cn } from "@/src/lib/utils"
+import { useTranslations } from "next-intl"
 
 interface CategorySelectorProps {
     category: string | number
@@ -11,9 +14,11 @@ interface CategorySelectorProps {
 
 // Selector de categoría filtrado por tipo (gasto/ingreso)
 export function CategorySelector({ category, categories, type, disabled, onChange }: CategorySelectorProps) {
+    const t = useTranslations("Selectors")
+
     return (
         <div>
-            <label className="block text-[15px] font-semibold text-gray-700 mb-1">Categoría</label>
+            <label className="block text-[15px] font-semibold text-gray-700 mb-1">{t("category")}</label>
             {/* Cuando está deshabilitado, el valor se envía como hidden en lugar de usar el select */}
             {disabled && <input type="hidden" name="category" value={category} />}
             <select
@@ -29,7 +34,7 @@ export function CategorySelector({ category, categories, type, disabled, onChang
                         : "bg-white"
                 )}
             >
-                <option value="">Selecciona una categoría</option>
+                <option value="">{t("categoryPlaceholder")}</option>
                 {categories.filter(cat => cat.type === type).map(cat => (
                     <option key={cat.categoryId} value={cat.categoryId}>
                         {cat.name}

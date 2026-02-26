@@ -11,6 +11,7 @@ import { syncLocalDataToBackend } from '@/src/data-layer/local-backend-migration
 import { clearLocalSessionIndicators } from '@/src/auth/clear-local-session'
 import { emitSessionCacheInvalidate } from '@/src/auth/session-cache-events'
 import { rollbackNewAccountAction } from '@/src/actions/rollback-new-account-action'
+import { useLocale, useTranslations } from 'next-intl'
 
 interface SignupFormProps {
     onClose: () => void;
@@ -35,6 +36,8 @@ type SignupActionState = {
  * Formulario de registro de cuenta
  */
 export function SignupForm({ onClose, onSuccess }: SignupFormProps) {
+    const t = useTranslations("SignupForm")
+    const locale = useLocale()
     const [email, setEmail] = useState('')
     const [name, setName] = useState('')
     const [fullName, setFullName] = useState('')
@@ -83,7 +86,7 @@ export function SignupForm({ onClose, onSuccess }: SignupFormProps) {
         lastHandledSignupUserRef.current = signupUserId
 
         void (async () => {
-            toast.success(signupState.message || 'Cuenta creada exitosamente')
+            toast.success(signupState.message || t("success"))
 
             // Flujo opcional de migración: login backend temporal + migración + rollback si algo falla.
             if (migrateLocalData && isLocalSessionDetected) {
@@ -99,7 +102,7 @@ export function SignupForm({ onClose, onSuccess }: SignupFormProps) {
 
                     if (!loginResult?.success) {
                         mustRollback = true
-                        toast.error('No se pudo iniciar sesión en backend para migrar datos. Se revertirá la cuenta.')
+                        toast.error(t("backendLoginError"))
                     } else {
                         const migrationResult = await syncLocalDataToBackend()
 
@@ -115,7 +118,7 @@ export function SignupForm({ onClose, onSuccess }: SignupFormProps) {
                     }
                 } catch {
                     mustRollback = true
-                    toast.error('Error inesperado durante la migración. Se revertirá la cuenta.')
+                    toast.error(t("migrationUnexpectedError"))
                 }
 
                 if (mustRollback) {
@@ -176,7 +179,7 @@ export function SignupForm({ onClose, onSuccess }: SignupFormProps) {
             {/* Name */}
             <div>
                 <label htmlFor="signup-name" className="block text-sm font-medium text-gray-700 mb-1">
-                    Nombre de usuario
+                    {t("username")}
                 </label>
                 <input
                     type="text"
@@ -196,7 +199,7 @@ export function SignupForm({ onClose, onSuccess }: SignupFormProps) {
             {/* FullName */}
             <div>
                 <label htmlFor="signup-fullname" className="block text-sm font-medium text-gray-700 mb-1">
-                    Nombre completo
+                    {t("fullName")}
                 </label>
                 <input
                     type="text"
@@ -216,7 +219,7 @@ export function SignupForm({ onClose, onSuccess }: SignupFormProps) {
             {/* Password */}
             <div>
                 <label htmlFor="signup-password" className="block text-sm font-medium text-gray-700 mb-1">
-                    Contraseña
+                    {t("password")}
                 </label>
                 <input
                     type="password"
@@ -236,7 +239,7 @@ export function SignupForm({ onClose, onSuccess }: SignupFormProps) {
             {/* Base Currency */}
             <div>
                 <label htmlFor="signup-currency" className="block text-sm font-medium text-gray-700 mb-1">
-                    Moneda base
+                    {t("baseCurrency")}
                 </label>
                 <select
                     id="signup-currency"
@@ -247,11 +250,11 @@ export function SignupForm({ onClose, onSuccess }: SignupFormProps) {
                     required
                 >
                     <option value="" disabled>
-                        Selecciona una moneda
+                        {t("selectCurrency")}
                     </option>
                     {currencies.map((curr: { currency: string; description: string }) => (
                         <option key={curr.currency} value={curr.currency}>
-                            {curr.currency} - {curr.description}
+                            {curr.currency} - {new Intl.DisplayNames([locale], { type: "currency" }).of(curr.currency)}
                         </option>
                     ))}
                 </select>
@@ -263,7 +266,7 @@ export function SignupForm({ onClose, onSuccess }: SignupFormProps) {
             {/* Time Zone */}
             <div>
                 <label htmlFor="signup-timezone" className="block text-sm font-medium text-gray-700 mb-1">
-                    Zona horaria
+                    {t("timeZone")}
                 </label>
                 <select
                     id="signup-timezone"
@@ -282,15 +285,15 @@ export function SignupForm({ onClose, onSuccess }: SignupFormProps) {
                 {signupState?.errors?.timeZone && (
                     <p className="text-red-500 text-sm mt-1">{signupState.errors.timeZone[0]}</p>
                 )}
-                <p className="text-xs text-gray-500 mt-1">Se detectó automáticamente tu zona horaria</p>
+                <p className="text-xs text-gray-500 mt-1">{t("detectedTimeZone")}</p>
             </div>
 
             {isLocalSessionDetected && (
                 // Switch explícito para decidir si se copia data local al nuevo perfil backend.
                 <div className="flex items-center justify-between rounded-md border border-gray-300 px-3 py-2">
                     <div className="pr-3">
-                        <p className="text-sm font-medium text-gray-700">Migrar datos locales a backend</p>
-                        <p className="text-xs text-gray-500">Si lo activas, se copiarán cuentas, categorías, subcategorías y transacciones de IndexedDB.</p>
+                        <p className="text-sm font-medium text-gray-700">{t("migrateTitle")}</p>
+                        <p className="text-xs text-gray-500">{t("migrateDescription")}</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                         <input
@@ -307,7 +310,7 @@ export function SignupForm({ onClose, onSuccess }: SignupFormProps) {
             {/* Botones */}
             <div className="flex gap-3 pt-4">
                 <CancelButton onClick={onClose} />
-                <SaveButton isPending={isSignupPending} isValid={true} label="Crear Cuenta" />
+                <SaveButton isPending={isSignupPending} isValid={true} label={t("submit")} />
             </div>
         </form>
     )

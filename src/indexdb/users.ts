@@ -1,5 +1,6 @@
 import { ActionStateType } from "@/src/types/action-types"
 import { getDB } from "./db"
+import { DEFAULT_LOCALE, isLocale, LOCALE_COOKIE_MAX_AGE, LOCALE_COOKIE_NAME } from "@/src/i18n/config"
 
 type LocalUser = {
   userId: number
@@ -7,6 +8,13 @@ type LocalUser = {
   timeZone: string
   createdAt: string
   updateAt: string
+}
+
+// Mantiene cookie de idioma en cliente para que SSR/CSR compartan el mismo locale.
+function persistLocaleCookieClient(rawLocale: FormDataEntryValue | null | undefined) {
+  if (typeof window === "undefined") return
+  const localeValue = typeof rawLocale === "string" && isLocale(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  document.cookie = `${LOCALE_COOKIE_NAME}=${encodeURIComponent(localeValue)}; path=/; max-age=${LOCALE_COOKIE_MAX_AGE}; samesite=lax`
 }
 
 // Helpers de acceso base para leer/escribir usuario local.
@@ -71,6 +79,8 @@ export const createAccountAction = async (prevState: unknown, formData: FormData
     updateAt: now
   })
 
+  persistLocaleCookieClient(formData.get("language"))
+
   return {
     success: true,
     message: "Cuenta creada exitosamente",
@@ -127,6 +137,7 @@ export async function updateUser(prevState: ActionStateType, formData: FormData)
   }
 
   await putUser(updatedUser)
+  persistLocaleCookieClient(formData.get("language"))
 
   return {
     errors: [],

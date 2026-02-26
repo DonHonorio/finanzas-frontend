@@ -1,6 +1,9 @@
+'use client'
+
 import { currencies } from '@/src/types/transaction-types'
 import { cn } from "@/src/lib/utils"
 import { DesmarcarButton } from "@/src/components/ui/desmarcar-button"
+import { useLocale, useTranslations } from "next-intl"
 
 interface CurrencySelectorProps {
     currency: string
@@ -15,9 +18,12 @@ interface CurrencySelectorProps {
  * forma parte del formulario de transacción
  */
 export function CurrencySelector({ currency, account, onChange, onClear }: CurrencySelectorProps) {
+    const t = useTranslations("Selectors")
+    const locale = useLocale()
+
     return (
         <div>
-            <label className="block text-[15px] font-semibold text-gray-700 mb-1">Divisa</label>
+            <label className="block text-[15px] font-semibold text-gray-700 mb-1">{t("currency")}</label>
 
             {/* Cuando la divisa viene de la cuenta, se envía como hidden en lugar de usar el select */}
             {account && <input type="hidden" name="currency" value={currency} />}
@@ -35,10 +41,10 @@ export function CurrencySelector({ currency, account, onChange, onClear }: Curre
                         !account && currency && "pr-10" // Espacio para el botón de limpiar
                     )}
                 >
-                    <option value="">Selecciona una divisa</option>
+                    <option value="">{t("currencyPlaceholder")}</option>
                     {currencies.map((curr) => (
                         <option key={curr.currency} value={curr.currency}>
-                            {curr.currency} - {curr.description}
+                            {curr.currency} - {new Intl.DisplayNames([locale], { type: "currency" }).of(curr.currency)}
                         </option>
                     ))}
                 </select>
@@ -47,7 +53,7 @@ export function CurrencySelector({ currency, account, onChange, onClear }: Curre
                 {!account && currency && (
                     <DesmarcarButton
                         onClick={onClear}
-                        title="Quitar divisa seleccionada"
+                        title={t("clearSelectedCurrency")}
                     />
                 )}
             </div>

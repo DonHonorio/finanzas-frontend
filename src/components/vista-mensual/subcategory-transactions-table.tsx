@@ -1,7 +1,10 @@
+'use client'
+
 import { Transaction } from "@/src/types/transaction-types"
 import { formatDate } from "@/src/lib/utils"
 import { Pencil, Trash2 } from "lucide-react"
 import { Button } from "@/src/components/ui/button"
+import { useLocale, useTranslations } from "next-intl"
 
 type SubcategoryTransactionsTableProps = {
     loading: boolean
@@ -28,11 +31,15 @@ export function SubcategoryTransactionsTable({
     onEditTransaction,
     onDeleteTransaction
 }: SubcategoryTransactionsTableProps) {
+    const t = useTranslations("CategoryTable")
+    const tStatus = useTranslations("CommonStatus")
+    const locale = useLocale()
+
     if (loading) {
         /* Estado de Carga */
         return (
             <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500">Cargando...</p>
+                <p className="text-gray-500">{tStatus("loadingShort")}</p>
             </div>
         )
     }
@@ -41,7 +48,7 @@ export function SubcategoryTransactionsTable({
         /* Estado Vacío */
         return (
             <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500">No hay transacciones en esta subcategoría</p>
+                <p className="text-gray-500">{t("emptySubcategory")}</p>
             </div>
         )
     }
@@ -57,7 +64,7 @@ export function SubcategoryTransactionsTable({
                 {/* Fecha - con ordenación */}
                 <div className="flex items-center justify-center relative group">
                     <button onClick={onToggleSort} className="hover:text-gray-600 flex items-center gap-1">
-                        FECHA
+                        {t("date")}
                         <span>{sortOrder === 'asc' ? '↑' : '↓'}</span>
                     </button>
                     <div onMouseDown={(e) => onStartResize(0, e)} className="absolute -right-2 top-0 bottom-0 w-4 cursor-col-resize z-20 opacity-0 group-hover:opacity-100 flex justify-center">
@@ -67,7 +74,7 @@ export function SubcategoryTransactionsTable({
 
                 {/* Nombre */}
                 <div className="flex items-center justify-start relative group">
-                    NOMBRE
+                    {t("name")}
                     <div onMouseDown={(e) => onStartResize(1, e)} className="absolute -right-2 top-0 bottom-0 w-4 cursor-col-resize z-20 opacity-0 group-hover:opacity-100 flex justify-center">
                         <div className="w-1 h-full bg-blue-200"></div>
                     </div>
@@ -75,7 +82,7 @@ export function SubcategoryTransactionsTable({
 
                 {/* Monto - no redimensionable */}
                 <div className="flex items-center justify-center">
-                    MONTO
+                    {t("amount")}
                 </div>
             </div>
 
@@ -105,7 +112,7 @@ export function SubcategoryTransactionsTable({
                                         e.stopPropagation()
                                         onEditTransaction(transaction)
                                     }}
-                                    title="Editar"
+                                    title={t("edit")}
                                     className="h-7 w-7 p-0"
                                 >
                                     <Pencil className="h-4 w-4 text-primary" />
@@ -118,7 +125,7 @@ export function SubcategoryTransactionsTable({
                                         e.stopPropagation()
                                         onDeleteTransaction(transaction.transactionId)
                                     }}
-                                    title="Eliminar"
+                                    title={t("delete")}
                                     className="h-7 w-7 p-0"
                                 >
                                     <Trash2 className="h-4 w-4 text-destructive" />
@@ -128,7 +135,7 @@ export function SubcategoryTransactionsTable({
 
                         {/* Monto */}
                         <div className="text-center py-1.5 rounded-md text-xs font-medium bg-amber-100 text-amber-700 truncate">
-                            {Math.abs(transaction.amount).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            {Math.abs(transaction.amount).toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </div>
                     </div>
                 ))}

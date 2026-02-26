@@ -1,5 +1,8 @@
+"use client"
+
 import { X } from "lucide-react"
 import { cn } from "@/src/lib/utils"
+import { useTranslations } from "next-intl"
 
 interface DesmarcarButtonProps {
     onClick: () => void
@@ -8,7 +11,9 @@ interface DesmarcarButtonProps {
 }
 
 // Botón para limpiar/desmarcar selección (ej: en inputs de búsqueda o select)
-export function DesmarcarButton({ onClick, title = "Quitar selección", className }: DesmarcarButtonProps) {
+export function DesmarcarButton({ onClick, title, className }: DesmarcarButtonProps) {
+    const t = useTranslations("CommonButtons")
+
     return (
         <button
             type="button"
@@ -17,7 +22,7 @@ export function DesmarcarButton({ onClick, title = "Quitar selección", classNam
                 "absolute right-8 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100",
                 className
             )}
-            title={title}
+            title={title ?? t("clearSelection")}
         >
             <X className="h-4 w-4" />
         </button>

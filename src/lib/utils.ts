@@ -20,18 +20,25 @@ export const monthNames = [
 ] as const
 
 // Formatea números como moneda en formato español (€)
-export function formatCurrency(value: number) {
-  return new Intl.NumberFormat('es-ES', {
+export function formatCurrency(value: number, options?: { locale?: string; currency?: string }) {
+  const locale = options?.locale ?? (typeof navigator !== "undefined" ? navigator.language : "en-US")
+  const currency = options?.currency ?? "EUR"
+
+  return new Intl.NumberFormat(locale, {
     style: 'currency',
-    currency: 'EUR',
+    currency,
   }).format(value)
 }
 
 // Formatea una fecha ISO a formato español dd/mm/yyyy
-export function formatDate(dateString: string) {
+export function formatDate(dateString: string, locale?: string) {
   if (!dateString) return ''
   const date = new Date(dateString)
-  return date.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })
+  return date.toLocaleDateString(locale ?? (typeof navigator !== "undefined" ? navigator.language : "en-US"), {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  })
 }
 
 // Opciones de icono

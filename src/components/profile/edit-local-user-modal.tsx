@@ -10,6 +10,10 @@ import ErrorMessage from '@/src/components/ui/ErrorMessage'
 import { UserSchema } from '@/src/schemas'
 import { currencies } from '@/src/types/transaction-types'
 import { getUpdateProfileAction, LOCAL_USER_UPDATED_EVENT } from '@/src/data-layer/profile.client'
+import { useLocale } from 'next-intl'
+import { AppLocale } from '@/src/i18n/config'
+import { LanguageSelector } from '@/src/components/ui/language-selector'
+import { useTranslations } from 'next-intl'
 
 // Tipo de usuario inferido desde el schema para mantener tipado consistente con el resto de la app.
 type User = z.infer<typeof UserSchema>
@@ -24,6 +28,7 @@ interface EditLocalUserModalProps {
 
 // Modal para editar únicamente configuración local (moneda y zona horaria) en IndexedDB.
 export function EditLocalUserModal({ open, user, onCancel, onSuccess }: EditLocalUserModalProps) {
+    const t = useTranslations("EditLocalUserModal")
     // Selecciona la action de actualización local desde el data-layer para no acoplar UI a almacenamiento.
     const updateAction = getUpdateProfileAction("local")
 
@@ -35,6 +40,8 @@ export function EditLocalUserModal({ open, user, onCancel, onSuccess }: EditLoca
     // Estado controlado de los dos campos editables del perfil local.
     const [baseCurrency, setBaseCurrency] = useState(user.baseCurrency)
     const [timeZone, setTimeZone] = useState(user.timeZone)
+    const locale = useLocale() as AppLocale
+    const [language, setLanguage] = useState<AppLocale>(locale)
 
     // Ref para detectar transición real de "enviando" a "terminado" y evitar toasts duplicados.
     const wasUpdatingRef = useRef(false)
@@ -44,7 +51,8 @@ export function EditLocalUserModal({ open, user, onCancel, onSuccess }: EditLoca
         if (!open) return
         setBaseCurrency(user.baseCurrency)
         setTimeZone(user.timeZone)
-    }, [open, user.baseCurrency, user.timeZone])
+        setLanguage(locale)
+    }, [open, user.baseCurrency, user.timeZone, locale])
 
     // Gestiona side-effects post-submit: éxito (toast + evento + callback) o lista de errores.
     useEffect(() => {
@@ -90,14 +98,14 @@ export function EditLocalUserModal({ open, user, onCancel, onSuccess }: EditLoca
                 )}
 
                 {/* Título principal del modal de configuración local. */}
-                <h2 className="text-[26px] font-semibold mb-6">Configuración Local</h2>
+                <h2 className="text-[26px] font-semibold mb-6">{t("title")}</h2>
 
                 {/* Campos editables del formulario (solo preferencias locales). */}
                 <div className="flex flex-col gap-4">
                     {/* Campo Moneda Base: selector controlado y requerido para la preferencia contable principal. */}
                     <div>
                         <label className="block text-[15px] font-semibold text-gray-700 mb-1">
-                            Moneda Base
+                            {t("baseCurrency")}
                         </label>
                         <select
                             name="baseCurrency"
@@ -108,7 +116,7 @@ export function EditLocalUserModal({ open, user, onCancel, onSuccess }: EditLoca
                         >
                             {currencies.map((curr) => (
                                 <option key={curr.currency} value={curr.currency}>
-                                    {curr.currency} - {curr.description}
+                                    {curr.currency} - {new Intl.DisplayNames([locale], { type: "currency" }).of(curr.currency)}
                                 </option>
                             ))}
                         </select>
@@ -117,7 +125,7 @@ export function EditLocalUserModal({ open, user, onCancel, onSuccess }: EditLoca
                     {/* Campo Zona Horaria: selector controlado y requerido para normalizar fechas en vistas y cálculos. */}
                     <div>
                         <label className="block text-[15px] font-semibold text-gray-700 mb-1">
-                            Zona Horaria
+                            {t("timeZone")}
                         </label>
                         <select
                             name="timeZone"
@@ -133,6 +141,14 @@ export function EditLocalUserModal({ open, user, onCancel, onSuccess }: EditLoca
                             ))}
                         </select>
                     </div>
+
+                    {/* Campo Idioma: preferencia global para textos de UI en modo local. */}
+                    <LanguageSelector
+                        name="language"
+                        value={language}
+                        onChange={setLanguage}
+                        persistOnChange={false}
+                    />
                 </div>
 
                 {/* Footer de acciones: cancelar sin cambios o guardar con estado pendiente. */}
@@ -141,7 +157,7 @@ export function EditLocalUserModal({ open, user, onCancel, onSuccess }: EditLoca
                     <SaveButton
                         isPending={isUpdating}
                         isValid={true}
-                        label="Guardar"
+                        label={t("save")}
                     />
                 </div>
             </form>

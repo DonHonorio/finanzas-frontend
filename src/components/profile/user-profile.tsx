@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation'
 import { EditLocalUserModal } from './edit-local-user-modal'
 import { useSWRConfig } from 'swr'
 import { emitSessionCacheInvalidate } from '@/src/auth/session-cache-events'
+import { useTranslations } from 'next-intl'
 
 type User = z.infer<typeof UserSchema>
 
@@ -20,6 +21,7 @@ interface UserProfileProps {
 
 // Muestra el resumen del usuario autenticado y un menú desplegable de acciones.
 export function UserProfile({ user, source = "backend" }: UserProfileProps) {
+    const t = useTranslations("UserProfile")
     const [isOpen, setIsOpen] = useState(false)
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
     const [isLocalConfigModalOpen, setIsLocalConfigModalOpen] = useState(false)
@@ -96,7 +98,7 @@ export function UserProfile({ user, source = "backend" }: UserProfileProps) {
                                 className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                             >
                                 <Settings className="w-4 h-4" />
-                                Configuración
+                                {t("settings")}
                             </button>
                         ) : (
                             <>
@@ -110,7 +112,7 @@ export function UserProfile({ user, source = "backend" }: UserProfileProps) {
                                     className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                                 >
                                     <Settings className="w-4 h-4" />
-                                    Editar Perfil
+                                    {t("editProfile")}
                                 </button>
 
                                 <button
@@ -118,7 +120,7 @@ export function UserProfile({ user, source = "backend" }: UserProfileProps) {
                                     className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
                                 >
                                     <LogOut className="w-4 h-4" />
-                                    Cerrar sesión
+                                    {t("logout")}
                                 </button>
                             </>
                         )}

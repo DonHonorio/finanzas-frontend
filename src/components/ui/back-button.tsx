@@ -2,6 +2,7 @@
 
 import { ChevronLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 
 interface BackButtonProps {
   href?: string // Si se proporciona, navega a esta ruta. Si no, usa router.back()
@@ -13,6 +14,7 @@ interface BackButtonProps {
  */
 export function BackButton({ href = "/" }: BackButtonProps) {
   const router = useRouter()
+  const t = useTranslations("CommonButtons")
 
   const handleClick = () => {
     if (href) {
@@ -28,7 +30,7 @@ export function BackButton({ href = "/" }: BackButtonProps) {
       className="flex items-center gap-2 px-4 py-2 rounded-md text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 active:-translate-x-0.5 transition select-none"
     >
       <ChevronLeft className="h-4 w-4" />
-      Volver
+      {t("back")}
     </button>
   )
 }

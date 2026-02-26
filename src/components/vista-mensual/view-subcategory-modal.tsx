@@ -18,6 +18,7 @@ import { useColumnResize } from "@/src/hooks/use-column-resize"
 import { useDeleteTransaction } from "@/src/hooks/use-delete-transaction"
 import { SubcategoryTransactionsTable } from "./subcategory-transactions-table"
 import { CloseButton } from "@/src/components/ui/close-button"
+import { useTranslations } from "next-intl"
 
 type Props = {
     open: boolean
@@ -36,6 +37,7 @@ const COLUMNS_SETUP: ColumnConfig[] = [
 ]
 
 export function ViewSubcategoryModal({ open, subcategory, categoryType, onCancel, onTransactionChanged, subcategories }: Props) {
+    const t = useTranslations("SubcategoryModal")
     // Estado para el orden de las transacciones (ascendente/descendente)
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
     
@@ -131,7 +133,7 @@ export function ViewSubcategoryModal({ open, subcategory, categoryType, onCancel
             {transactions.length > 0 && (
                 <div className="px-6 py-4 border-t shrink-0 flex items-center justify-end gap-8">
                     <div className="flex items-center gap-3">
-                        <span className="text-gray-500 font-medium">Total:</span>
+                        <span className="text-gray-500 font-medium">{t("total")}</span>
                         <span className="text-xl font-bold text-gray-900">
                             {formatCurrency(totalAmount)}
                         </span>

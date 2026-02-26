@@ -6,6 +6,7 @@ import { Header } from "@/src/components/menu-principal/header"
 import ToastNotification from "@/src/components/ui/ToastNotification"
 import { UserSchema } from '@/src/schemas'
 import { useResolvedSessionUser } from "@/src/hooks/use-resolved-session-user"
+import { useTranslations } from "next-intl"
 
 type User = z.infer<typeof UserSchema>
 
@@ -16,6 +17,7 @@ interface AhorrosPageClientProps {
 
 // Pantalla placeholder de Ahorros: mantiene layout estándar y muestra contenido temporal.
 export function AhorrosPageClient({ user, source }: AhorrosPageClientProps) {
+    const t = useTranslations("PlaceholderPages")
     const resolvedUser = useResolvedSessionUser(user, source)
 
     return (
@@ -31,8 +33,8 @@ export function AhorrosPageClient({ user, source }: AhorrosPageClientProps) {
                         <div className="w-24 h-24 bg-primary/10 rounded-2xl flex items-center justify-center">
                             <PiggyBank className="w-12 h-12 text-primary" />
                         </div>
-                        <h1 className="text-3xl font-bold text-gray-800">Ahorros</h1>
-                        <p className="text-gray-500">Próximamente...</p>
+                        <h1 className="text-3xl font-bold text-gray-800">{t("savingsTitle")}</h1>
+                        <p className="text-gray-500">{t("comingSoon")}</p>
                     </div>
                 </div>
             </main>

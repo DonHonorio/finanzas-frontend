@@ -14,6 +14,7 @@ import { ConfirmDeleteAccountModal } from "@/src/components/cuentas/confirm-dele
 import { AccountsTable } from "@/src/components/cuentas/accounts-table"
 import { deleteAccount, toggleAccountActive } from "@/src/data-layer/accounts"
 import { toast } from "react-toastify"
+import { useTranslations } from "next-intl"
 
 type User = z.infer<typeof UserSchema>
 
@@ -24,6 +25,7 @@ interface CuentasPageClientProps {
 
 // Página cliente de cuentas con tabla, modales CRUD y sincronización reactiva por SWR.
 export function CuentasPageClient({ user, source }: CuentasPageClientProps) {
+  const t = useTranslations("AccountsPage")
   // Resuelve perfil efectivo para soportar sesión backend y local con mismo layout.
   const resolvedUser = useResolvedSessionUser(user, source)
   // Segmenta caché por usuario/origen para evitar cruces entre sesiones.
@@ -62,10 +64,10 @@ export function CuentasPageClient({ user, source }: CuentasPageClientProps) {
             return
           }
 
-          toast.success(result.success || "Estado actualizado")
+          toast.success(result.success || t("statusUpdated"))
           await mutate()
         } catch {
-          toast.error("No se pudo actualizar el estado de la cuenta.")
+          toast.error(t("statusUpdateError"))
         } finally {
           setMutatingAccountId(null)
         }
@@ -89,11 +91,11 @@ export function CuentasPageClient({ user, source }: CuentasPageClientProps) {
         return
       }
 
-      toast.success(result.success || "Cuenta eliminada")
+      toast.success(result.success || t("deleteSuccess"))
       setDeletingAccount(null)
       await mutate()
     } catch {
-      toast.error("No se pudo eliminar la cuenta.")
+      toast.error(t("deleteError"))
     } finally {
       setIsDeleting(false)
     }
@@ -108,25 +110,25 @@ export function CuentasPageClient({ user, source }: CuentasPageClientProps) {
           {/* Cabecera de sección con CTA de creación. */}
           <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-800">Cuentas</h1>
-              <p className="text-sm text-gray-500 mt-1">Crea, edita, elimina y administra el estado de tus cuentas.</p>
+              <h1 className="text-3xl font-bold text-gray-800">{t("title")}</h1>
+              <p className="text-sm text-gray-500 mt-1">{t("subtitle")}</p>
             </div>
             <button
               type="button"
               onClick={() => setOpenAddAccountModal(true)}
               className="px-5 py-2.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition font-medium"
             >
-              + Añadir cuenta
+              {t("add")}
             </button>
           </div>
 
           <div className="flex-1 overflow-auto">
             {/* Estados de datos: loading, error, vacío o tabla con contenido. */}
             {isLoading ? (
-              <div className="h-full flex items-center justify-center text-gray-500">Cargando cuentas...</div>
+              <div className="h-full flex items-center justify-center text-gray-500">{t("loading")}</div>
             ) : isError ? (
               <div className="h-full flex flex-col items-center justify-center gap-4 p-8 text-center">
-                <p className="text-destructive font-medium">No se pudieron cargar las cuentas.</p>
+                <p className="text-destructive font-medium">{t("loadError")}</p>
                 {process.env.NODE_ENV === "development" && error instanceof Error && (
                   <p className="text-xs text-gray-500">{error.message}</p>
                 )}
@@ -135,19 +137,19 @@ export function CuentasPageClient({ user, source }: CuentasPageClientProps) {
                   onClick={() => mutate()}
                   className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition"
                 >
-                  Reintentar
+                  {t("retry")}
                 </button>
               </div>
             ) : accounts.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center gap-4 text-center p-8">
-                <h2 className="text-xl font-semibold text-gray-800">No hay cuentas registradas</h2>
-                <p className="text-gray-500">Crea tu primera cuenta para empezar a organizar tus movimientos.</p>
+                <h2 className="text-xl font-semibold text-gray-800">{t("emptyTitle")}</h2>
+                <p className="text-gray-500">{t("emptySubtitle")}</p>
                 <button
                   type="button"
                   onClick={() => setOpenAddAccountModal(true)}
                   className="px-5 py-2.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition font-medium"
                 >
-                  Crear cuenta
+                  {t("create")}
                 </button>
               </div>
             ) : (

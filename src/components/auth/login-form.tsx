@@ -7,6 +7,7 @@ import { SaveButton } from '../ui/save-button'
 import { toast } from 'react-toastify'
 import { emitSessionCacheInvalidate } from '@/src/auth/session-cache-events'
 import { clearLocalSessionIndicators } from '@/src/auth/clear-local-session'
+import { useTranslations } from 'next-intl'
 
 interface LoginFormProps {
     onClose: () => void;
@@ -26,6 +27,7 @@ type LoginActionState = {
  * Formulario de inicio de sesión
  */
 export function LoginForm({ onClose, onSuccess }: LoginFormProps) {
+    const t = useTranslations("LoginForm")
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [isLoginPending, setIsLoginPending] = useState(false)
@@ -46,7 +48,7 @@ export function LoginForm({ onClose, onSuccess }: LoginFormProps) {
                 // Al autenticarse en backend se desactiva estado local y se invalida caché de sesión.
                 clearLocalSessionIndicators()
                 emitSessionCacheInvalidate()
-                toast.success(result.message || 'Inicio de sesión exitoso')
+                toast.success(result.message || t("success"))
                 setEmail('')
                 setPassword('')
                 if (onSuccess) {
@@ -89,7 +91,7 @@ export function LoginForm({ onClose, onSuccess }: LoginFormProps) {
             {/* Password */}
             <div>
                 <label htmlFor="login-password" className="block text-sm font-medium text-gray-700 mb-1">
-                    Contraseña
+                    {t("password")}
                 </label>
                 <input
                     type="password"
@@ -108,7 +110,7 @@ export function LoginForm({ onClose, onSuccess }: LoginFormProps) {
             {/* Botones */}
             <div className="flex gap-3 pt-4">
                 <CancelButton onClick={onClose} />
-                <SaveButton isPending={isLoginPending} isValid={true} label="Iniciar Sesión" />
+                <SaveButton isPending={isLoginPending} isValid={true} label={t("submit")} />
             </div>
         </form>
     )

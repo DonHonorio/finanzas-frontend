@@ -1,0 +1,349 @@
+{
+  "Language": {
+    "label": "Idioma",
+    "english": "Inglés",
+    "spanish": "Español"
+  },
+  "Actions": {
+    "notAuthenticated": "No autenticado. Por favor, inicia sesión."
+  },
+  "HomePage": {
+    "title": "Menú Principal",
+    "monthlyView": "Vista Mensual",
+    "netWorth": "Patrimonio Personal",
+    "savings": "Ahorros",
+    "accounts": "Cuentas"
+  },
+  "WelcomePage": {
+    "alreadyHaveAccount": "¿Ya tienes cuenta?",
+    "signIn": "Iniciar sesión",
+    "modalTitle": "Iniciar sesión",
+    "close": "Cerrar",
+    "brand": "Finanzas Personales",
+    "headline": "Bienvenido/a a tu nuevo\nespacio financiero",
+    "description": "Tu dinero, claro y bajo control. Registra ingresos y gastos, asigna presupuestos a tus categorías y descubre en qué se va tu dinero cada mes.",
+    "description2": "Empieza a tomar el control de tus finanzas personales con una visión clara y organizada.",
+    "description3": "Da el primer paso hacia una gestión más consciente y eficiente de tu dinero.",
+    "start": "Empezar"
+  },
+  "BasicSettingsPage": {
+    "title": "Configura tu espacio",
+    "subtitle": "Elige tu moneda, zona horaria e idioma.",
+    "currency": "Moneda",
+    "timeZone": "Zona horaria",
+    "continue": "Continuar"
+  },
+  "AccountsPage": {
+    "title": "Cuentas",
+    "subtitle": "Crea, edita, elimina y administra el estado de tus cuentas.",
+    "add": "+ Añadir cuenta",
+    "loading": "Cargando cuentas...",
+    "loadError": "No se pudieron cargar las cuentas.",
+    "retry": "Reintentar",
+    "emptyTitle": "No hay cuentas registradas",
+    "emptySubtitle": "Crea tu primera cuenta para empezar a organizar tus movimientos.",
+    "create": "Crear cuenta",
+    "statusUpdated": "Estado actualizado",
+    "statusUpdateError": "No se pudo actualizar el estado de la cuenta.",
+    "deleteSuccess": "Cuenta eliminada",
+    "deleteError": "No se pudo eliminar la cuenta."
+  },
+  "PlaceholderPages": {
+    "comingSoon": "Próximamente...",
+    "savingsTitle": "Ahorros",
+    "netWorthTitle": "Patrimonio Personal"
+  },
+  "Header": {
+    "signIn": "Iniciar sesión"
+  },
+  "AuthModal": {
+    "loginTitle": "Iniciar sesión",
+    "signupTitle": "Crear cuenta",
+    "closeModal": "Cerrar modal",
+    "loginTab": "Iniciar sesión",
+    "signupTab": "Crear cuenta"
+  },
+  "LoginForm": {
+    "success": "Inicio de sesión exitoso",
+    "password": "Contraseña",
+    "submit": "Iniciar sesión"
+  },
+  "SignupForm": {
+    "success": "Cuenta creada exitosamente",
+    "username": "Nombre de usuario",
+    "fullName": "Nombre completo",
+    "password": "Contraseña",
+    "baseCurrency": "Moneda base",
+    "selectCurrency": "Selecciona una moneda",
+    "timeZone": "Zona horaria",
+    "detectedTimeZone": "Se detectó automáticamente tu zona horaria",
+    "migrateTitle": "Migrar datos locales a backend",
+    "migrateDescription": "Si lo activas, se copiarán cuentas, categorías, subcategorías y transacciones de IndexedDB.",
+    "submit": "Crear cuenta",
+    "backendLoginError": "No se pudo iniciar sesión en backend para migrar datos. Se revertirá la cuenta.",
+    "migrationUnexpectedError": "Error inesperado durante la migración. Se revertirá la cuenta."
+  },
+  "UserProfile": {
+    "settings": "Configuración",
+    "editProfile": "Editar perfil",
+    "logout": "Cerrar sesión"
+  },
+  "EditProfileModal": {
+    "title": "Editar perfil",
+    "changePassword": "Cambiar contraseña",
+    "deleteAccount": "Eliminar cuenta",
+    "deleteHelp": "Esta acción es permanente y eliminará todos tus datos.",
+    "save": "Guardar cambios",
+    "confirmDeleteTitle": "Confirmar eliminación de cuenta",
+    "confirmDeleteLead": "Esta acción es irreversible.",
+    "confirmDeleteListLead": "Se eliminarán permanentemente:",
+    "confirmDeleteUser": "Tu perfil de usuario",
+    "confirmDeleteAccounts": "Todas tus cuentas",
+    "confirmDeleteCategories": "Todas tus categorías",
+    "confirmDeleteTransactions": "Todas tus transacciones",
+    "confirmDeleteWrite": "Escribe {email} para confirmar.",
+    "confirmDeletePlaceholder": "Escribe tu email",
+    "confirmDeleteButton": "Eliminar cuenta"
+  },
+  "EditLocalUserModal": {
+    "title": "Configuración local",
+    "baseCurrency": "Moneda base",
+    "timeZone": "Zona horaria",
+    "save": "Guardar"
+  },
+  "ProfileFields": {
+    "name": "Nombre",
+    "fullName": "Nombre completo",
+    "baseCurrency": "Moneda base",
+    "timeZone": "Zona horaria",
+    "avatar": "Avatar URL",
+    "optional": "opcional",
+    "avatarPlaceholder": "https://ejemplo.com/avatar.jpg"
+  },
+  "ChangePasswordModal": {
+    "title": "Cambiar contraseña",
+    "currentPassword": "Contraseña actual",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar nueva contraseña",
+    "minLength": "Mínimo 6 caracteres",
+    "mismatch": "Las contraseñas no coinciden",
+    "update": "Actualizar contraseña"
+  },
+  "CommonButtons": {
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "delete": "Eliminar",
+    "back": "Volver",
+    "clearSelection": "Quitar selección"
+  },
+  "CommonStatus": {
+    "loading": "Cargando {label}...",
+    "loadErrorTitle": "Error al cargar datos",
+    "loadErrorDescription": "No se pudieron cargar los {label} para {year}",
+    "retry": "Reintentar",
+    "noData": "No hay {label} para {year}",
+    "loadingShort": "Cargando..."
+  },
+  "DeleteConfirmationModal": {
+    "defaultTitle": "Confirmar eliminación",
+    "defaultPlaceholder": "Escribe para confirmar",
+    "mismatch": "El texto ingresado no coincide.",
+    "deleting": "Eliminando..."
+  },
+  "DeleteTransactionModal": {
+    "title": "Confirmar eliminación",
+    "description": "¿Estás seguro de que deseas eliminar este movimiento?",
+    "warning": "Esta acción no se puede deshacer.",
+    "confirm": "Sí, eliminar",
+    "deleting": "Eliminando..."
+  },
+  "AddTransactionButton": {
+    "title": "Añadir movimiento",
+    "label": "+ Añadir movimiento"
+  },
+  "AccountForm": {
+    "name": "Nombre",
+    "namePlaceholder": "Ej: Cuenta Nómina",
+    "type": "Tipo",
+    "currency": "Moneda",
+    "initialBalance": "Saldo inicial",
+    "last4": "Últimos 4 dígitos",
+    "last4Placeholder": "1234",
+    "pending": "Guardando...",
+    "addTitle": "Crear cuenta",
+    "addSubmit": "Crear",
+    "editTitle": "Editar cuenta",
+    "editSubmit": "Guardar",
+    "deleteTitle": "Eliminar cuenta",
+    "deleteDescription": "Esta acción eliminará la cuenta y no se puede deshacer. Escribe {name} para confirmar.",
+    "deletePlaceholder": "Nombre de la cuenta",
+    "toggleEnabled": "Activa",
+    "toggleDisabled": "Deshabilitada"
+  },
+  "AccountsTable": {
+    "name": "Nombre",
+    "type": "Tipo",
+    "currency": "Moneda",
+    "balance": "Saldo",
+    "number": "Núm.",
+    "state": "Estado",
+    "actions": "Acciones",
+    "withoutNumber": "Sin número",
+    "active": "Activa",
+    "inactive": "Deshabilitada",
+    "edit": "Editar",
+    "disable": "Deshabilitar",
+    "enable": "Habilitar"
+  },
+  "MonthlyView": {
+    "title": "Vista mensual",
+    "expenses": "Gastos",
+    "incomes": "Ingresos"
+  },
+  "Dashboard": {
+    "expenses": "gastos",
+    "incomes": "ingresos",
+    "categories": "CATEGORÍAS",
+    "budget": "PRESUPUESTO",
+    "addCategory": "Añadir categoría"
+  },
+  "CategoryModal": {
+    "createSubcategory": "+ Crear subcategoría",
+    "empty": "No hay transacciones ni subcategorías",
+    "transactionDeleted": "Transacción eliminada correctamente",
+    "transactionDeleteError": "Error al eliminar la transacción"
+  },
+  "SubcategoryModal": {
+    "total": "Total:"
+  },
+  "CategoryTable": {
+    "date": "FECHA",
+    "name": "NOMBRE",
+    "budget": "PRESUPUESTO",
+    "total": "TOTAL",
+    "subBadge": "Sub",
+    "viewSubcategoryTransactions": "Ver transacciones de subcategoría",
+    "editSubcategory": "Editar subcategoría",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "amount": "MONTO",
+    "emptySubcategory": "No hay transacciones en esta subcategoría"
+  },
+  "TransactionForm": {
+    "editTitle": "Editar movimiento",
+    "createTitle": "Crear movimiento",
+    "type": "Tipo",
+    "expense": "Gasto",
+    "income": "Ingreso",
+    "name": "Nombre",
+    "namePlaceholder": "Nombre del movimiento",
+    "date": "Fecha",
+    "amount": "Cantidad",
+    "description": "Descripción",
+    "descriptionPlaceholder": "Añade una descripción (opcional)",
+    "delete": "Eliminar movimiento",
+    "deleteTitle": "Confirmar eliminación",
+    "deleteDescription": "Escribe el nombre del movimiento {name} para confirmar la eliminación.",
+    "deletePlaceholder": "Nombre del movimiento"
+  },
+  "Selectors": {
+    "account": "Cuenta",
+    "accountNoCurrency": "No hay cuentas con esta divisa",
+    "accountPlaceholder": "Selecciona una cuenta",
+    "clearSelectedAccount": "Quitar cuenta seleccionada",
+    "category": "Categoría",
+    "categoryPlaceholder": "Selecciona una categoría",
+    "subcategory": "Subcategoría",
+    "optional": "opcional",
+    "noSubcategory": "Sin subcategoría",
+    "clearSelectedSubcategory": "Quitar subcategoría seleccionada",
+    "currency": "Divisa",
+    "currencyPlaceholder": "Selecciona una divisa",
+    "clearSelectedCurrency": "Quitar divisa seleccionada"
+  },
+  "CategoryForm": {
+    "editTitle": "Editar categoría",
+    "createTitle": "Crear categoría",
+    "name": "Nombre",
+    "namePlaceholder": "Nombre de la categoría",
+    "budget": "Presupuesto",
+    "frequency": "Frecuencia",
+    "startDate": "Fecha de inicio",
+    "type": "Tipo",
+    "icon": "Icono",
+    "color": "Color",
+    "active": "Activo",
+    "withSubcategories": "Con subcategorías",
+    "delete": "Eliminar categoría",
+    "deleteTitle": "Confirmar eliminación",
+    "deleteDescription": "Escribe el nombre de la categoría {name} para confirmar la eliminación.",
+    "deletePlaceholder": "Nombre de la categoría",
+    "create": "Crear",
+    "save": "Guardar"
+  },
+  "SubcategoryForm": {
+    "editTitle": "Editar subcategoría",
+    "createTitle": "Crear subcategoría",
+    "name": "Nombre",
+    "namePlaceholder": "Nombre de la subcategoría",
+    "description": "Descripción",
+    "descriptionOptional": "Descripción (opcional)",
+    "descriptionPlaceholder": "Descripción de la subcategoría",
+    "budget": "Presupuesto",
+    "color": "Color",
+    "active": "Activo",
+    "delete": "Eliminar subcategoría",
+    "deleteTitle": "Confirmar eliminación",
+    "deleteDescription": "Escribe el nombre de la subcategoría {name} para confirmar la eliminación.",
+    "deleteWarning": "Advertencia: se eliminarán todas las transacciones asociadas a esta subcategoría.",
+    "deletePlaceholder": "Nombre de la subcategoría",
+    "create": "Crear",
+    "save": "Guardar"
+  },
+  "Frequency": {
+    "once": "Una sola vez",
+    "daily": "Diariamente",
+    "weekly": "Semanalmente",
+    "monthly": "Mensualmente",
+    "yearly": "Anualmente",
+    "custom": "Personalizado",
+    "days": "Días",
+    "weeks": "Semanas",
+    "months": "Meses",
+    "years": "Años"
+  },
+  "YearSelector": {
+    "applyYear": "Aplicar año"
+  },
+  "AccountTypes": {
+    "AHORROS": "Ahorros",
+    "CORRIENTE": "Corriente",
+    "TARJETA_CREDITO": "Tarjeta de crédito",
+    "TARJETA_DEBITO": "Tarjeta de débito",
+    "CUENTA_NOMINA": "Cuenta nómina",
+    "MONEDERO": "Monedero",
+    "INVERSIONES": "Inversiones",
+    "FONDO_PENSION": "Fondo de pensión",
+    "CUENTA_EMPRESARIAL": "Cuenta empresarial",
+    "CUENTA_CONJUNTA": "Cuenta conjunta",
+    "PRESTAMO": "Préstamo",
+    "HIPOTECA": "Hipoteca",
+    "LINEA_CREDITO": "Línea de crédito",
+    "OTRO": "Otro"
+  },
+  "MonthShort": {
+    "enero": "ENE",
+    "febrero": "FEB",
+    "marzo": "MAR",
+    "abril": "ABR",
+    "mayo": "MAY",
+    "junio": "JUN",
+    "julio": "JUL",
+    "agosto": "AGO",
+    "septiembre": "SEP",
+    "octubre": "OCT",
+    "noviembre": "NOV",
+    "diciembre": "DIC"
+  }
+}

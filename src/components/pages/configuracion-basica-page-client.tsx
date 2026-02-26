@@ -5,6 +5,12 @@ import { useRouter } from "next/navigation"
 import { currencies } from "@/src/types/transaction-types"
 import { createAccountAction } from "@/src/indexdb/users"
 import { emitSessionCacheInvalidate } from "@/src/auth/session-cache-events"
+import { useState } from "react"
+import { useLocale } from "next-intl"
+import { LanguageSelector } from "@/src/components/ui/language-selector"
+import { AppLocale } from "@/src/i18n/config"
+import { setLocaleAction } from "@/src/actions/set-locale-action"
+import { useTranslations } from "next-intl"
 
 // Clave usada en localStorage para registrar que el usuario ya completó el onboarding
 const ONBOARDING_KEY = 'fp_onboarding_completed'
@@ -13,16 +19,21 @@ const LOCAL_TOKEN_KEY = 'localToken'
 // Pantalla de configuración básica: primera selección de moneda y zona horaria.
 // Al confirmar guarda el flag en localStorage y redirige al inicio.
 export function ConfiguracionBasicaPageClient() {
+    const t = useTranslations("BasicSettingsPage")
     const router = useRouter()
     const timeZones = Intl.supportedValuesOf('timeZone')
+    const locale = useLocale() as AppLocale
+    const [language, setLanguage] = useState<AppLocale>(locale)
 
     async function handleContinuar(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
         const formData = new FormData(e.currentTarget)
         const baseCurrency = String(formData.get('baseCurrency') ?? 'EUR')
         const timeZone = String(formData.get('timeZone') ?? 'Europe/Madrid')
+        const selectedLanguage = String(formData.get("language") ?? language) as AppLocale
         // Crea/actualiza usuario local base con moneda y zona horaria elegidas.
         await createAccountAction(null, formData)
+        await setLocaleAction(selectedLanguage)
         localStorage.setItem(ONBOARDING_KEY, 'true')
         localStorage.setItem(LOCAL_TOKEN_KEY, 'true')
         // Persiste marcadores locales también en cookies para detección server-side.
@@ -41,10 +52,10 @@ export function ConfiguracionBasicaPageClient() {
                 {/* Encabezado */}
                 <div className="text-center flex flex-col gap-3">
                     <h1 className="text-3xl font-bold text-gray-900">
-                        Configura tu espacio
+                        {t("title")}
                     </h1>
                     <p className="text-gray-500 text-base">
-                        Elige tu moneda y zona horaria para personalizar tu experiencia.
+                        {t("subtitle")}
                     </p>
                 </div>
 
@@ -57,12 +68,12 @@ export function ConfiguracionBasicaPageClient() {
                             <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
                                 <Globe className="w-5 h-5 text-primary" />
                             </div>
-                            <h2 className="text-lg font-semibold text-gray-800">Moneda</h2>
+                            <h2 className="text-lg font-semibold text-gray-800">{t("currency")}</h2>
                         </div>
                         <select name="baseCurrency" defaultValue="EUR" className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-700 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary/40 transition">
                             {currencies.map(curr => (
                                 <option key={curr.currency} value={curr.currency}>
-                                    {curr.currency} - {curr.description}
+                                    {curr.currency} - {new Intl.DisplayNames([locale], { type: "currency" }).of(curr.currency)}
                                 </option>
                             ))}
                         </select>
@@ -74,7 +85,7 @@ export function ConfiguracionBasicaPageClient() {
                             <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
                                 <Clock className="w-5 h-5 text-primary" />
                             </div>
-                            <h2 className="text-lg font-semibold text-gray-800">Zona horaria</h2>
+                            <h2 className="text-lg font-semibold text-gray-800">{t("timeZone")}</h2>
                         </div>
                         <select name="timeZone" defaultValue="Europe/Madrid" className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-700 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary/40 transition">
                             {timeZones.map(tz => (
@@ -83,12 +94,22 @@ export function ConfiguracionBasicaPageClient() {
                         </select>
                     </div>
 
+                    {/* Idioma */}
+                    <div className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col gap-4 shadow-sm">
+                        <LanguageSelector
+                            name="language"
+                            value={language}
+                            onChange={setLanguage}
+                            persistOnChange={false}
+                        />
+                    </div>
+
                     {/* Botón continuar */}
                     <button
                         type="submit"
                         className="w-full bg-primary hover:bg-primary/90 text-white font-semibold text-lg px-10 py-4 rounded-xl shadow-md transition-all duration-200 hover:shadow-lg hover:scale-[1.02] active:scale-100"
                     >
-                        Continuar
+                        {t("continue")}
                     </button>
 
                 </form>

@@ -1,3 +1,7 @@
+"use client"
+
+import { useTranslations } from "next-intl"
+
 type NoDataProps = {
   label: string
   year: number
@@ -5,9 +9,11 @@ type NoDataProps = {
 
 // no hay datos que mostrar pero no hay error
 export function NoData({ label, year }: NoDataProps) {
+  const t = useTranslations("CommonStatus")
+
   return (
     <div className="p-10 text-center text-muted-foreground">
-      No hay {label} para {year}
+      {t("noData", { label, year })}
     </div>
   )
 }

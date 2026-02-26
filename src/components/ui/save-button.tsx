@@ -1,4 +1,7 @@
+"use client"
+
 import { cn } from "@/src/lib/utils"
+import { useTranslations } from "next-intl"
 
 interface SaveButtonProps {
     isPending: boolean   // Estado de la acción en curso (crear/actualizar)
@@ -13,11 +16,13 @@ interface SaveButtonProps {
 export function SaveButton({
     isPending,
     isValid,
-    label = "Guardar",
-    pendingLabel = "Guardando...",
+    label,
+    pendingLabel,
     form,
     className = ""
 }: SaveButtonProps) {
+    const t = useTranslations("CommonButtons")
+
     return (
         <button
             type="submit"
@@ -31,7 +36,7 @@ export function SaveButton({
                 className
             )}
         >
-            {isPending ? pendingLabel : label}
+            {isPending ? (pendingLabel ?? t("saving")) : (label ?? t("save"))}
         </button>
     )
 }

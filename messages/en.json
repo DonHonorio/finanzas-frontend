@@ -1,0 +1,349 @@
+{
+  "Language": {
+    "label": "Language",
+    "english": "English",
+    "spanish": "Spanish"
+  },
+  "Actions": {
+    "notAuthenticated": "Not authenticated. Please sign in."
+  },
+  "HomePage": {
+    "title": "Main Menu",
+    "monthlyView": "Monthly View",
+    "netWorth": "Net Worth",
+    "savings": "Savings",
+    "accounts": "Accounts"
+  },
+  "WelcomePage": {
+    "alreadyHaveAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "modalTitle": "Sign in",
+    "close": "Close",
+    "brand": "Personal Finance",
+    "headline": "Welcome to your new\nfinancial space",
+    "description": "Your money, clear and under control. Track income and expenses, assign budgets to your categories, and discover where your money goes every month.",
+    "description2": "Start taking control of your personal finances with a clear and organized view.",
+    "description3": "Take the first step toward smarter money decisions.",
+    "start": "Get started"
+  },
+  "BasicSettingsPage": {
+    "title": "Set up your space",
+    "subtitle": "Choose your currency, time zone and language.",
+    "currency": "Currency",
+    "timeZone": "Time zone",
+    "continue": "Continue"
+  },
+  "AccountsPage": {
+    "title": "Accounts",
+    "subtitle": "Create, edit, delete and manage your accounts.",
+    "add": "+ Add account",
+    "loading": "Loading accounts...",
+    "loadError": "Accounts could not be loaded.",
+    "retry": "Retry",
+    "emptyTitle": "No accounts yet",
+    "emptySubtitle": "Create your first account to start organizing your transactions.",
+    "create": "Create account",
+    "statusUpdated": "Status updated",
+    "statusUpdateError": "Could not update account status.",
+    "deleteSuccess": "Account deleted",
+    "deleteError": "Could not delete the account."
+  },
+  "PlaceholderPages": {
+    "comingSoon": "Coming soon...",
+    "savingsTitle": "Savings",
+    "netWorthTitle": "Net Worth"
+  },
+  "Header": {
+    "signIn": "Sign in"
+  },
+  "AuthModal": {
+    "loginTitle": "Sign in",
+    "signupTitle": "Create account",
+    "closeModal": "Close modal",
+    "loginTab": "Sign in",
+    "signupTab": "Create account"
+  },
+  "LoginForm": {
+    "success": "Signed in successfully",
+    "password": "Password",
+    "submit": "Sign in"
+  },
+  "SignupForm": {
+    "success": "Account created successfully",
+    "username": "Username",
+    "fullName": "Full name",
+    "password": "Password",
+    "baseCurrency": "Base currency",
+    "selectCurrency": "Select a currency",
+    "timeZone": "Time zone",
+    "detectedTimeZone": "Your time zone was detected automatically",
+    "migrateTitle": "Migrate local data to backend",
+    "migrateDescription": "If enabled, accounts, categories, subcategories and transactions from IndexedDB will be copied.",
+    "submit": "Create account",
+    "backendLoginError": "Could not sign in to backend for migration. Account will be rolled back.",
+    "migrationUnexpectedError": "Unexpected migration error. Account will be rolled back."
+  },
+  "UserProfile": {
+    "settings": "Settings",
+    "editProfile": "Edit profile",
+    "logout": "Sign out"
+  },
+  "EditProfileModal": {
+    "title": "Edit profile",
+    "changePassword": "Change password",
+    "deleteAccount": "Delete account",
+    "deleteHelp": "This action is permanent and will remove all your data.",
+    "save": "Save changes",
+    "confirmDeleteTitle": "Confirm account deletion",
+    "confirmDeleteLead": "This action is irreversible.",
+    "confirmDeleteListLead": "The following will be permanently removed:",
+    "confirmDeleteUser": "Your user profile",
+    "confirmDeleteAccounts": "All your accounts",
+    "confirmDeleteCategories": "All your categories",
+    "confirmDeleteTransactions": "All your transactions",
+    "confirmDeleteWrite": "Type {email} to confirm.",
+    "confirmDeletePlaceholder": "Type your email",
+    "confirmDeleteButton": "Delete account"
+  },
+  "EditLocalUserModal": {
+    "title": "Local settings",
+    "baseCurrency": "Base currency",
+    "timeZone": "Time zone",
+    "save": "Save"
+  },
+  "ProfileFields": {
+    "name": "Name",
+    "fullName": "Full name",
+    "baseCurrency": "Base currency",
+    "timeZone": "Time zone",
+    "avatar": "Avatar URL",
+    "optional": "optional",
+    "avatarPlaceholder": "https://example.com/avatar.jpg"
+  },
+  "ChangePasswordModal": {
+    "title": "Change password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "minLength": "Minimum 6 characters",
+    "mismatch": "Passwords do not match",
+    "update": "Update password"
+  },
+  "CommonButtons": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "delete": "Delete",
+    "back": "Back",
+    "clearSelection": "Clear selection"
+  },
+  "CommonStatus": {
+    "loading": "Loading {label}...",
+    "loadErrorTitle": "Error loading data",
+    "loadErrorDescription": "Could not load {label} for {year}",
+    "retry": "Retry",
+    "noData": "No {label} for {year}",
+    "loadingShort": "Loading..."
+  },
+  "DeleteConfirmationModal": {
+    "defaultTitle": "Confirm deletion",
+    "defaultPlaceholder": "Type to confirm",
+    "mismatch": "The entered text does not match.",
+    "deleting": "Deleting..."
+  },
+  "DeleteTransactionModal": {
+    "title": "Confirm deletion",
+    "description": "Are you sure you want to delete this transaction?",
+    "warning": "This action cannot be undone.",
+    "confirm": "Yes, delete",
+    "deleting": "Deleting..."
+  },
+  "AddTransactionButton": {
+    "title": "Add transaction",
+    "label": "+ Add transaction"
+  },
+  "AccountForm": {
+    "name": "Name",
+    "namePlaceholder": "e.g. Payroll account",
+    "type": "Type",
+    "currency": "Currency",
+    "initialBalance": "Initial balance",
+    "last4": "Last 4 digits",
+    "last4Placeholder": "1234",
+    "pending": "Saving...",
+    "addTitle": "Create account",
+    "addSubmit": "Create",
+    "editTitle": "Edit account",
+    "editSubmit": "Save",
+    "deleteTitle": "Delete account",
+    "deleteDescription": "This action will delete the account and cannot be undone. Type {name} to confirm.",
+    "deletePlaceholder": "Account name",
+    "toggleEnabled": "Enabled",
+    "toggleDisabled": "Disabled"
+  },
+  "AccountsTable": {
+    "name": "Name",
+    "type": "Type",
+    "currency": "Currency",
+    "balance": "Balance",
+    "number": "No.",
+    "state": "Status",
+    "actions": "Actions",
+    "withoutNumber": "No number",
+    "active": "Active",
+    "inactive": "Disabled",
+    "edit": "Edit",
+    "disable": "Disable",
+    "enable": "Enable"
+  },
+  "MonthlyView": {
+    "title": "Monthly view",
+    "expenses": "Expenses",
+    "incomes": "Income"
+  },
+  "Dashboard": {
+    "expenses": "expenses",
+    "incomes": "income",
+    "categories": "CATEGORIES",
+    "budget": "BUDGET",
+    "addCategory": "Add category"
+  },
+  "CategoryModal": {
+    "createSubcategory": "+ Create subcategory",
+    "empty": "There are no transactions or subcategories",
+    "transactionDeleted": "Transaction deleted successfully",
+    "transactionDeleteError": "Could not delete transaction"
+  },
+  "SubcategoryModal": {
+    "total": "Total:"
+  },
+  "CategoryTable": {
+    "date": "DATE",
+    "name": "NAME",
+    "budget": "BUDGET",
+    "total": "TOTAL",
+    "subBadge": "Sub",
+    "viewSubcategoryTransactions": "View subcategory transactions",
+    "editSubcategory": "Edit subcategory",
+    "edit": "Edit",
+    "delete": "Delete",
+    "amount": "AMOUNT",
+    "emptySubcategory": "No transactions in this subcategory"
+  },
+  "TransactionForm": {
+    "editTitle": "Edit transaction",
+    "createTitle": "Create transaction",
+    "type": "Type",
+    "expense": "Expense",
+    "income": "Income",
+    "name": "Name",
+    "namePlaceholder": "Transaction name",
+    "date": "Date",
+    "amount": "Amount",
+    "description": "Description",
+    "descriptionPlaceholder": "Add a description (optional)",
+    "delete": "Delete transaction",
+    "deleteTitle": "Confirm deletion",
+    "deleteDescription": "Type the transaction name {name} to confirm deletion.",
+    "deletePlaceholder": "Transaction name"
+  },
+  "Selectors": {
+    "account": "Account",
+    "accountNoCurrency": "There are no accounts with this currency",
+    "accountPlaceholder": "Select an account",
+    "clearSelectedAccount": "Clear selected account",
+    "category": "Category",
+    "categoryPlaceholder": "Select a category",
+    "subcategory": "Subcategory",
+    "optional": "optional",
+    "noSubcategory": "No subcategory",
+    "clearSelectedSubcategory": "Clear selected subcategory",
+    "currency": "Currency",
+    "currencyPlaceholder": "Select a currency",
+    "clearSelectedCurrency": "Clear selected currency"
+  },
+  "CategoryForm": {
+    "editTitle": "Edit category",
+    "createTitle": "Create category",
+    "name": "Name",
+    "namePlaceholder": "Category name",
+    "budget": "Budget",
+    "frequency": "Frequency",
+    "startDate": "Start date",
+    "type": "Type",
+    "icon": "Icon",
+    "color": "Color",
+    "active": "Active",
+    "withSubcategories": "With subcategories",
+    "delete": "Delete category",
+    "deleteTitle": "Confirm deletion",
+    "deleteDescription": "Type the category name {name} to confirm deletion.",
+    "deletePlaceholder": "Category name",
+    "create": "Create",
+    "save": "Save"
+  },
+  "SubcategoryForm": {
+    "editTitle": "Edit subcategory",
+    "createTitle": "Create subcategory",
+    "name": "Name",
+    "namePlaceholder": "Subcategory name",
+    "description": "Description",
+    "descriptionOptional": "Description (optional)",
+    "descriptionPlaceholder": "Subcategory description",
+    "budget": "Budget",
+    "color": "Color",
+    "active": "Active",
+    "delete": "Delete subcategory",
+    "deleteTitle": "Confirm deletion",
+    "deleteDescription": "Type the subcategory name {name} to confirm deletion.",
+    "deleteWarning": "Warning: all transactions associated with this subcategory will be deleted.",
+    "deletePlaceholder": "Subcategory name",
+    "create": "Create",
+    "save": "Save"
+  },
+  "Frequency": {
+    "once": "One time",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "custom": "Custom",
+    "days": "Days",
+    "weeks": "Weeks",
+    "months": "Months",
+    "years": "Years"
+  },
+  "YearSelector": {
+    "applyYear": "Apply year"
+  },
+  "AccountTypes": {
+    "AHORROS": "Savings",
+    "CORRIENTE": "Checking",
+    "TARJETA_CREDITO": "Credit card",
+    "TARJETA_DEBITO": "Debit card",
+    "CUENTA_NOMINA": "Payroll account",
+    "MONEDERO": "Wallet",
+    "INVERSIONES": "Investments",
+    "FONDO_PENSION": "Pension fund",
+    "CUENTA_EMPRESARIAL": "Business account",
+    "CUENTA_CONJUNTA": "Joint account",
+    "PRESTAMO": "Loan",
+    "HIPOTECA": "Mortgage",
+    "LINEA_CREDITO": "Credit line",
+    "OTRO": "Other"
+  },
+  "MonthShort": {
+    "enero": "JAN",
+    "febrero": "FEB",
+    "marzo": "MAR",
+    "abril": "APR",
+    "mayo": "MAY",
+    "junio": "JUN",
+    "julio": "JUL",
+    "agosto": "AUG",
+    "septiembre": "SEP",
+    "octubre": "OCT",
+    "noviembre": "NOV",
+    "diciembre": "DEC"
+  }
+}

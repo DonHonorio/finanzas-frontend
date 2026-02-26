@@ -1,3 +1,7 @@
+"use client"
+
+import { useTranslations } from "next-intl"
+
 type DataErrorProps = {
   label: string
   year: number
@@ -8,13 +12,15 @@ type DataErrorProps = {
 
 // se ejecuta cuando ocurre una petición en la petición a la API
 export function DataError({ label, year, isRetrying, onRetry, error }: DataErrorProps) {
+  const t = useTranslations("CommonStatus")
+
   return (
     <div className="p-10 text-center text-destructive">
       <div className="text-lg font-semibold mb-2">
-        Error al cargar datos
+        {t("loadErrorTitle")}
       </div>
       <div className="text-sm mb-4">
-        No se pudieron cargar los {label} para {year}
+        {t("loadErrorDescription", { label, year })}
       </div>
       {/* botón que permite reintentar la petición */}
       <button
@@ -22,7 +28,7 @@ export function DataError({ label, year, isRetrying, onRetry, error }: DataError
         className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
         disabled={isRetrying}
       >
-        {isRetrying ? 'Cargando...' : 'Reintentar'}
+        {isRetrying ? t("loadingShort") : t("retry")}
       </button>
 
       {/* Opcional: Mostrar detalles del error */}

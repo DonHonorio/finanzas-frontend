@@ -6,6 +6,7 @@ import { AddTransactionModal } from "@/src/components/vista-mensual/add-transact
 import { Account } from "@/src/types/account-types"
 import { Category, Subcategory } from "@/src/types/category-types"
 import { cn } from "@/src/lib/utils"
+import { useTranslations } from "next-intl"
 
 interface AddTransactionButtonProps {
   accounts: Account[]
@@ -33,6 +34,7 @@ export function AddTransactionButton({
 }: AddTransactionButtonProps) {
   const [open, setOpen] = useState(false)
   const { mutate: globalMutate } = useSWRConfig()
+  const t = useTranslations("AddTransactionButton")
 
   const isFloating = variant === "floating"
 
@@ -46,9 +48,9 @@ export function AddTransactionButton({
             : "w-60 bg-primary hover:bg-primary/90 text-primary-foreground text-lg rounded-lg transition select-none",
           className
         )}
-        title="Añadir movimiento"
+        title={t("title")}
       >
-        {isFloating ? "+" : "+ Añadir Movimiento"}
+        {isFloating ? "+" : t("label")}
       </button>
 
 

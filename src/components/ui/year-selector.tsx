@@ -1,4 +1,7 @@
+'use client'
+
 import { ChevronLeft, ChevronRight, RotateCw } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 type YearSelectorProps = {
   year: number
@@ -8,11 +11,14 @@ type YearSelectorProps = {
 }
 
 export function YearSelector({ year, setYear, actualYear, setActualYear }: YearSelectorProps) {
+  const t = useTranslations("YearSelector")
+
   return (
     <div className="flex items-center gap-4">
       {/* Botón "Aplicar año" - Solo visible cuando hay cambio sin aplicar -> Sirve para realizar búsqueda en dicho año */}
       {year !== actualYear && ( // year -> año visible / actualYear -> año datos buscados
         <button
+          title={t("applyYear")}
           className="p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
           onClick={() => {
             setActualYear(year)

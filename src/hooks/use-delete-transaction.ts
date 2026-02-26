@@ -1,12 +1,16 @@
+'use client'
+
 import { useState } from 'react'
 import { deleteTransaction } from '@/src/data-layer/transactions'
 import { toast } from 'react-toastify'
+import { useTranslations } from 'next-intl'
 
 /**
  * Hook para manejar la eliminación de transacciones
  * Encapsula la lógica de estado y la acción de eliminar
  */
 export function useDeleteTransaction() {
+    const t = useTranslations("CategoryModal")
     // ID de la transacción que está actualmente seleccionada para eliminar
     // null = ninguna transacción en proceso de eliminación
     const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -37,14 +41,14 @@ export function useDeleteTransaction() {
                 toast.error(result.errors[0])
             } else {
                 // Éxito: notifica, limpia estado y refresca datos
-                toast.success('Transacción eliminada correctamente')
+                toast.success(t("transactionDeleted"))
                 setDeletingId(null)
                 onSuccess?.()
             }
         } catch (error) {
             // Error inesperado (red, servidor caído, etc)
             console.error('Error deleting transaction:', error)
-            toast.error('Error al eliminar la transacción')
+            toast.error(t("transactionDeleteError"))
         } finally {
             setIsDeleting(false)
         }

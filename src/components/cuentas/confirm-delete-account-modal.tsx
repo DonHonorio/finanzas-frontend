@@ -1,6 +1,7 @@
 'use client'
 
 import { DeleteConfirmationModal } from "@/src/components/ui/delete-confirmation-modal"
+import { useTranslations } from "next-intl"
 
 type Props = {
   isOpen: boolean
@@ -12,23 +13,25 @@ type Props = {
 
 // Wrapper semántico del modal destructivo para mantener copy y validación centralizadas en cuentas.
 export function ConfirmDeleteAccountModal({ isOpen, accountName, isDeleting, onClose, onConfirm }: Props) {
+  const t = useTranslations("AccountForm")
+  const tCommon = useTranslations("CommonButtons")
+
   return (
     <DeleteConfirmationModal
       isOpen={isOpen}
       onClose={onClose}
       onConfirm={onConfirm}
       isDeleting={isDeleting}
-      title="Eliminar cuenta"
+      title={t("deleteTitle")}
       // Obliga a escribir el nombre para prevenir eliminaciones accidentales.
       description={
         <p>
-          Esta acción eliminará la cuenta y no se puede deshacer. Escribe <strong>{accountName}</strong> para
-          confirmar.
+          {t("deleteDescription", { name: accountName })}
         </p>
       }
       validationText={accountName}
-      inputPlaceholder="Nombre de la cuenta"
-      confirmButtonText="Eliminar"
+      inputPlaceholder={t("deletePlaceholder")}
+      confirmButtonText={tCommon("delete")}
     />
   )
 }

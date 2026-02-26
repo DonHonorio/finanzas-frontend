@@ -1,4 +1,7 @@
+"use client"
+
 import { cn } from "@/src/lib/utils"
+import { useTranslations } from "next-intl"
 
 interface DeleteButtonProps {
     onClick: () => void
@@ -8,7 +11,9 @@ interface DeleteButtonProps {
 }
 
 // Botón para acciones destructivas (eliminar). Usa colores de tema "destructive"
-export function DeleteButton({ onClick, label = "Eliminar", className, disabled }: DeleteButtonProps) {
+export function DeleteButton({ onClick, label, className, disabled }: DeleteButtonProps) {
+    const t = useTranslations("CommonButtons")
+
     return (
         <button
             type="button"
@@ -19,7 +24,7 @@ export function DeleteButton({ onClick, label = "Eliminar", className, disabled 
                 className
             )}
         >
-            {label}
+            {label ?? t("delete")}
         </button>
     )
 }

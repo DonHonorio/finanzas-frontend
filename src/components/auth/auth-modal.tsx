@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { X } from 'lucide-react'
 import { LoginForm } from './login-form'
 import { SignupForm } from './signup-form'
+import { useTranslations } from 'next-intl'
 
 interface AuthModalProps {
     isOpen: boolean;
@@ -13,6 +14,7 @@ interface AuthModalProps {
 
 // Modal de autenticación que permite alternar entre login y signup
 export const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
+    const t = useTranslations("AuthModal")
     const [mode, setMode] = useState<'login' | 'signup'>('login')
 
     const handleLoginSuccess = () => {
@@ -37,12 +39,12 @@ export const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
                 {/* Header */}
                 <div className="flex justify-between items-center p-6 border-b border-gray-200">
                     <h2 className="text-2xl font-bold text-gray-800">
-                        {mode === 'login' ? 'Iniciar Sesión' : 'Crear Cuenta'}
+                        {mode === 'login' ? t("loginTitle") : t("signupTitle")}
                     </h2>
                     <button
                         onClick={onClose}
                         className="text-gray-500 hover:text-gray-700 transition-colors"
-                        aria-label="Cerrar modal"
+                        aria-label={t("closeModal")}
                     >
                         <X className="w-6 h-6" />
                     </button>
@@ -58,7 +60,7 @@ export const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
                                 : 'text-gray-500 hover:text-gray-700'
                         }`}
                     >
-                        Iniciar Sesión
+                        {t("loginTab")}
                     </button>
                     <button
                         onClick={() => setMode('signup')}
@@ -68,7 +70,7 @@ export const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
                                 : 'text-gray-500 hover:text-gray-700'
                         }`}
                     >
-                        Crear Cuenta
+                        {t("signupTab")}
                     </button>
                 </div>
 

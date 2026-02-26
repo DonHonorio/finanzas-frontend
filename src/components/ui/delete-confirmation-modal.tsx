@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Modal } from "./modal"
 import { cn } from "@/src/lib/utils"
 import { toast } from "react-toastify"
+import { useTranslations } from "next-intl"
 
 interface DeleteConfirmationModalProps {
     isOpen: boolean
@@ -24,19 +25,20 @@ export function DeleteConfirmationModal({
     onClose,
     onConfirm,
     isDeleting,
-    title = "Confirmar Eliminación",
+    title,
     description,
     validationText,
-    inputPlaceholder = "Escribe para confirmar",
-    confirmButtonText = "Eliminar",
-    cancelButtonText = "Cancelar"
+    inputPlaceholder,
+    confirmButtonText,
+    cancelButtonText
 }: DeleteConfirmationModalProps) {
+    const t = useTranslations()
     const [inputValue, setInputValue] = useState("")
 
     // Valida que el texto ingresado coincida exactamente antes de ejecutar onConfirm
     const handleConfirm = () => {
         if (inputValue.trim() !== validationText.trim()) {
-            toast.error("El texto ingresado no coincide.")
+            toast.error(t("DeleteConfirmationModal.mismatch"))
             return
         }
         onConfirm()
@@ -55,7 +57,7 @@ export function DeleteConfirmationModal({
             className="w-[90vw] max-w-lg rounded-2xl p-6"
         >
             {/* título */}
-            <h2 className="text-xl font-semibold mb-4">{title}</h2>
+            <h2 className="text-xl font-semibold mb-4">{title ?? t("DeleteConfirmationModal.defaultTitle")}</h2>
             {/* descripción */}
             <div className="text-gray-700 mb-4">
                 {description}
@@ -63,7 +65,7 @@ export function DeleteConfirmationModal({
             {/* input para validación */}
             <input
                 type="text"
-                placeholder={inputPlaceholder}
+                placeholder={inputPlaceholder ?? t("DeleteConfirmationModal.defaultPlaceholder")}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary"
@@ -75,7 +77,7 @@ export function DeleteConfirmationModal({
                     onClick={handleClose}
                     className="px-6 py-2.5 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
                 >
-                    {cancelButtonText}
+                    {cancelButtonText ?? t("CommonButtons.cancel")}
                 </button>
                 <button
                     type="button"
@@ -86,7 +88,7 @@ export function DeleteConfirmationModal({
                         isDeleting ? "bg-destructive cursor-not-allowed" : "bg-destructive hover:bg-destructive/90"
                     )}
                 >
-                    {isDeleting ? "Eliminando..." : confirmButtonText}
+                    {isDeleting ? t("DeleteConfirmationModal.deleting") : (confirmButtonText ?? t("CommonButtons.delete"))}
                 </button>
             </div>
         </Modal>

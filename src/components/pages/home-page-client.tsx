@@ -14,19 +14,22 @@ import { Account } from "@/src/types/account-types"
 import { Category } from "@/src/types/category-types"
 import { UserSchema } from '@/src/schemas'
 import { useResolvedSessionUser } from "@/src/hooks/use-resolved-session-user"
+import { useTranslations } from "next-intl"
 
 type User = z.infer<typeof UserSchema>
 
 interface HomePageClientProps {
   user?: User | null
   source?: "backend" | "local" | "none"
+  title?: string
 }
 
 // Clave usada en localStorage para registrar que el usuario ya completó el onboarding
 const ONBOARDING_KEY = 'fp_onboarding_completed'
 
 // Página principal del frontend, con enlaces a las diferentes secciones de la aplicación
-export function HomePageClient({ user, source }: HomePageClientProps) {
+export function HomePageClient({ user, source, title }: HomePageClientProps) {
+  const t = useTranslations("HomePage")
   const router = useRouter()
   // Normaliza usuario efectivo (backend directo o local resuelto en cliente).
   const resolvedUser = useResolvedSessionUser(user, source)
@@ -64,7 +67,7 @@ export function HomePageClient({ user, source }: HomePageClientProps) {
         {/* Título */}
         <div className="w-full max-w-4xl">
           <h1 className="text-4xl font-bold text-gray-800 text-center mb-16">
-            Menú Principal
+            {title ?? t("title")}
           </h1>
         </div>
 
@@ -80,7 +83,7 @@ export function HomePageClient({ user, source }: HomePageClientProps) {
                 <CalendarDays className="w-10 h-10 text-primary" />
               </div>
               <h2 className="text-2xl font-semibold text-gray-800 group-hover:text-primary transition">
-                Vista Mensual
+                {t("monthlyView")}
               </h2>
             </Link>
 
@@ -93,7 +96,7 @@ export function HomePageClient({ user, source }: HomePageClientProps) {
                 <TrendingUp className="w-10 h-10 text-primary" />
               </div>
               <h2 className="text-2xl font-semibold text-gray-800 group-hover:text-primary transition">
-                Patrimonio Personal
+                {t("netWorth")}
               </h2>
             </Link>
 
@@ -106,7 +109,7 @@ export function HomePageClient({ user, source }: HomePageClientProps) {
                 <PiggyBank className="w-10 h-10 text-primary" />
               </div>
               <h2 className="text-2xl font-semibold text-gray-800 group-hover:text-primary transition">
-                Ahorros
+                {t("savings")}
               </h2>
             </Link>
 
@@ -119,7 +122,7 @@ export function HomePageClient({ user, source }: HomePageClientProps) {
                 <CreditCard className="w-10 h-10 text-primary" />
               </div>
               <h2 className="text-2xl font-semibold text-gray-800 group-hover:text-primary transition">
-                Cuentas
+                {t("accounts")}
               </h2>
             </Link>
           </div>

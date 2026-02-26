@@ -15,6 +15,9 @@ import { DeleteButton } from "@/src/components/ui/delete-button"
 import ErrorMessage from "@/src/components/ui/ErrorMessage"
 import { Key } from 'lucide-react'
 import { getUpdateProfileAction } from '@/src/data-layer/profile.client'
+import { useLocale } from 'next-intl'
+import { AppLocale } from '@/src/i18n/config'
+import { useTranslations } from 'next-intl'
 
 type User = z.infer<typeof UserSchema>
 
@@ -37,6 +40,7 @@ interface EditProfileModalProps {
  * Los campos del formulario están en ProfileFormFields para mantener este componente limpio.
  */
 export function EditProfileModal({ open, user, onCancel, onSuccess }: EditProfileModalProps) {
+    const t = useTranslations("EditProfileModal")
     // console.log('RENDERIZANDO PROFILE MODAL')
     // Usa action backend vía data-layer para mantener patrón unificado de origen.
     const updateAction = getUpdateProfileAction("backend")
@@ -60,6 +64,8 @@ export function EditProfileModal({ open, user, onCancel, onSuccess }: EditProfil
     const [baseCurrency, setBaseCurrency] = useState(user.baseCurrency)
     const [timeZone, setTimeZone] = useState(user.timeZone)
     const [avatar, setAvatar] = useState(user.avatar || '')
+    const locale = useLocale() as AppLocale
+    const [language, setLanguage] = useState<AppLocale>(locale)
 
     // Sincroniza los campos cuando cambia el usuario recibido por props
     useEffect(() => {
@@ -71,7 +77,8 @@ export function EditProfileModal({ open, user, onCancel, onSuccess }: EditProfil
         setBaseCurrency(user.baseCurrency)
         setTimeZone(user.timeZone)
         setAvatar(user.avatar || '')
-    }, [open, user])
+        setLanguage(locale)
+    }, [open, user, locale])
 
     // Estado para modal de confirmación de eliminación
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -139,7 +146,7 @@ export function EditProfileModal({ open, user, onCancel, onSuccess }: EditProfil
                     )}
 
                     {/* Título */}
-                    <h2 className="text-[26px] font-semibold mb-6">Editar Perfil</h2>
+                    <h2 className="text-[26px] font-semibold mb-6">{t("title")}</h2>
 
                     {/* Campos del formulario de perfil */}
                     <ProfileFormFields
@@ -155,6 +162,8 @@ export function EditProfileModal({ open, user, onCancel, onSuccess }: EditProfil
                         setTimeZone={setTimeZone}
                         avatar={avatar}
                         setAvatar={setAvatar}
+                        language={language}
+                        setLanguage={setLanguage}
                     />
 
                     {/* Botón para cambiar contraseña */}
@@ -165,7 +174,7 @@ export function EditProfileModal({ open, user, onCancel, onSuccess }: EditProfil
                             className="flex items-center gap-2 p-2 border rounded-lg bg-primary/80 text-primary-foreground hover:bg-primary/90 font-medium text-[15px] transition-colors"
                         >
                             <Key size={18} />
-                            <span>Cambiar Contraseña</span>
+                            <span>{t("changePassword")}</span>
                         </button>
                     </div>
 
@@ -173,11 +182,11 @@ export function EditProfileModal({ open, user, onCancel, onSuccess }: EditProfil
                     <div className="mt-6 pt-4 border-t border-gray-200">
                         <DeleteButton
                             onClick={() => setIsDeleteModalOpen(true)}
-                            label="Eliminar Cuenta"
+                            label={t("deleteAccount")}
                             className="w-full sm:w-1/2"
                         />
                         <p className="text-xs text-gray-500 mt-2">
-                            Esta acción es permanente y eliminará todos tus datos.
+                            {t("deleteHelp")}
                         </p>
                     </div>
 
@@ -187,7 +196,7 @@ export function EditProfileModal({ open, user, onCancel, onSuccess }: EditProfil
                         <SaveButton
                             isPending={isUpdating}
                             isValid={true}
-                            label="Guardar Cambios"
+                            label={t("save")}
                         />
                     </div>
                 </form>
@@ -199,29 +208,29 @@ export function EditProfileModal({ open, user, onCancel, onSuccess }: EditProfil
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDelete}
                 isDeleting={isDeleting}
-                title="Confirmar Eliminación de Cuenta"
+                title={t("confirmDeleteTitle")}
                 description={
                     <div>
                         <p className="mb-2">
-                            ⚠️ <strong>Esta acción es irreversible.</strong>
+                            <strong>{t("confirmDeleteLead")}</strong>
                         </p>
                         <p className="mb-2">
-                            Se eliminarán permanentemente:
+                            {t("confirmDeleteListLead")}
                         </p>
                         <ul className="list-disc list-inside mb-2 text-sm">
-                            <li>Tu perfil de usuario</li>
-                            <li>Todas tus cuentas</li>
-                            <li>Todas tus categorías</li>
-                            <li>Todas tus transacciones</li>
+                            <li>{t("confirmDeleteUser")}</li>
+                            <li>{t("confirmDeleteAccounts")}</li>
+                            <li>{t("confirmDeleteCategories")}</li>
+                            <li>{t("confirmDeleteTransactions")}</li>
                         </ul>
                         <p>
-                            Escribe <strong>{user.email}</strong> para confirmar.
+                            {t("confirmDeleteWrite", { email: user.email })}
                         </p>
                     </div>
                 }
                 validationText={user.email}
-                inputPlaceholder="Escribe tu email"
-                confirmButtonText="Eliminar Cuenta"
+                inputPlaceholder={t("confirmDeletePlaceholder")}
+                confirmButtonText={t("confirmDeleteButton")}
             />
 
             {/* Modal para cambiar contraseña */}

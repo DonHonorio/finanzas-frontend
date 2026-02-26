@@ -3,8 +3,13 @@
 import { getToken } from "../auth/token"
 import { ErrorResponseSchema, SuccessSchema, UpdateUserSchema } from "../schemas"
 import { ActionStateType } from "../types/action-types"
+import { persistLocaleCookie } from "@/src/i18n/cookies"
+import { getTranslations } from "next-intl/server"
 
 export default async function updateUser(prevState: ActionStateType, formData: FormData) {
+    const t = await getTranslations("Actions")
+    const language = formData.get("language")
+
     // Extrae todos los campos editables del formulario
     const userData = {
         name: formData.get('name'),
@@ -28,7 +33,7 @@ export default async function updateUser(prevState: ActionStateType, formData: F
     const token = await getToken()
     if (!token) {
         return {
-            errors: ['No autenticado. Por favor, inicia sesión.'],
+            errors: [t("notAuthenticated")],
             success: ''
         }
     }
@@ -57,6 +62,7 @@ export default async function updateUser(prevState: ActionStateType, formData: F
     }
 
     // Respuesta exitosa
+    await persistLocaleCookie(typeof language === "string" ? language : null)
     const success = SuccessSchema.parse(json.message)
     return {
         errors: [],

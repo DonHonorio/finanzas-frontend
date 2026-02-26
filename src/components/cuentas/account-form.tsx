@@ -7,6 +7,7 @@ import { Account, accountTypeOptions, AccountType, AccountTypeValue } from "@/sr
 import { BaseCurrency, currencies } from "@/src/types/transaction-types"
 import { CancelButton } from "@/src/components/ui/cancel-button"
 import { SaveButton } from "@/src/components/ui/save-button"
+import { useLocale, useTranslations } from "next-intl"
 
 type Props = {
   initialData?: Account | null
@@ -25,6 +26,9 @@ function normalizeAccountType(type?: AccountTypeValue): string {
 }
 
 export function AccountForm({ initialData, action, onSuccess, onCancel, title, submitLabel }: Props) {
+  const t = useTranslations("AccountForm")
+  const tAccountTypes = useTranslations("AccountTypes")
+  const locale = useLocale()
   const [state, dispatch, isPending] = useActionState(action, {
     errors: [],
     success: "",
@@ -82,13 +86,13 @@ export function AccountForm({ initialData, action, onSuccess, onCancel, title, s
         {/* Nombre de la cuenta para identificarla en tablas, selects y transacciones. */}
         <div className="md:col-span-2">
           <label htmlFor="account-name" className="block text-[15px] font-semibold text-gray-700 mb-1">
-            Nombre
+            {t("name")}
           </label>
           <input
             id="account-name"
             name="name"
             type="text"
-            placeholder="Ej: Cuenta Nómina"
+            placeholder={t("namePlaceholder")}
             value={name}
             onChange={(event) => setName(event.target.value)}
             className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary"
@@ -98,7 +102,7 @@ export function AccountForm({ initialData, action, onSuccess, onCancel, title, s
         {/* Tipo contable/financiero de la cuenta, usado para clasificar y mostrar etiquetas. */}
         <div>
           <label htmlFor="account-type" className="block text-[15px] font-semibold text-gray-700 mb-1">
-            Tipo
+            {t("type")}
           </label>
           <select
             id="account-type"
@@ -109,7 +113,7 @@ export function AccountForm({ initialData, action, onSuccess, onCancel, title, s
           >
             {accountTypeOptions.map((option) => (
               <option key={option.key} value={option.label}>
-                {option.label}
+                {tAccountTypes(option.key)}
               </option>
             ))}
           </select>
@@ -118,7 +122,7 @@ export function AccountForm({ initialData, action, onSuccess, onCancel, title, s
         {/* Moneda base de la cuenta, que condiciona el formato y consistencia de movimientos asociados. */}
         <div>
           <label htmlFor="account-currency" className="block text-[15px] font-semibold text-gray-700 mb-1">
-            Moneda
+            {t("currency")}
           </label>
           <select
             id="account-currency"
@@ -129,7 +133,7 @@ export function AccountForm({ initialData, action, onSuccess, onCancel, title, s
           >
             {currencies.map((item) => (
               <option key={item.currency} value={item.currency}>
-                {item.currency} - {item.description}
+                {item.currency} - {new Intl.DisplayNames([locale], { type: "currency" }).of(item.currency)}
               </option>
             ))}
           </select>
@@ -138,7 +142,7 @@ export function AccountForm({ initialData, action, onSuccess, onCancel, title, s
         {/* Saldo inicial/actual editable con dos decimales para mantener precisión monetaria. */}
         <div>
           <label htmlFor="account-balance" className="block text-[15px] font-semibold text-gray-700 mb-1">
-            Saldo inicial
+            {t("initialBalance")}
           </label>
           <input
             id="account-balance"
@@ -155,14 +159,14 @@ export function AccountForm({ initialData, action, onSuccess, onCancel, title, s
         {/* Referencia corta opcional de la cuenta (últimos 4 dígitos), restringida a números. */}
         <div>
           <label htmlFor="account-number" className="block text-[15px] font-semibold text-gray-700 mb-1">
-            Últimos 4 dígitos
+            {t("last4")}
           </label>
           <input
             id="account-number"
             name="number"
             type="text"
             maxLength={4}
-            placeholder="1234"
+            placeholder={t("last4Placeholder")}
             value={number}
             onChange={(event) => setNumber(event.target.value.replace(/\D/g, "").slice(0, 4))}
             className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary"
@@ -177,7 +181,7 @@ export function AccountForm({ initialData, action, onSuccess, onCancel, title, s
           isPending={isPending}
           isValid={isFormValid}
           label={submitLabel}
-          pendingLabel="Guardando..."
+          pendingLabel={t("pending")}
           form="account-form"
           className="px-10"
         />

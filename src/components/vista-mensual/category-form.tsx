@@ -15,6 +15,7 @@ import { DeleteConfirmationModal } from "@/src/components/ui/delete-confirmation
 import { CancelButton } from "@/src/components/ui/cancel-button"
 import { SaveButton } from "@/src/components/ui/save-button"
 import { toDateInputValue } from '@/src/helpers/date-helpers'
+import { useTranslations } from "next-intl"
 
 // Props
 type Props = {
@@ -37,6 +38,9 @@ type Props = {
 }
 
 export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }: Props) {
+    const t = useTranslations("CategoryForm")
+    const tTransaction = useTranslations("TransactionForm")
+    const tCommon = useTranslations("CommonButtons")
     const [state, dispatch, isPending] = useActionState(action, {
         errors: [],
         success: ''
@@ -123,7 +127,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
 
             {/* Título dinámico */}
             <h2 className="text-[26px] font-semibold mb-4">
-                {initialData ? "Editar Categoría" : "Crear Categoría"}
+                {initialData ? t("editTitle") : t("createTitle")}
             </h2>
 
             {/* Grilla principal */}
@@ -132,11 +136,11 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
                 <div className="space-y-4">
                     {/* Nombre */}
                     <div>
-                        <label className="block text-[15px] font-semibold text-gray-700 mb-1">Nombre</label>
+                        <label className="block text-[15px] font-semibold text-gray-700 mb-1">{t("name")}</label>
                         <input
                             type="text"
                             name="name"
-                            placeholder="Nombre de la categoría"
+                            placeholder={t("namePlaceholder")}
                             value={name}
                             onChange={(event) => setName(event.target.value)}
                             className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary"
@@ -145,7 +149,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
 
                     {/* Presupuesto */}
                     <div>
-                        <label className="block text-[15px] font-semibold text-gray-700 mb-1">Presupuesto</label>
+                        <label className="block text-[15px] font-semibold text-gray-700 mb-1">{t("budget")}</label>
                         <input
                             type="number"
                             min={0}
@@ -160,7 +164,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
 
                     {/* Frecuencia */}
                     <div>
-                        <label className="block text-[15px] font-semibold text-gray-700 mb-1">Frecuencia</label>
+                        <label className="block text-[15px] font-semibold text-gray-700 mb-1">{t("frequency")}</label>
                         <FrequencyField
                             frequency={frequency}
                             onChange={setFrequency}
@@ -170,7 +174,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
 
                     {/* Fecha de inicio */}
                     <div>
-                        <label className="block text-[15px] font-semibold text-gray-700 mb-1">Fecha de Inicio</label>
+                        <label className="block text-[15px] font-semibold text-gray-700 mb-1">{t("startDate")}</label>
                         <input
                             type="date"
                             name="dtstart"
@@ -185,7 +189,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
                 <div className="space-y-4">
                     {/* Tipo */}
                     <div>
-                        <label className="block text-[15px] font-semibold text-gray-700 mb-2">Tipo</label>
+                        <label className="block text-[15px] font-semibold text-gray-700 mb-2">{t("type")}</label>
                         <input type="hidden" name="type" value={type} />
                         <div className="relative bg-gray-100 rounded-lg p-1 h-11 flex items-center">
                             <div
@@ -196,12 +200,12 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
                             />
                             <ToggleButton
                                 isActive={type === 'expense'}
-                                label="Gasto"
+                                label={tTransaction("expense")}
                                 onClick={() => setType('expense')}
                             />
                             <ToggleButton
                                 isActive={type === 'income'}
-                                label="Ingreso"
+                                label={tTransaction("income")}
                                 onClick={() => setType('income')}
                             />
                         </div>
@@ -209,7 +213,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
 
                     {/* Icono */}
                     <div>
-                        <label className="block text-[15px] font-semibold text-gray-700 mb-2">Icono</label>
+                        <label className="block text-[15px] font-semibold text-gray-700 mb-2">{t("icon")}</label>
                         <input type="hidden" name="icon" value={icon} />
                         <div className="grid grid-cols-8 gap-2">
                             {iconOptions.map((item, index) => (
@@ -233,7 +237,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
 
                     {/* Color */}
                     <div>
-                        <label className="block text-[15px] font-semibold text-gray-700 mb-2">Color</label>
+                        <label className="block text-[15px] font-semibold text-gray-700 mb-2">{t("color")}</label>
                         <input type="hidden" name="color" value={color} />
                         <div className="flex flex-wrap gap-2">
                             {colorOptions.map((item, index) => (
@@ -256,7 +260,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
 
                     {/* Activo */}
                     <div className="flex items-center justify-start gap-10 mt-6">
-                        <label className="text-[15px] font-semibold text-gray-700">Activo</label>
+                        <label className="text-[15px] font-semibold text-gray-700">{t("active")}</label>
                         <input type="hidden" name="isActive" value={String(isActive)} />
                         <ActiveToggle
                             isActive={isActive}
@@ -266,7 +270,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
 
                     {/* Con Subcategorías */}
                     <div className="flex items-center justify-start gap-10 mb-5">
-                        <label className="text-[15px] font-semibold text-gray-700">Con Subcategorías</label>
+                        <label className="text-[15px] font-semibold text-gray-700">{t("withSubcategories")}</label>
                         <input type="hidden" name="withSubcategory" value={String(withSubcategory)} />
                         <ActiveToggle
                             isActive={withSubcategory}
@@ -279,11 +283,11 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
             {/* Botón de eliminar categoría */}
             {initialData?.categoryId && (
                 <div className="mt-0">
-                    <DeleteButton
-                        onClick={() => setIsDeleteModalOpen(true)}
-                        label="Eliminar Categoría"
-                        className="mb-5 px-12 py-2.5"
-                    />
+                        <DeleteButton
+                            onClick={() => setIsDeleteModalOpen(true)}
+                            label={t("delete")}
+                            className="mb-5 px-12 py-2.5"
+                        />
                 </div>
             )}
 
@@ -293,15 +297,15 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDelete}
                 isDeleting={isDeleting}
-                title="Confirmar Eliminación"
+                title={t("deleteTitle")}
                 description={
                     <p>
-                        Escribe el nombre de la categoría <strong>{initialData?.name}</strong> para confirmar la eliminación.
+                        {t("deleteDescription", { name: initialData?.name ?? "" })}
                     </p>
                 }
                 validationText={initialData?.name || ""}
-                inputPlaceholder="Nombre de la categoría"
-                confirmButtonText="Eliminar"
+                inputPlaceholder={t("deletePlaceholder")}
+                confirmButtonText={tCommon("delete")}
             />
 
             {/* Footer */}
@@ -313,7 +317,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
                 <SaveButton 
                     isPending={isPending} 
                     isValid={isFormValid}
-                    label={initialData ? "Guardar" : "Crear"}
+                    label={initialData ? t("save") : t("create")}
                     form="category-form"
                     className="px-12"
                 />

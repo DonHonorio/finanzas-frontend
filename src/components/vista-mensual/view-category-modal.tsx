@@ -23,6 +23,7 @@ import { EditSubcategoryModal } from "./edit-subcategory-modal"
 import { Subcategory } from "@/src/types/category-types"
 import { ViewSubcategoryModal } from "./view-subcategory-modal"
 import { CloseButton } from "@/src/components/ui/close-button"
+import { useTranslations } from "next-intl"
 
 type Props = {
     open: boolean
@@ -42,6 +43,8 @@ const COLUMNS_SETUP: ColumnConfig[] = [
 // Suma total: 6 + 18 + 6 + 54 + 6 = 90%
 
 export function ViewCategoryModal({ open, category, onCancel, onDataChanged }: Props) {
+    const t = useTranslations("CategoryModal")
+    const tStatus = useTranslations("CommonStatus")
     const { items, loading, fetchCategoryData, sortItems } = useCategoryData(category)
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
     const { colWidths, tableContainerRef, startResize } = useColumnResize(COLUMNS_SETUP)
@@ -91,14 +94,14 @@ export function ViewCategoryModal({ open, category, onCancel, onDataChanged }: P
             if (result?.errors && result.errors.length > 0) {
                 toast.error(result.errors[0])
             } else {
-                toast.success('Transacción eliminada correctamente')
+                toast.success(t("transactionDeleted"))
                 setDeletingId(null)
                 fetchCategoryData()
                 onDataChanged?.()
             }
         } catch (error) {
             console.error('Error deleting transaction:', error)
-            toast.error('Error al eliminar la transacción')
+            toast.error(t("transactionDeleteError"))
         } finally {
             setIsDeleting(false)
         }
@@ -150,7 +153,7 @@ export function ViewCategoryModal({ open, category, onCancel, onDataChanged }: P
                             onClick={() => setOpenAddSubcategoryModal(true)}
                             className="w-auto px-4 py-2 text-sm h-9 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition select-none"
                         >
-                            + Crear Subcategoría
+                            {t("createSubcategory")}
                         </button>
                     )}
                 </div>
@@ -164,12 +167,12 @@ export function ViewCategoryModal({ open, category, onCancel, onDataChanged }: P
                 {loading ? (
                     /* Estado de Carga */
                     <div className="flex items-center justify-center h-full">
-                        <p className="text-gray-500">Cargando...</p>
+                        <p className="text-gray-500">{tStatus("loadingShort")}</p>
                     </div>
                 ) : items.length === 0 ? (
                     /* Estado Vacío */
                     <div className="flex items-center justify-center h-full">
-                        <p className="text-gray-500">No hay transacciones ni subcategorías</p>
+                        <p className="text-gray-500">{t("empty")}</p>
                     </div>
                 ) : (
                     /* Contenido de la Tabla */

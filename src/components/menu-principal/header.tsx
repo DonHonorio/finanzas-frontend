@@ -6,6 +6,7 @@ import { Logo } from '../ui/logo'
 import { AuthModal } from '../auth/auth-modal'
 import { UserProfile } from '../profile/user-profile'
 import { UserSchema } from '@/src/schemas'
+import { useTranslations } from 'next-intl'
 
 type User = z.infer<typeof UserSchema>
 
@@ -15,6 +16,7 @@ interface HeaderProps {
 }
 
 export function Header({ user, source = "none" }: HeaderProps) {
+    const t = useTranslations("Header")
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
     const isLocalSource = source === "local"
     const isBackendSource = source === "backend"
@@ -38,7 +40,7 @@ export function Header({ user, source = "none" }: HeaderProps) {
                         onClick={() => setIsAuthModalOpen(true)}
                         className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition font-medium"
                     >
-                        Iniciar Sesión
+                        {t("signIn")}
                     </button>
                 )}
                 </div>

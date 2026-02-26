@@ -1,6 +1,9 @@
+'use client'
+
 import { Account } from '@/src/types/account-types'
 import { cn } from "@/src/lib/utils"
 import { DesmarcarButton } from "@/src/components/ui/desmarcar-button"
+import { useLocale, useTranslations } from "next-intl"
 
 interface AccountSelectorProps {
     account: string | number
@@ -12,6 +15,9 @@ interface AccountSelectorProps {
 
 // Selector de cuenta bancaria con filtrado por divisa
 export function AccountSelector({ account, accounts, currency, onChange, onClear }: AccountSelectorProps) {
+    const t = useTranslations("Selectors")
+    const locale = useLocale()
+
     // Cuando hay cuenta seleccionada, mostramos todas (permite cambiar a otra divisa)
     // Sin selección, filtramos solo cuentas con la divisa elegida
     const filteredAccounts = account
@@ -20,7 +26,7 @@ export function AccountSelector({ account, accounts, currency, onChange, onClear
 
     return (
         <div>
-            <label className="block text-[15px] font-semibold text-gray-700 mb-1">Cuenta</label>
+            <label className="block text-[15px] font-semibold text-gray-700 mb-1">{t("account")}</label>
             <div className="relative gap-0">
                 <select
                     key={`account-${account}`}
@@ -37,13 +43,13 @@ export function AccountSelector({ account, accounts, currency, onChange, onClear
                     {/* Opción por defecto */}
                     <option value="">
                         {filteredAccounts.length === 0
-                            ? "No hay cuentas con esta divisa"
-                            : "Selecciona una cuenta"}
+                            ? t("accountNoCurrency")
+                            : t("accountPlaceholder")}
                     </option>
                     {/* Opciones filtradas por divisa */}
                     {filteredAccounts.map(acc => (
                         <option key={acc.accountId} value={acc.accountId}>
-                            {acc.name} - {acc.currency}
+                            {acc.name} - {new Intl.DisplayNames([locale], { type: "currency" }).of(acc.currency)}
                         </option>
                     ))}
                 </select>
@@ -52,7 +58,7 @@ export function AccountSelector({ account, accounts, currency, onChange, onClear
                 {account && (
                     <DesmarcarButton
                         onClick={onClear}
-                        title="Quitar cuenta seleccionada"
+                        title={t("clearSelectedAccount")}
                     />
                 )}
             </div>

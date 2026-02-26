@@ -20,6 +20,7 @@ import { CategorySelector } from './category-selector'
 import { SubcategorySelector } from './subcategory-selector'
 import { CurrencySelector } from './currency-selector'
 import ErrorMessage from '../ui/ErrorMessage'
+import { useTranslations } from 'next-intl'
 
 interface TransactionFormProps {
     initialData?: Pick<Transaction, 'transactionId' | 'name' | 'date' | 'amount' | 'description' | 'type' | 'currency' | 'updatedAt' | 'accountId' | 'categoryId' | 'subcategoryId'>
@@ -35,6 +36,8 @@ interface TransactionFormProps {
 }
 
 export function TransactionForm({ initialData, accounts, categories, action, onSuccess, onCancel, mode, defaultCategoryId, defaultSubcategoryId, subcategories }: TransactionFormProps) {
+    const t = useTranslations("TransactionForm")
+    const tCommon = useTranslations("CommonButtons")
     // Estado para la acción principal (crear/editar)
     const [state, dispatch, isPending] = useActionState(action, {
         errors: [],
@@ -158,14 +161,14 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
 
             {/* Título del formulario */}
             <h2 className="text-[26px] font-semibold mb-4">
-                {initialData ? "Editar Movimiento" : "Crear Movimiento"}
+                {initialData ? t("editTitle") : t("createTitle")}
             </h2>
 
             <div className="flex flex-col gap-4">
 
                 {/* Selector de tipo (gasto/ingreso) */}
                 <div>
-                    <label className="block text-[15px] font-semibold text-gray-700 mb-2">Tipo</label>
+                    <label className="block text-[15px] font-semibold text-gray-700 mb-2">{t("type")}</label>
                     <input type="hidden" name="type" value={type} />
                     <div className="relative bg-gray-100 rounded-lg p-1 h-11 flex items-center">
                         {/* Indicador visual que se desliza según el tipo seleccionado */}
@@ -177,12 +180,12 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
                         />
                         <ToggleButton
                             isActive={type === 'expense'}
-                            label="Gasto"
+                            label={t("expense")}
                             onClick={() => setType('expense')}
                         />
                         <ToggleButton
                             isActive={type === 'income'}
-                            label="Ingreso"
+                            label={t("income")}
                             onClick={() => setType('income')}
                         />
                     </div>
@@ -190,11 +193,11 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
 
                 {/* Input nombre */}
                 <div>
-                    <label className="block text-[15px] font-semibold text-gray-700 mb-1">Nombre</label>
+                    <label className="block text-[15px] font-semibold text-gray-700 mb-1">{t("name")}</label>
                     <input
                         type="text"
                         name="name"
-                        placeholder="Nombre del movimiento"
+                        placeholder={t("namePlaceholder")}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary"
@@ -230,7 +233,7 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
 
                 {/* Input fecha */}
                 <div>
-                    <label className="block text-[15px] font-semibold text-gray-700 mb-1">Fecha</label>
+                    <label className="block text-[15px] font-semibold text-gray-700 mb-1">{t("date")}</label>
                     <div className="relative">
                         <input
                             type="date"
@@ -244,7 +247,7 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
 
                 {/* Input cantidad */}
                 <div>
-                    <label className="block text-[15px] font-semibold text-gray-700 mb-1">Cantidad</label>
+                    <label className="block text-[15px] font-semibold text-gray-700 mb-1">{t("amount")}</label>
                     <div className="relative">
                         <input
                             type="number"
@@ -269,7 +272,7 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
                 {/* Textarea descripción */}
                 <div>
                     <label className="block text-[15px] font-semibold text-gray-700 mb-1">
-                        Descripción <span className="text-xs font-normal text-gray-500">({description.length}/500)</span>
+                        {t("description")} <span className="text-xs font-normal text-gray-500">({description.length}/500)</span>
                     </label>
                     <textarea
                         name="description"
@@ -277,7 +280,7 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
                         maxLength={500}
                         onChange={(e) => setDescription(e.target.value)}
                         className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary min-h-24 max-h-72 resize-y"
-                        placeholder="Añade una descripción (opcional)"
+                        placeholder={t("descriptionPlaceholder")}
                     />
                 </div>
             </div>
@@ -287,7 +290,7 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
                 <div className="mt-4">
                     <DeleteButton
                         onClick={() => setIsDeleteModalOpen(true)}
-                        label="Eliminar Movimiento"
+                        label={t("delete")}
                         className="w-1/2"
                     />
                 </div>
@@ -299,15 +302,15 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDelete}
                 isDeleting={isDeleting}
-                title="Confirmar Eliminación"
+                title={t("deleteTitle")}
                 description={
                     <p>
-                        Escribe el nombre del movimiento <strong>{initialData?.name}</strong> para confirmar la eliminación.
+                        {t("deleteDescription", { name: initialData?.name ?? "" })}
                     </p>
                 }
                 validationText={initialData?.name || ""}
-                inputPlaceholder="Nombre del movimiento"
-                confirmButtonText="Eliminar"
+                inputPlaceholder={t("deletePlaceholder")}
+                confirmButtonText={tCommon("delete")}
             />
 
             {/* Botones de acción del formulario */}
@@ -316,7 +319,7 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
                 <SaveButton
                     isPending={isPending}
                     isValid={isFormValid}
-                    label="Guardar"
+                    label={tCommon("save")}
                 />
             </div>
         </form>
