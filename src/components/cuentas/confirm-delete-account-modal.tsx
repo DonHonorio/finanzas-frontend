@@ -10,6 +10,7 @@ type Props = {
   onConfirm: () => void
 }
 
+// Wrapper semántico del modal destructivo para mantener copy y validación centralizadas en cuentas.
 export function ConfirmDeleteAccountModal({ isOpen, accountName, isDeleting, onClose, onConfirm }: Props) {
   return (
     <DeleteConfirmationModal
@@ -18,6 +19,7 @@ export function ConfirmDeleteAccountModal({ isOpen, accountName, isDeleting, onC
       onConfirm={onConfirm}
       isDeleting={isDeleting}
       title="Eliminar cuenta"
+      // Obliga a escribir el nombre para prevenir eliminaciones accidentales.
       description={
         <p>
           Esta acción eliminará la cuenta y no se puede deshacer. Escribe <strong>{accountName}</strong> para

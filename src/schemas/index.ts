@@ -4,6 +4,7 @@ import { AccountType } from "../types/account-types"
 import { BaseCurrency, currencies } from "../types/transaction-types"
 
 const CURRENCY_VALUES = currencies.map(c => c.currency) as [BaseCurrency, ...BaseCurrency[]]
+// Permite validar tipo de cuenta tanto por label ("Ahorros") como por key enum ("AHORROS").
 const ACCOUNT_TYPE_VALUES = Object.values(AccountType) as [string, ...string[]]
 const ACCOUNT_TYPE_KEYS = Object.keys(AccountType) as [keyof typeof AccountType, ...(keyof typeof AccountType)[]]
 
@@ -84,6 +85,7 @@ export const DraftTransactionSchema = z.object({
 // Esquema para la creación/edición de una cuenta (borrador antes de ser guardado en BD)
 export const DraftAccountSchema = z.object({
     name: z.string().min(1, "El nombre es obligatorio").max(100, "El nombre no puede superar 100 caracteres"),
+    // Normaliza a label final para mantener payload consistente hacia backend e IndexedDB.
     type: z.union([
         z.enum(ACCOUNT_TYPE_VALUES, { message: "El tipo de cuenta es inválido" }),
         z.enum(ACCOUNT_TYPE_KEYS, { message: "El tipo de cuenta es inválido" })

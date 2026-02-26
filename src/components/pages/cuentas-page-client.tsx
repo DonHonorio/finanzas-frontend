@@ -22,11 +22,15 @@ interface CuentasPageClientProps {
   source?: "backend" | "local" | "none"
 }
 
+// Página cliente de cuentas con tabla, modales CRUD y sincronización reactiva por SWR.
 export function CuentasPageClient({ user, source }: CuentasPageClientProps) {
+  // Resuelve perfil efectivo para soportar sesión backend y local con mismo layout.
   const resolvedUser = useResolvedSessionUser(user, source)
+  // Segmenta caché por usuario/origen para evitar cruces entre sesiones.
   const accountsUserCacheKey = `${source ?? "none"}:${resolvedUser?.userId ?? "anonymous"}`
   const { accounts, isLoading, isError, error, mutate } = useAccountsData(accountsUserCacheKey)
 
+  // Estado UI de modales y feedback de operaciones por fila.
   const [openAddAccountModal, setOpenAddAccountModal] = useState(false)
   const [editingAccount, setEditingAccount] = useState<Account | null>(null)
   const [deletingAccount, setDeletingAccount] = useState<Account | null>(null)
@@ -34,10 +38,12 @@ export function CuentasPageClient({ user, source }: CuentasPageClientProps) {
   const [mutatingAccountId, setMutatingAccountId] = useState<number | null>(null)
   const [, startTransition] = useTransition()
 
+  // Revalida la lista tras cualquier mutación exitosa.
   const handleAccountChanged = () => {
     void mutate()
   }
 
+  // Alterna estado activo/deshabilitado y refresca lista conservando UI fluida.
   const handleToggleActive = (account: Account) => {
     setMutatingAccountId(account.accountId)
 
@@ -46,6 +52,7 @@ export function CuentasPageClient({ user, source }: CuentasPageClientProps) {
     formData.append("newStatus", String(!account.isActive))
 
     startTransition(() => {
+      // Ejecuta mutación asíncrona con manejo de éxito/error por toast.
       void (async () => {
         try {
           const result = await toggleAccountActive({ errors: [], success: "" }, formData)
@@ -69,6 +76,7 @@ export function CuentasPageClient({ user, source }: CuentasPageClientProps) {
   const handleDeleteConfirmed = async () => {
     if (!deletingAccount) return
 
+    // Ejecuta borrado confirmado por el modal y refresca datos al finalizar.
     setIsDeleting(true)
     const formData = new FormData()
     formData.append("accountId", String(deletingAccount.accountId))
@@ -97,6 +105,7 @@ export function CuentasPageClient({ user, source }: CuentasPageClientProps) {
 
       <main className="flex-1 p-10 overflow-hidden">
         <div className="h-full bg-white rounded-2xl border border-gray-200 flex flex-col overflow-hidden">
+          {/* Cabecera de sección con CTA de creación. */}
           <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-800">Cuentas</h1>
@@ -112,6 +121,7 @@ export function CuentasPageClient({ user, source }: CuentasPageClientProps) {
           </div>
 
           <div className="flex-1 overflow-auto">
+            {/* Estados de datos: loading, error, vacío o tabla con contenido. */}
             {isLoading ? (
               <div className="h-full flex items-center justify-center text-gray-500">Cargando cuentas...</div>
             ) : isError ? (
@@ -141,6 +151,7 @@ export function CuentasPageClient({ user, source }: CuentasPageClientProps) {
                 </button>
               </div>
             ) : (
+              // Tabla principal de cuentas y acciones por fila.
               <AccountsTable
                 accounts={accounts}
                 mutatingAccountId={mutatingAccountId}
@@ -163,6 +174,7 @@ export function CuentasPageClient({ user, source }: CuentasPageClientProps) {
       />
 
       {editingAccount && (
+        // Muestra edición solo cuando hay una cuenta seleccionada.
         <EditAccountModal
           open={Boolean(editingAccount)}
           account={editingAccount}
@@ -179,6 +191,7 @@ export function CuentasPageClient({ user, source }: CuentasPageClientProps) {
         accountName={deletingAccount?.name ?? ""}
         isDeleting={isDeleting}
         onClose={() => {
+          // Impide cerrar el modal mientras el delete está en progreso.
           if (isDeleting) return
           setDeletingAccount(null)
         }}

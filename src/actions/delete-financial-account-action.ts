@@ -5,6 +5,7 @@ import { ActionStateType } from "../types/action-types"
 import { getActionErrorMessage, getActionSuccessMessage } from "./account-action-utils"
 
 export default async function deleteAccount(prevState: ActionStateType, formData: FormData) {
+  // Identifica la cuenta que se eliminará.
   const accountId = formData.get("accountId")
 
   if (!accountId) {
@@ -14,6 +15,7 @@ export default async function deleteAccount(prevState: ActionStateType, formData
     }
   }
 
+  // Requiere sesión backend válida para operación destructiva.
   const token = await getToken()
   if (!token) {
     return {
@@ -22,6 +24,7 @@ export default async function deleteAccount(prevState: ActionStateType, formData
     }
   }
 
+  // Solicita eliminación física de la cuenta en API externa.
   const req = await fetch(`${process.env.API_URL}/accounts/${accountId}`, {
     method: "DELETE",
     headers: {
@@ -29,8 +32,10 @@ export default async function deleteAccount(prevState: ActionStateType, formData
     },
   })
 
+  // Parsea respuesta de forma tolerante para evitar throw por body inesperado.
   const json = await req.json().catch(() => ({}))
 
+  // Unifica errores backend en un formato apto para UI.
   if (!req.ok) {
     return {
       errors: [getActionErrorMessage(json, "No se pudo eliminar la cuenta.")],
@@ -38,6 +43,7 @@ export default async function deleteAccount(prevState: ActionStateType, formData
     }
   }
 
+  // Retorna mensaje de éxito estándar para notificación y revalidación.
   return {
     errors: [],
     success: getActionSuccessMessage(json, "Cuenta eliminada exitosamente"),

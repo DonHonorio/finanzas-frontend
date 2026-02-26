@@ -3,6 +3,7 @@ import { Account } from "@/src/types/account-types"
 import { getDB } from "./db"
 import { DraftAccountSchema } from "@/src/schemas"
 
+// Obtiene cuentas locales y las ordena para mantener una presentación consistente en UI.
 export async function getAccounts(): Promise<Account[]> {
   const db = await getDB()
 
@@ -15,6 +16,7 @@ export async function getAccounts(): Promise<Account[]> {
     request.onerror = () => reject(request.error ?? new Error("No se pudieron obtener las cuentas"))
   })
 
+  // Orden principal por "order" y secundario por nombre para estabilidad visual.
   return accounts.sort((a, b) => {
     const orderA = Number(a.order ?? 0)
     const orderB = Number(b.order ?? 0)
@@ -24,6 +26,7 @@ export async function getAccounts(): Promise<Account[]> {
   })
 }
 
+// Lee una cuenta puntual para operaciones de update/toggle sin traer toda la colección.
 async function getAccountById(accountId: number): Promise<Account | undefined> {
   const db = await getDB()
 
@@ -37,7 +40,9 @@ async function getAccountById(accountId: number): Promise<Account | undefined> {
   })
 }
 
+// Crea cuenta local aplicando mismas validaciones del flujo backend.
 export async function createAccount(prevState: ActionStateType, formData: FormData) {
+  // Calcula siguiente orden por defecto para ubicar la cuenta al final.
   const existingAccounts = await getAccounts()
   const maxOrder = existingAccounts.reduce((max, account) => Math.max(max, Number(account.order ?? 0)), 0)
 
@@ -52,6 +57,7 @@ export async function createAccount(prevState: ActionStateType, formData: FormDa
     bankId: formData.get("bankId") ?? "1",
   }
 
+  // Valida/normaliza payload con schema compartido.
   const accountParsed = DraftAccountSchema.safeParse(accountData)
   if (!accountParsed.success) {
     return {
@@ -63,6 +69,7 @@ export async function createAccount(prevState: ActionStateType, formData: FormDa
   const parsedData = accountParsed.data
   const now = new Date().toISOString()
 
+  // Construye entidad final incluyendo metadatos usados por la app.
   const account: Account = {
     accountId: Date.now(),
     name: parsedData.name,
@@ -80,6 +87,7 @@ export async function createAccount(prevState: ActionStateType, formData: FormDa
 
   const db = await getDB()
 
+  // Persiste la cuenta en el objectStore "accounts".
   await new Promise<void>((resolve, reject) => {
     const tx = db.transaction("accounts", "readwrite")
     const store = tx.objectStore("accounts")
@@ -95,6 +103,7 @@ export async function createAccount(prevState: ActionStateType, formData: FormDa
   }
 }
 
+// Actualiza una cuenta local respetando los campos previos no enviados.
 export async function updateAccount(prevState: ActionStateType, formData: FormData) {
   const accountId = Number(formData.get("accountId"))
 
@@ -105,6 +114,7 @@ export async function updateAccount(prevState: ActionStateType, formData: FormDa
     }
   }
 
+  // Recupera estado actual para merge de datos y validación completa posterior.
   const existingAccount = await getAccountById(accountId)
 
   if (!existingAccount) {
@@ -114,6 +124,7 @@ export async function updateAccount(prevState: ActionStateType, formData: FormDa
     }
   }
 
+  // Combina nuevos valores con los existentes para permitir ediciones parciales.
   const accountData = {
     name: formData.get("name") ?? existingAccount.name,
     type: formData.get("type") ?? existingAccount.type,
@@ -125,6 +136,7 @@ export async function updateAccount(prevState: ActionStateType, formData: FormDa
     bankId: formData.get("bankId") ?? String(existingAccount.bankId ?? 1),
   }
 
+  // Revalida el payload combinado antes de persistir.
   const accountParsed = DraftAccountSchema.safeParse(accountData)
   if (!accountParsed.success) {
     return {
@@ -135,6 +147,7 @@ export async function updateAccount(prevState: ActionStateType, formData: FormDa
 
   const parsedData = accountParsed.data
 
+  // Aplica cambios y renueva updatedAt para trazabilidad.
   const updatedAccount: Account = {
     ...existingAccount,
     name: parsedData.name,
@@ -150,6 +163,7 @@ export async function updateAccount(prevState: ActionStateType, formData: FormDa
 
   const db = await getDB()
 
+  // Sobrescribe la cuenta existente por clave primaria.
   await new Promise<void>((resolve, reject) => {
     const tx = db.transaction("accounts", "readwrite")
     const store = tx.objectStore("accounts")
@@ -165,6 +179,7 @@ export async function updateAccount(prevState: ActionStateType, formData: FormDa
   }
 }
 
+// Elimina cuenta local y limpia transacciones asociadas para evitar datos huérfanos.
 export async function deleteAccount(prevState: ActionStateType, formData: FormData) {
   const accountId = Number(formData.get("accountId"))
 
@@ -177,6 +192,7 @@ export async function deleteAccount(prevState: ActionStateType, formData: FormDa
 
   const db = await getDB()
 
+  // Detecta transacciones ligadas a la cuenta antes del borrado.
   const transactions = await new Promise<Array<{ transactionId: string; accountId: string | number }>>((resolve, reject) => {
     const tx = db.transaction("transactions", "readonly")
     const store = tx.objectStore("transactions")
@@ -186,6 +202,7 @@ export async function deleteAccount(prevState: ActionStateType, formData: FormDa
     request.onerror = () => reject(request.error ?? new Error("No se pudieron obtener las transacciones asociadas"))
   })
 
+  // Borra la cuenta del store principal.
   await new Promise<void>((resolve, reject) => {
     const tx = db.transaction("accounts", "readwrite")
     const store = tx.objectStore("accounts")
@@ -197,6 +214,7 @@ export async function deleteAccount(prevState: ActionStateType, formData: FormDa
 
   const linkedTransactions = transactions.filter((item) => String(item.accountId) === String(accountId))
 
+  // Borra movimientos vinculados para mantener integridad referencial local.
   if (linkedTransactions.length > 0) {
     await new Promise<void>((resolve, reject) => {
       const tx = db.transaction("transactions", "readwrite")
@@ -217,6 +235,7 @@ export async function deleteAccount(prevState: ActionStateType, formData: FormDa
   }
 }
 
+// Activa/desactiva cuenta local, aceptando también fallback por inversión del estado actual.
 export async function toggleAccountActive(prevState: ActionStateType, formData: FormData) {
   const accountId = Number(formData.get("accountId"))
 
@@ -236,6 +255,7 @@ export async function toggleAccountActive(prevState: ActionStateType, formData: 
     }
   }
 
+  // Soporta modo explícito (newStatus) o modo toggle implícito.
   const newStatusRaw = formData.get("newStatus")
   const newStatus =
     newStatusRaw === "true"
@@ -246,6 +266,7 @@ export async function toggleAccountActive(prevState: ActionStateType, formData: 
 
   const db = await getDB()
 
+  // Persiste únicamente el cambio de estado más actualización de timestamp.
   await new Promise<void>((resolve, reject) => {
     const tx = db.transaction("accounts", "readwrite")
     const store = tx.objectStore("accounts")

@@ -6,6 +6,7 @@ import { ActionStateType } from "../types/action-types"
 import { getActionErrorMessage, getActionSuccessMessage } from "./account-action-utils"
 
 export default async function createAccount(prevState: ActionStateType, formData: FormData) {
+  // Construye payload del formulario con defaults requeridos por backend.
   const accountData = {
     name: formData.get("name"),
     type: formData.get("type"),
@@ -17,6 +18,7 @@ export default async function createAccount(prevState: ActionStateType, formData
     bankId: formData.get("bankId") ?? "1",
   }
 
+  // Valida y normaliza el payload antes de llamar a la API.
   const account = DraftAccountSchema.safeParse(accountData)
   if (!account.success) {
     return {
@@ -25,6 +27,7 @@ export default async function createAccount(prevState: ActionStateType, formData
     }
   }
 
+  // Exige token backend para proteger endpoint de cuentas.
   const token = await getToken()
   if (!token) {
     return {
@@ -33,6 +36,7 @@ export default async function createAccount(prevState: ActionStateType, formData
     }
   }
 
+  // Ejecuta creación de cuenta en API externa.
   const req = await fetch(`${process.env.API_URL}/accounts`, {
     method: "POST",
     headers: {
@@ -42,8 +46,10 @@ export default async function createAccount(prevState: ActionStateType, formData
     body: JSON.stringify(account.data),
   })
 
+  // Parsea respuesta sin romper si el backend devuelve body vacío/no JSON.
   const json = await req.json().catch(() => ({}))
 
+  // Homogeneiza mensaje de error para consumo directo desde la UI.
   if (!req.ok) {
     return {
       errors: [getActionErrorMessage(json, "No se pudo crear la cuenta.")],
@@ -51,6 +57,7 @@ export default async function createAccount(prevState: ActionStateType, formData
     }
   }
 
+  // Devuelve mensaje de éxito consumible por toasts y callbacks de recarga.
   return {
     errors: [],
     success: getActionSuccessMessage(json, "Cuenta creada exitosamente"),

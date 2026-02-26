@@ -35,8 +35,10 @@ export enum AccountType {
  */
 export type AccountTypeKey = keyof typeof AccountType
 export type AccountTypeLabel = (typeof AccountType)[AccountTypeKey]
+// Acepta tanto clave enum como label para convivir con datos legacy y nuevos.
 export type AccountTypeValue = AccountTypeKey | AccountTypeLabel
 
+// Fuente única de opciones para selects de tipo de cuenta.
 export const accountTypeOptions = Object.entries(AccountType).map(([key, label]) => ({
   key: key as AccountTypeKey,
   label: label as AccountTypeLabel

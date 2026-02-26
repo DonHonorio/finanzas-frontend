@@ -5,6 +5,7 @@ import { ActionStateType } from "../types/action-types"
 import { getActionErrorMessage, getActionSuccessMessage } from "./account-action-utils"
 
 export default async function toggleAccountActive(prevState: ActionStateType, formData: FormData) {
+  // Recibe cuenta objetivo y estado final explícito desde la UI.
   const accountId = formData.get("accountId")
   const newStatusRaw = formData.get("newStatus")
 
@@ -15,6 +16,7 @@ export default async function toggleAccountActive(prevState: ActionStateType, fo
     }
   }
 
+  // Valida que el estado entrante sea boolean serializado.
   if (newStatusRaw !== "true" && newStatusRaw !== "false") {
     return {
       errors: ["Estado inválido para activar o desactivar la cuenta."],
@@ -22,6 +24,7 @@ export default async function toggleAccountActive(prevState: ActionStateType, fo
     }
   }
 
+  // Exige sesión autenticada antes de mutar estado de cuenta.
   const token = await getToken()
   if (!token) {
     return {
@@ -30,6 +33,7 @@ export default async function toggleAccountActive(prevState: ActionStateType, fo
     }
   }
 
+  // Llama al endpoint de habilitar/deshabilitar del backend.
   const req = await fetch(`${process.env.API_URL}/accounts/${accountId}/enable`, {
     method: "PATCH",
     headers: {
@@ -41,8 +45,10 @@ export default async function toggleAccountActive(prevState: ActionStateType, fo
     }),
   })
 
+  // Soporta respuestas sin JSON para no romper el flujo de toggle.
   const json = await req.json().catch(() => ({}))
 
+  // Devuelve error normalizado consumible por toast en cliente.
   if (!req.ok) {
     return {
       errors: [getActionErrorMessage(json, "No se pudo actualizar el estado de la cuenta.")],
@@ -50,6 +56,7 @@ export default async function toggleAccountActive(prevState: ActionStateType, fo
     }
   }
 
+  // Entrega mensaje de éxito para confirmar cambio de estado en UI.
   return {
     errors: [],
     success: getActionSuccessMessage(json, "Estado de la cuenta actualizado"),

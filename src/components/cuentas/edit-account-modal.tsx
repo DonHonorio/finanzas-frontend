@@ -12,9 +12,11 @@ type Props = {
   onAccept: () => void
 }
 
+// Modal de edición: hidrata el formulario con datos actuales de la cuenta seleccionada.
 export function EditAccountModal({ open, account, onCancel, onAccept }: Props) {
   return (
     <Modal open={open} onCancel={onCancel} className="w-[92vw] max-w-2xl rounded-2xl overflow-hidden">
+      {/* Reutiliza el mismo formulario para evitar divergencia entre create y update. */}
       <AccountForm
         initialData={account}
         action={updateAccount}

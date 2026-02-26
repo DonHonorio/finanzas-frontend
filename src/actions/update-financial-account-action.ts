@@ -6,6 +6,7 @@ import { ActionStateType } from "../types/action-types"
 import { getActionErrorMessage, getActionSuccessMessage } from "./account-action-utils"
 
 export default async function updateAccount(prevState: ActionStateType, formData: FormData) {
+  // Identifica la cuenta objetivo para actualización.
   const accountId = formData.get("accountId")
 
   if (!accountId) {
@@ -15,6 +16,7 @@ export default async function updateAccount(prevState: ActionStateType, formData
     }
   }
 
+  // Extrae datos editables y conserva defaults compatibles con el modelo de cuenta.
   const accountData = {
     name: formData.get("name"),
     type: formData.get("type"),
@@ -26,6 +28,7 @@ export default async function updateAccount(prevState: ActionStateType, formData
     bankId: formData.get("bankId") ?? "1",
   }
 
+  // Valida/normaliza datos para no propagar payload inválido al backend.
   const account = DraftAccountSchema.safeParse(accountData)
   if (!account.success) {
     return {
@@ -34,6 +37,7 @@ export default async function updateAccount(prevState: ActionStateType, formData
     }
   }
 
+  // Requiere sesión backend autenticada.
   const token = await getToken()
   if (!token) {
     return {
@@ -42,6 +46,7 @@ export default async function updateAccount(prevState: ActionStateType, formData
     }
   }
 
+  // Ejecuta actualización de cuenta existente.
   const req = await fetch(`${process.env.API_URL}/accounts/${accountId}`, {
     method: "PUT",
     headers: {
@@ -51,8 +56,10 @@ export default async function updateAccount(prevState: ActionStateType, formData
     body: JSON.stringify(account.data),
   })
 
+  // Parsea respuesta de forma defensiva ante body no JSON.
   const json = await req.json().catch(() => ({}))
 
+  // Normaliza errores para feedback consistente en la interfaz.
   if (!req.ok) {
     return {
       errors: [getActionErrorMessage(json, "No se pudo actualizar la cuenta.")],
@@ -60,6 +67,7 @@ export default async function updateAccount(prevState: ActionStateType, formData
     }
   }
 
+  // Expone confirmación de éxito para toasts y cierre de modal.
   return {
     errors: [],
     success: getActionSuccessMessage(json, "Cuenta actualizada exitosamente"),

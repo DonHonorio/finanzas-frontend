@@ -10,11 +10,13 @@ type Props = {
   onDelete: (account: Account) => void
 }
 
+// Traduce type al label visible incluso si el dato viene como key enum.
 function getTypeLabel(type: Account["type"]) {
   const value = String(type)
   return value in AccountType ? AccountType[value as keyof typeof AccountType] : value
 }
 
+// Formatea saldo en la moneda de la propia cuenta para coherencia visual.
 function formatBalance(balance: string, currency: string) {
   const amount = Number(balance)
   if (Number.isNaN(amount)) return `${balance} ${currency}`
@@ -29,6 +31,7 @@ export function AccountsTable({ accounts, mutatingAccountId, onEdit, onToggleAct
   return (
     <div className="w-full overflow-x-auto">
       <table className="w-full min-w-[860px]">
+        {/* Cabecera con columnas base de gestión de cuentas. */}
         <thead className="bg-gray-50 border-b border-gray-200">
           <tr>
             <th className="text-left px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wide">Nombre</th>
@@ -42,6 +45,7 @@ export function AccountsTable({ accounts, mutatingAccountId, onEdit, onToggleAct
         </thead>
         <tbody>
           {accounts.map((account) => {
+            // Bloquea solo la fila en curso para no congelar toda la tabla durante un toggle.
             const isMutatingRow = mutatingAccountId === account.accountId
             return (
               <tr key={account.accountId} className="border-b border-gray-100 hover:bg-gray-50/70">
@@ -62,6 +66,7 @@ export function AccountsTable({ accounts, mutatingAccountId, onEdit, onToggleAct
                   </span>
                 </td>
                 <td className="px-4 py-3 text-sm">
+                  {/* Acciones primarias por fila: editar, toggle activo y eliminar. */}
                   <div className="flex justify-end gap-2">
                     <button
                       type="button"

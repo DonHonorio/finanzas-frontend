@@ -17,6 +17,7 @@ type Props = {
   submitLabel: string
 }
 
+// Unifica el valor del tipo de cuenta para el select, aceptando clave enum o label persistida.
 function normalizeAccountType(type?: AccountTypeValue): string {
   if (!type) return accountTypeOptions[0]?.label ?? ""
   const value = String(type)
@@ -29,6 +30,7 @@ export function AccountForm({ initialData, action, onSuccess, onCancel, title, s
     success: "",
   })
 
+  // Inicializa cada campo desde initialData para reutilizar el formulario en create y edit.
   const [name, setName] = useState(initialData?.name ?? "")
   const [type, setType] = useState(normalizeAccountType(initialData?.type))
   const [currency, setCurrency] = useState<BaseCurrency>(initialData?.currency ?? "EUR")
@@ -37,12 +39,14 @@ export function AccountForm({ initialData, action, onSuccess, onCancel, title, s
   const [isActive] = useState(initialData?.isActive ?? true)
   const [bankId] = useState(initialData?.bankId ?? 1)
 
+  // Habilita envío solo cuando los campos mínimos requeridos tienen contenido.
   const isFormValid =
     name.trim().length > 0 &&
     type.trim().length > 0 &&
     currency.trim().length > 0 &&
     balance.trim().length > 0
 
+  // Reacciona al resultado de la action: toast de éxito, callback y surfacing de errores de negocio/validación.
   useEffect(() => {
     if (state.success) {
       toast.success(state.success)
@@ -57,20 +61,25 @@ export function AccountForm({ initialData, action, onSuccess, onCancel, title, s
 
   return (
     <form id="account-form" action={dispatch} className="p-6">
+      {/* Campos de control para mantener el contrato completo del payload sin exponerlos visualmente. */}
       <input type="hidden" name="accountId" value={initialData?.accountId ?? ""} />
       <input type="hidden" name="isActive" value={String(isActive)} />
       <input type="hidden" name="bankId" value={String(bankId)} />
       <input type="hidden" name="order" value={String(initialData?.order ?? "")} />
 
+      {/* Título contextual según modo (crear o editar) recibido desde el modal padre. */}
       <h2 className="text-2xl font-semibold text-gray-900 mb-5">{title}</h2>
 
+      {/* Resumen de errores devueltos por la action para feedback inmediato al usuario. */}
       {state.errors.length > 0 && (
         <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {state.errors.join(" ")}
         </div>
       )}
 
+      {/* Layout responsivo del formulario: una columna en móvil y dos en desktop. */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Nombre de la cuenta para identificarla en tablas, selects y transacciones. */}
         <div className="md:col-span-2">
           <label htmlFor="account-name" className="block text-[15px] font-semibold text-gray-700 mb-1">
             Nombre
@@ -86,6 +95,7 @@ export function AccountForm({ initialData, action, onSuccess, onCancel, title, s
           />
         </div>
 
+        {/* Tipo contable/financiero de la cuenta, usado para clasificar y mostrar etiquetas. */}
         <div>
           <label htmlFor="account-type" className="block text-[15px] font-semibold text-gray-700 mb-1">
             Tipo
@@ -105,6 +115,7 @@ export function AccountForm({ initialData, action, onSuccess, onCancel, title, s
           </select>
         </div>
 
+        {/* Moneda base de la cuenta, que condiciona el formato y consistencia de movimientos asociados. */}
         <div>
           <label htmlFor="account-currency" className="block text-[15px] font-semibold text-gray-700 mb-1">
             Moneda
@@ -124,6 +135,7 @@ export function AccountForm({ initialData, action, onSuccess, onCancel, title, s
           </select>
         </div>
 
+        {/* Saldo inicial/actual editable con dos decimales para mantener precisión monetaria. */}
         <div>
           <label htmlFor="account-balance" className="block text-[15px] font-semibold text-gray-700 mb-1">
             Saldo inicial
@@ -140,6 +152,7 @@ export function AccountForm({ initialData, action, onSuccess, onCancel, title, s
           />
         </div>
 
+        {/* Referencia corta opcional de la cuenta (últimos 4 dígitos), restringida a números. */}
         <div>
           <label htmlFor="account-number" className="block text-[15px] font-semibold text-gray-700 mb-1">
             Últimos 4 dígitos
@@ -157,6 +170,7 @@ export function AccountForm({ initialData, action, onSuccess, onCancel, title, s
         </div>
       </div>
 
+      {/* Footer de acciones: cancelar cierra modal y guardar dispara submit con estado pending/disabled. */}
       <div className="mt-6 pt-4 border-t border-gray-200 flex justify-end gap-4">
         <CancelButton onClick={onCancel} className="px-10" />
         <SaveButton
