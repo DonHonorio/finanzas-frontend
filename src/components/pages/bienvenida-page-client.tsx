@@ -1,110 +1,24 @@
 'use client'
 
-import Link from "next/link"
-import { Wallet, X } from "lucide-react"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { LoginForm } from "@/src/components/auth/login-form"
-import { useTranslations } from "next-intl"
+import { NextIntlClientProvider } from "next-intl"
+import type { AbstractIntlMessages } from "next-intl"
+import { AppLocale } from "@/src/i18n/config"
+import { BienvenidaContent } from "./bienvenida-content"
 
-// Pantalla de bienvenida: se muestra al usuario la primera vez que accede sin cuenta.
-export function BienvenidaPageClient() {
-    const t = useTranslations("WelcomePage")
-    const headlineLines = t("headline").split("\n")
-    const [showLogin, setShowLogin] = useState(false)
-    const router = useRouter()
+type Props = {
+    initialLocale: AppLocale
+    allMessages: Record<AppLocale, AbstractIntlMessages>
+}
 
-    function handleLoginSuccess() {
-        // Al iniciar sesión desde otro navegador, marcamos el onboarding como visto
-        localStorage.setItem('fp_onboarding_completed', 'true')
-        setShowLogin(false)
-        router.replace('/')
-    }
+// Pantalla de bienvenida: wrapper que gestiona el locale local (sin persistir cookie)
+// y provee un NextIntlClientProvider anidado para aislar el cambio de idioma.
+export function BienvenidaPageClient({ initialLocale, allMessages }: Props) {
+    const [locale, setLocale] = useState<AppLocale>(initialLocale)
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6 py-16">
-
-            {/* Barra superior con botón de login */}
-            <div className="fixed top-0 left-0 right-0 flex justify-end items-center px-8 py-4">
-                <div className="flex items-center gap-3">
-                    <span className="text-sm text-gray-500">{t("alreadyHaveAccount")}</span>
-                    <button
-                        onClick={() => setShowLogin(true)}
-                        className="text-sm font-semibold text-primary border border-primary px-4 py-2 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
-                    >
-                        {t("signIn")}
-                    </button>
-                </div>
-            </div>
-
-            {/* Modal de login */}
-            {showLogin && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4">
-                        {/* Cabecera del modal */}
-                        <div className="flex items-center justify-between px-6 pt-6 pb-2">
-                            <h2 className="text-xl font-bold text-gray-900">{t("modalTitle")}</h2>
-                            <button
-                                onClick={() => setShowLogin(false)}
-                                className="text-gray-400 hover:text-gray-600 transition"
-                                aria-label={t("close")}
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-                        <LoginForm
-                            onClose={() => setShowLogin(false)}
-                            onSuccess={handleLoginSuccess}
-                        />
-                    </div>
-                </div>
-            )}
-
-            <div className="max-w-2xl w-full flex flex-col items-center gap-10">
-
-                {/* Logo / Icono de la app */}
-                <div className="flex flex-col items-center gap-4">
-                    <div className="w-24 h-24 bg-primary rounded-3xl flex items-center justify-center shadow-lg">
-                        <Wallet className="w-14 h-14 text-white" />
-                    </div>
-                    <p className="text-sm font-semibold tracking-widest text-primary uppercase">
-                        {t("brand")}
-                    </p>
-                </div>
-
-                {/* Mensaje principal */}
-                <div className="text-center flex flex-col gap-6">
-                    <h1 className="text-4xl font-bold text-gray-900 leading-tight">
-                        {headlineLines.map((line, index) => (
-                            <span key={`${line}-${index}`}>
-                                {line}
-                                {index < headlineLines.length - 1 && <br />}
-                            </span>
-                        ))}
-                    </h1>
-
-                    <p className="text-gray-600 text-lg leading-relaxed">
-                        {t("description")}
-                    </p>
-
-                    <p className="text-gray-500 text-base leading-relaxed">
-                        {t("description2")}
-                    </p>
-
-                    <p className="text-gray-500 text-base leading-relaxed">
-                        {t("description3")}
-                    </p>
-                </div>
-
-                {/* Botón de acción */}
-                <Link
-                    href="/configuracion-basica"
-                    className="bg-primary hover:bg-primary/90 text-white font-semibold text-lg px-10 py-4 rounded-xl shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-100"
-                >
-                    {t("start")}
-                </Link>
-
-            </div>
-        </div>
+        <NextIntlClientProvider locale={locale} messages={allMessages[locale]}>
+            <BienvenidaContent locale={locale} onLocaleChange={setLocale} />
+        </NextIntlClientProvider>
     )
 }
