@@ -27,18 +27,18 @@ export function Header({ user, source = "none" }: HeaderProps) {
 
     return (
         <>
-            <header className="w-full px-8 py-4 flex items-center justify-between bg-white border-b border-gray-200">
+            <header className="w-full px-3 sm:px-8 py-3 sm:py-4 flex items-center justify-between bg-white border-b border-gray-200">
                 <Logo />
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1 sm:gap-3">
                 {showUserProfile && (
                     <UserProfile user={user} source={isLocalSource ? "local" : "backend"} />
                 )}
 
                 {showLoginButton && (
-                    <button 
+                    <button
                         onClick={() => setIsAuthModalOpen(true)}
-                        className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition font-medium"
+                        className="px-3 sm:px-6 py-2 text-sm sm:text-base bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition font-medium"
                     >
                         {t("signIn")}
                     </button>

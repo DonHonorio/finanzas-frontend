@@ -9,15 +9,16 @@ import { CategoryRow } from '@/src/types/dashboard-types'
 import { TableBody } from './table-body'
 import { TableFooter } from './table-footer'
 import { TableHeader } from './table-header'
-import { AddCategoryModal } from './add-category-modal'
 import { EditCategoryModal } from './edit-category-modal'
 import { ViewCategoryModal } from './view-category-modal'
+import { MobileCategoryView } from './mobile-category-view'
 import { useDashboardData } from '@/src/hooks/use-dashboard-data'
-import { formatCurrency, months } from '@/src/lib/utils'
+import { useResponsive } from '@/src/hooks/use-responsive'
+import { formatCurrency, formatCompact, months } from '@/src/lib/utils'
 import { DataLoading } from '../ui/data-loading'
 import { DataError } from '../ui/data-error'
 import { NoData } from '../ui/no-data'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 /**
  * Nombre del campo que se usará como título de la primera columna llamada: 'categoría' en la tabla
@@ -42,10 +43,9 @@ export function Dashboard({
 }) {
     const t = useTranslations("Dashboard")
     const tMonth = useTranslations("MonthShort")
-    // Estado para controlar la apertura del modal de añadir categoría
-    const [openAddCategoryModal, setOpenAddCategoryModal] = useState(false)
+    const locale = useLocale()
 
-    // Srive para mostrar el tipo de dato en la UI 
+    // Srive para mostrar el tipo de dato en la UI
     const tipoDato = mode === "expenses" ? t("expenses") : t("incomes")
 
     // Estados para gestionar los modales de vista/edición de categorías
@@ -56,6 +56,9 @@ export function Dashboard({
     // Hook personalizado para obtener datos del dashboard con SWR
     // Incluye mutación para reintentar peticiones en caso de error
     const { data = [], isLoading, error, mutate } = useDashboardData(mode, actualYear, userCacheKey)
+
+    // Detecta el breakpoint actual (con debounce) para adaptar la vista
+    const { isMobile, isTablet } = useResponsive()
 
     /**
      * Efecto para logging de datos (solo en desarrollo)
@@ -98,6 +101,7 @@ export function Dashboard({
      * Definición de columnas para react-table usando useMemo
      * Se memoiza para evitar recreación en cada render
      * Incluye columna de categoría, presupuesto y las 12 columnas mensuales
+     * En modo tablet (isTablet) usa formatCompact para que los valores quepan en columnas estrechas
      */
     const columns = useMemo<ColumnDef<CategoryRow>[]>(() => [
         {
@@ -111,7 +115,9 @@ export function Dashboard({
             accessorKey: 'budget',
             header: t("budget"),
             // Formatea el valor numérico como moneda
-            cell: info => formatCurrency(info.getValue<number>()), // estilo aplicado a las celdas de esta columna (ahorrando hacerlo después)
+            cell: info => isTablet
+                ? formatCompact(info.getValue<number>())
+                : formatCurrency(info.getValue<number>(), { locale }),
         },
         // Genera columnas dinámicas para cada mes
         ...months.map(month => ({
@@ -119,9 +125,11 @@ export function Dashboard({
             header: tMonth(month), // poniendo en mayúscula el título de columnas
             // Función para acceder al valor del mes en el objeto months, es decir -> busca un accessorKey en las claves del objeto months del array de categories
             accessorFn: row => row.months[month],
-            cell: info => formatCurrency(info.getValue<number>()),
+            cell: info => isTablet
+                ? formatCompact(info.getValue<number>())
+                : formatCurrency(info.getValue<number>(), { locale }),
         } as ColumnDef<CategoryRow>)),
-    ], [t, tMonth])
+    ], [t, tMonth, isTablet, locale])
 
     /**
      * Instancia de react-table que maneja la lógica de la tabla
@@ -138,86 +146,87 @@ export function Dashboard({
     return (
         <div className="h-full flex flex-col border border-border rounded-lg overflow-hidden">
 
-            {/* Cabecera de la tabla - fija en la parte superior */}
-            <div className="shrink-0">
-                <TableHeader table={table} />
-            </div>
+            {/* Vista de tarjetas para móvil (<768px) — sustituye completamente a la tabla */}
+            {isMobile ? (
+                <>
+                    {isLoading ? (
+                        <DataLoading label={tipoDato} />
+                    ) : error ? (
+                        <DataError
+                            label={tipoDato}
+                            year={actualYear}
+                            isRetrying={isLoading}
+                            onRetry={() => mutate()}
+                            error={error}
+                        />
+                    ) : data.length === 0 ? (
+                        <NoData label={tipoDato} year={actualYear} />
+                    ) : (
+                        <MobileCategoryView data={data} mode={mode} mutate={mutate} />
+                    )}
+                </>
+            ) : (
+                <>
+                    {/* Cabecera de la tabla - fija en la parte superior */}
+                    {/* compact=true en tablet reduce padding y tamaño de fuente */}
+                    <div className="shrink-0">
+                        <TableHeader table={table} compact={isTablet} />
+                    </div>
 
-            {/* Cuerpo principal de la tabla - área desplazable */}
-            {/* Se muestran los posibles estados en los que se encuentra el dashboard */}
-            <div className="flex-1 overflow-auto no-scrollbar">
-                {isLoading ? (
-                    // Estado de carga
-                    <DataLoading label={tipoDato} />
-                ) : error ? (
-                    // Estado de error con opción de reintentar
-                    <DataError
-                        label={tipoDato}
-                        year={actualYear}
-                        isRetrying={isLoading}
-                        onRetry={() => mutate()}
-                        error={error}
-                    />
-                ) : data.length === 0 ? (
-                    // Estado sin datos
-                    <NoData label={tipoDato} year={actualYear} />
-                ) : (
-                    // Estado con datos - renderiza la tabla
-                    <TableBody table={table} onView={handleView} onEdit={handleEdit} />
-                )}
-            </div>
+                    {/* Cuerpo principal de la tabla - área desplazable */}
+                    {/* Se muestran los posibles estados en los que se encuentra el dashboard */}
+                    <div className="flex-1 overflow-auto no-scrollbar">
+                        {isLoading ? (
+                            // Estado de carga
+                            <DataLoading label={tipoDato} />
+                        ) : error ? (
+                            // Estado de error con opción de reintentar
+                            <DataError
+                                label={tipoDato}
+                                year={actualYear}
+                                isRetrying={isLoading}
+                                onRetry={() => mutate()}
+                                error={error}
+                            />
+                        ) : data.length === 0 ? (
+                            // Estado sin datos
+                            <NoData label={tipoDato} year={actualYear} />
+                        ) : (
+                            // Estado con datos - renderiza la tabla
+                            <TableBody table={table} onView={handleView} onEdit={handleEdit} compact={isTablet} />
+                        )}
+                    </div>
 
-            {/* Botón para añadir nueva categoría - separador visual */}
-            <div className="shrink-0 border-t border-border bg-sidebar-accent px-4 py-3">
-                <button
-                    onClick={() => setOpenAddCategoryModal(true)}
-                    className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-2 select-none"
-                >
-                    <span className="text-lg">＋</span>
-                    {t("addCategory")}
-                </button>
-            </div>
+                    {/* Pie de tabla con totales - fijo en la parte inferior */}
+                    <div className="shrink-0">
+                        {/* sticky bottom-0 z-10 - Esperando a que ocurra algún problema para aplicar este código a la clase del div */}
+                        <TableFooter table={table} data={isLoading ? [] : data} compact={isTablet} />
+                    </div>
 
-            {/* Modal para añadir nueva categoría */}
-            <AddCategoryModal
-                open={openAddCategoryModal}
-                onCancel={() => setOpenAddCategoryModal(false)}
-                onAccept={() => {
-                    setOpenAddCategoryModal(false)
-                    mutate() // Refresca los datos del dashboard después de añadir una categoría
-                }}
-                mode={mode}
-            />
+                    {/* Modal para visualizar detalles de categoría */}
+                    {modalType === "view" && selectedCategory && (
+                        <ViewCategoryModal
+                            open={modalType === "view"} // Se envía open como true para que el componente "Modal" básico (del cual está formado ViewCategoryModal) se pueda abrir
+                            category={selectedCategory}
+                            onCancel={handleCloseModal}
+                            onDataChanged={mutate}
+                        />
+                    )}
 
-            {/* Modal para visualizar detalles de categoría */}
-            {modalType === "view" && selectedCategory && (
-                <ViewCategoryModal
-                    open={modalType === "view"} // Se envía open como true para que el componente "Modal" básico (del cual está formado ViewCategoryModal) se pueda abrir
-                    category={selectedCategory}
-                    onCancel={handleCloseModal}
-                    onDataChanged={mutate}
-                />
+                    {/* Modal para editar categoría existente */}
+                    {modalType === "edit" && selectedCategory && (
+                        <EditCategoryModal
+                            open={modalType === "edit"}
+                            category={selectedCategory}
+                            onCancel={handleCloseModal}
+                            onAccept={() => {
+                                mutate() // Refresca los datos del dashboard después de editar una categoría
+                                handleCloseModal()
+                            }}
+                        />
+                    )}
+                </>
             )}
-
-            {/* Modal para editar categoría existente */}
-            {modalType === "edit" && selectedCategory && (
-                <EditCategoryModal
-                    open={modalType === "edit"}
-                    category={selectedCategory}
-                    onCancel={handleCloseModal}
-                    onAccept={() => {
-                        setOpenAddCategoryModal(false)
-                        mutate() // Refresca los datos del dashboard después de editar una categoría
-                        handleCloseModal()
-                    }}
-                />
-            )}
-
-            {/* Pie de tabla con totales - fijo en la parte inferior */}
-            <div className="shrink-0">
-                {/* sticky bottom-0 z-10 - Esperando a que ocurra algún problema para aplicar este código a la clase del div */}
-                <TableFooter table={table} data={isLoading ? [] : data} />
-            </div>
 
         </div>
     )

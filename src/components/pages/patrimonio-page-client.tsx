@@ -21,15 +21,15 @@ export function PatrimonioPageClient({ user, source }: PatrimonioPageClientProps
     const resolvedUser = useResolvedSessionUser(user, source)
 
     return (
-        <div className="h-screen flex flex-col bg-gray-50">
+        <div className="h-[100dvh] overflow-hidden flex flex-col bg-gray-50">
             {/* Header */}
             <Header user={resolvedUser} source={source} />
 
             {/* Contenido Principal */}
-            <main className="flex-1 p-10">
-                <div className="h-full flex flex-col">
+            <main className="flex-1 min-h-0 p-3 sm:p-10 overflow-hidden">
+                <div className="h-full min-h-0 flex flex-col items-center justify-center sm:items-stretch sm:justify-start">
                     {/* Área de contenido */}
-                    <div className="flex-1 bg-white rounded-2xl border border-gray-200 flex flex-col items-center justify-center gap-6">
+                    <div className="w-full aspect-square max-h-full sm:max-h-none sm:aspect-auto sm:flex-1 bg-white rounded-2xl border border-gray-200 flex flex-col items-center justify-center gap-6">
                         <div className="w-24 h-24 bg-primary/10 rounded-2xl flex items-center justify-center">
                             <TrendingUp className="w-12 h-12 text-primary" />
                         </div>

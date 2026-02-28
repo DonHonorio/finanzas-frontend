@@ -64,126 +64,128 @@ export function AccountForm({ initialData, action, onSuccess, onCancel, title, s
   }, [state])
 
   return (
-    <form id="account-form" action={dispatch} className="p-6">
-      {/* Campos de control para mantener el contrato completo del payload sin exponerlos visualmente. */}
-      <input type="hidden" name="accountId" value={initialData?.accountId ?? ""} />
-      <input type="hidden" name="isActive" value={String(isActive)} />
-      <input type="hidden" name="bankId" value={String(bankId)} />
-      <input type="hidden" name="order" value={String(initialData?.order ?? "")} />
+    <form id="account-form" action={dispatch} className="flex h-full flex-col min-h-0 overflow-hidden">
+      <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6">
+        {/* Campos de control para mantener el contrato completo del payload sin exponerlos visualmente. */}
+        <input type="hidden" name="accountId" value={initialData?.accountId ?? ""} />
+        <input type="hidden" name="isActive" value={String(isActive)} />
+        <input type="hidden" name="bankId" value={String(bankId)} />
+        <input type="hidden" name="order" value={String(initialData?.order ?? "")} />
 
-      {/* Título contextual según modo (crear o editar) recibido desde el modal padre. */}
-      <h2 className="text-2xl font-semibold text-gray-900 mb-5">{title}</h2>
+        {/* Título contextual según modo (crear o editar) recibido desde el modal padre. */}
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-5">{title}</h2>
 
-      {/* Resumen de errores devueltos por la action para feedback inmediato al usuario. */}
-      {state.errors.length > 0 && (
-        <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {state.errors.join(" ")}
-        </div>
-      )}
+        {/* Resumen de errores devueltos por la action para feedback inmediato al usuario. */}
+        {state.errors.length > 0 && (
+          <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {state.errors.join(" ")}
+          </div>
+        )}
 
-      {/* Layout responsivo del formulario: una columna en móvil y dos en desktop. */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Nombre de la cuenta para identificarla en tablas, selects y transacciones. */}
-        <div className="md:col-span-2">
-          <label htmlFor="account-name" className="block text-[15px] font-semibold text-gray-700 mb-1">
-            {t("name")}
-          </label>
-          <input
-            id="account-name"
-            name="name"
-            type="text"
-            placeholder={t("namePlaceholder")}
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary"
-          />
-        </div>
+        {/* Layout responsivo del formulario: una columna en móvil y dos en desktop. */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Nombre de la cuenta para identificarla en tablas, selects y transacciones. */}
+          <div className="md:col-span-2">
+            <label htmlFor="account-name" className="block text-[15px] font-semibold text-gray-700 mb-1">
+              {t("name")}
+            </label>
+            <input
+              id="account-name"
+              name="name"
+              type="text"
+              placeholder={t("namePlaceholder")}
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary"
+            />
+          </div>
 
-        {/* Tipo contable/financiero de la cuenta, usado para clasificar y mostrar etiquetas. */}
-        <div>
-          <label htmlFor="account-type" className="block text-[15px] font-semibold text-gray-700 mb-1">
-            {t("type")}
-          </label>
-          <select
-            id="account-type"
-            name="type"
-            value={type}
-            onChange={(event) => setType(event.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] bg-white focus:outline-none focus:border-primary"
-          >
-            {accountTypeOptions.map((option) => (
-              <option key={option.key} value={option.label}>
-                {tAccountTypes(option.key)}
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* Tipo contable/financiero de la cuenta, usado para clasificar y mostrar etiquetas. */}
+          <div>
+            <label htmlFor="account-type" className="block text-[15px] font-semibold text-gray-700 mb-1">
+              {t("type")}
+            </label>
+            <select
+              id="account-type"
+              name="type"
+              value={type}
+              onChange={(event) => setType(event.target.value)}
+              className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] bg-white focus:outline-none focus:border-primary"
+            >
+              {accountTypeOptions.map((option) => (
+                <option key={option.key} value={option.label}>
+                  {tAccountTypes(option.key)}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Moneda base de la cuenta, que condiciona el formato y consistencia de movimientos asociados. */}
-        <div>
-          <label htmlFor="account-currency" className="block text-[15px] font-semibold text-gray-700 mb-1">
-            {t("currency")}
-          </label>
-          <select
-            id="account-currency"
-            name="currency"
-            value={currency}
-            onChange={(event) => setCurrency(event.target.value as BaseCurrency)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] bg-white focus:outline-none focus:border-primary"
-          >
-            {currencies.map((item) => (
-              <option key={item.currency} value={item.currency}>
-                {item.currency} - {new Intl.DisplayNames([locale], { type: "currency" }).of(item.currency)}
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* Moneda base de la cuenta, que condiciona el formato y consistencia de movimientos asociados. */}
+          <div>
+            <label htmlFor="account-currency" className="block text-[15px] font-semibold text-gray-700 mb-1">
+              {t("currency")}
+            </label>
+            <select
+              id="account-currency"
+              name="currency"
+              value={currency}
+              onChange={(event) => setCurrency(event.target.value as BaseCurrency)}
+              className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] bg-white focus:outline-none focus:border-primary"
+            >
+              {currencies.map((item) => (
+                <option key={item.currency} value={item.currency}>
+                  {item.currency} - {new Intl.DisplayNames([locale], { type: "currency" }).of(item.currency)}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Saldo inicial/actual editable con dos decimales para mantener precisión monetaria. */}
-        <div>
-          <label htmlFor="account-balance" className="block text-[15px] font-semibold text-gray-700 mb-1">
-            {t("initialBalance")}
-          </label>
-          <input
-            id="account-balance"
-            name="balance"
-            type="number"
-            step="0.01"
-            placeholder="0.00"
-            value={balance}
-            onChange={(event) => setBalance(event.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary"
-          />
-        </div>
+          {/* Saldo inicial/actual editable con dos decimales para mantener precisión monetaria. */}
+          <div>
+            <label htmlFor="account-balance" className="block text-[15px] font-semibold text-gray-700 mb-1">
+              {t("initialBalance")}
+            </label>
+            <input
+              id="account-balance"
+              name="balance"
+              type="number"
+              step="0.01"
+              placeholder="0.00"
+              value={balance}
+              onChange={(event) => setBalance(event.target.value)}
+              className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary"
+            />
+          </div>
 
-        {/* Referencia corta opcional de la cuenta (últimos 4 dígitos), restringida a números. */}
-        <div>
-          <label htmlFor="account-number" className="block text-[15px] font-semibold text-gray-700 mb-1">
-            {t("last4")}
-          </label>
-          <input
-            id="account-number"
-            name="number"
-            type="text"
-            maxLength={4}
-            placeholder={t("last4Placeholder")}
-            value={number}
-            onChange={(event) => setNumber(event.target.value.replace(/\D/g, "").slice(0, 4))}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary"
-          />
+          {/* Referencia corta opcional de la cuenta (últimos 4 dígitos), restringida a números. */}
+          <div>
+            <label htmlFor="account-number" className="block text-[15px] font-semibold text-gray-700 mb-1">
+              {t("last4")}
+            </label>
+            <input
+              id="account-number"
+              name="number"
+              type="text"
+              maxLength={4}
+              placeholder={t("last4Placeholder")}
+              value={number}
+              onChange={(event) => setNumber(event.target.value.replace(/\D/g, "").slice(0, 4))}
+              className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] focus:outline-none focus:border-primary"
+            />
+          </div>
         </div>
       </div>
 
       {/* Footer de acciones: cancelar cierra modal y guardar dispara submit con estado pending/disabled. */}
-      <div className="mt-6 pt-4 border-t border-gray-200 flex justify-end gap-4">
-        <CancelButton onClick={onCancel} className="px-10" />
+      <div className="shrink-0 px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 flex justify-end gap-3 sm:gap-4">
+        <CancelButton onClick={onCancel} className="px-6 sm:px-10" />
         <SaveButton
           isPending={isPending}
           isValid={isFormValid}
           label={submitLabel}
           pendingLabel={t("pending")}
           form="account-form"
-          className="px-10"
+          className="px-6 sm:px-10"
         />
       </div>
     </form>

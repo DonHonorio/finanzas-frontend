@@ -18,7 +18,7 @@ export function EditAccountModal({ open, account, onCancel, onAccept }: Props) {
   const t = useTranslations("AccountForm")
 
   return (
-    <Modal open={open} onCancel={onCancel} className="w-[92vw] max-w-2xl rounded-2xl overflow-hidden">
+    <Modal open={open} onCancel={onCancel} className="w-[92vw] max-w-2xl h-[92dvh] sm:h-auto max-h-[92dvh] rounded-2xl overflow-hidden flex flex-col">
       {/* Reutiliza el mismo formulario para evitar divergencia entre create y update. */}
       <AccountForm
         initialData={account}

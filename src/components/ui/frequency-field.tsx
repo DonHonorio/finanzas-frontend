@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from "@/src/lib/utils"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useTranslations } from "next-intl"
 
 export type FrequencyValue = "once" | "daily" | "weekly" | "monthly" | "yearly" | "custom"
@@ -110,10 +110,17 @@ export function FrequencyField({
   const [value, setValue] = useState<FrequencyValue>(parsed.value)
   const [customCount, setCustomCount] = useState(parsed.customCount)
   const [customUnit, setCustomUnit] = useState<FrequencyUnit>(parsed.customUnit)
+  const skipResyncRef = useRef(false)
 
   // Sincroniza estados internos cuando cambia la prop frequency externa
   useEffect(() => {
+    if (skipResyncRef.current && frequency === "") {
+      skipResyncRef.current = false
+      return
+    }
+
     const next = parseRRule(frequency)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setValue(next.value)
     setCustomCount(next.customCount)
     setCustomUnit(next.customUnit)
@@ -124,7 +131,9 @@ export function FrequencyField({
 
   // Actualiza el valor RRULE y llama a onChange
   const commit = (nextValue: FrequencyValue, nextCount = customCount, nextUnit = customUnit) => {
-    onChange(buildRRule(nextValue, nextCount, nextUnit))
+    const nextRRule = buildRRule(nextValue, nextCount, nextUnit)
+    skipResyncRef.current = nextValue === "custom" && nextRRule === ""
+    onChange(nextRRule)
   }
 
   const handleValueChange = (nextValue: FrequencyValue) => {
@@ -164,7 +173,7 @@ export function FrequencyField({
         <div className="grid grid-cols-2 gap-2">
           <input
             type="number"
-            min={1}
+            min={0}
             name={customCountName}
             value={customCount}
             onChange={(event) => {

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link"
-import { DollarSign } from "lucide-react"
+import Image from "next/image"
 
 /**
  * Componente de logo reutilizable que navega al menú principal
@@ -9,11 +9,17 @@ import { DollarSign } from "lucide-react"
  */
 export function Logo() {
   return (
-    <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-      <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-        <DollarSign className="w-6 h-6 text-primary-foreground" />
+    <Link href="/" className="block hover:opacity-90 transition-opacity">
+      <div className="relative h-[44px] w-[176px] sm:h-[53px] sm:w-[211px]">
+        <Image
+          src="/logoRiconomy.png"
+          alt="Riconomy"
+          fill
+          priority
+          className="object-contain object-left"
+          sizes="(min-width: 640px) 211px, 176px"
+        />
       </div>
-      <span className="text-xl font-bold text-gray-800">R$</span>
     </Link>
   )
 }

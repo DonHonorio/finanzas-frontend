@@ -5,16 +5,16 @@ import { columnWidths } from "@/src/helpers/dashboard-helpers"
 
 /**
  * Componente TableHeader - Renderiza la cabecera de la tabla usando react-table
- * 
+ *
  * Este componente es crítico porque:
  * 1. Define la estructura de tabla HTML real (<table>, <thead>, <tr>, <th>)
  * 2. Aplica anchos de columna FIJOS mediante <colgroup> (table-fixed)
  * 3. Controla la alineación del texto (izquierda para categorías, centro para números)
- * 
+ *
  * IMPORTANTE: Este componente renderiza un <table> COMPLETO, no solo <thead>
  * Esto es necesario porque <colgroup> debe estar a nivel de <table>, no de <thead>
  */
-export function TableHeader({ table }: { table: Table<CategoryRow> }) {
+export function TableHeader({ table, compact = false }: { table: Table<CategoryRow>; compact?: boolean }) {
 
     return (
         // TABLA COMPLETA (no solo thead) para contener <colgroup>
@@ -23,10 +23,10 @@ export function TableHeader({ table }: { table: Table<CategoryRow> }) {
         // w-full: Ocupa el 100% del contenedor padre
         <table className="w-full border-collapse text-sm table-fixed">
 
-            {/* 
+            {/*
               COLGROUP - DEFINE ANCHOS DE COLUMNA A NIVEL DE TABLA
               Esto es OBLIGATORIO con table-fixed y previene problemas de renderizado
-              
+
               ¿Por qué no usar width en <th>? Porque:
               1. table-fixed requiere <colgroup> para anchos consistentes
               2. Evita que el navegador recalcule anchos dinámicamente (mejor rendimiento)
@@ -36,7 +36,7 @@ export function TableHeader({ table }: { table: Table<CategoryRow> }) {
                 {/*
                   Mapea TODAS las columnas hoja (leaf columns) - no columnas agrupadas
                   En tu tabla: categoría, presupuesto, enero, febrero, ..., diciembre
-                  
+
                   columnWidths es un objeto tipo: { category: '12%', budget: '6%', enero: '6%', ... }
                   Estos porcentajes deben sumar ~100% para evitar overflow horizontal
                 */}
@@ -62,26 +62,22 @@ export function TableHeader({ table }: { table: Table<CategoryRow> }) {
                 */}
                 {table.getHeaderGroups().map(hg => (
                     <tr key={hg.id}>
-                        {hg.headers.map(header => {
-                            // console.log('header column id: ', header.column.id)
-                            return (
-                                <th
-                                    key={header.id}
-                                    className={`px-4 py-3 font-semibold text-secondary-foreground 
-                                    ${header.column.id === categoryColumnTitle ? 'text-left' : 'text-center'}
-                                    bg-muted
-                                    `}
-                                >
-                                    {/* flexRender - MAGIA DE REACT-TABLE
-                                    Renderiza el contenido definido en columnDef.header */}
-                                    {flexRender(
-                                        header.column.columnDef.header,
-                                        header.getContext()
-                                    )}
-                                </th>
-                            )
-                        }
-                        )}
+                        {hg.headers.map(header => (
+                            <th
+                                key={header.id}
+                                className={`font-semibold text-secondary-foreground bg-muted
+                                ${compact ? 'px-1 py-2 text-xs' : 'px-4 py-3'}
+                                ${header.column.id === categoryColumnTitle ? 'text-left' : 'text-center'}
+                                `}
+                            >
+                                {/* flexRender - MAGIA DE REACT-TABLE
+                                Renderiza el contenido definido en columnDef.header */}
+                                {flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext()
+                                )}
+                            </th>
+                        ))}
                     </tr>
                 ))}
             </thead>
@@ -91,7 +87,7 @@ export function TableHeader({ table }: { table: Table<CategoryRow> }) {
           Este componente SOLO renderiza la cabecera. El <tbody> se renderiza
           en TableBody.tsx. Ambos comparten la MISMA estructura de <table>
           gracias al <colgroup> que define anchos consistentes.
-          
+
           Esto permite:
           1. Scroll independiente del body (overflow-auto) manteniendo header fijo
           2. Separación clara de responsabilidades

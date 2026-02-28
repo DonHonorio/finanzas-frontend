@@ -206,7 +206,11 @@
     "incomes": "ingresos",
     "categories": "CATEGORÍAS",
     "budget": "PRESUPUESTO",
-    "addCategory": "Añadir categoría"
+    "addCategory": "Añadir categoría",
+    "viewDetails": "Ver detalles",
+    "yearTotal": "Total anual",
+    "monthlyBreakdown": "Desglose mensual",
+    "activeMonths": "Meses activos"
   },
   "CategoryModal": {
     "createSubcategory": "+ Crear subcategoría",
@@ -224,6 +228,8 @@
     "total": "TOTAL",
     "subBadge": "Sub",
     "viewSubcategoryTransactions": "Ver transacciones de subcategoría",
+    "viewDetail": "Ver detalle",
+    "hideDetail": "Ocultar detalle",
     "editSubcategory": "Editar subcategoría",
     "edit": "Editar",
     "delete": "Eliminar",
@@ -277,7 +283,7 @@
     "withSubcategories": "Con subcategorías",
     "delete": "Eliminar categoría",
     "deleteTitle": "Confirmar eliminación",
-    "deleteDescription": "Escribe el nombre de la categoría {name} para confirmar la eliminación.",
+    "deleteDescription": "Escribe el nombre de la categoría <b>{name}</b> para confirmar la eliminación.",
     "deletePlaceholder": "Nombre de la categoría",
     "create": "Crear",
     "save": "Guardar"
@@ -295,7 +301,7 @@
     "active": "Activo",
     "delete": "Eliminar subcategoría",
     "deleteTitle": "Confirmar eliminación",
-    "deleteDescription": "Escribe el nombre de la subcategoría {name} para confirmar la eliminación.",
+    "deleteDescription": "Escribe el nombre de la subcategoría <b>{name}</b> para confirmar la eliminación.",
     "deleteWarning": "Advertencia: se eliminarán todas las transacciones asociadas a esta subcategoría.",
     "deletePlaceholder": "Nombre de la subcategoría",
     "create": "Crear",

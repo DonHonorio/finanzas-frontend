@@ -1,6 +1,6 @@
 'use client'
 
-import { Wallet, X } from "lucide-react"
+import { X } from "lucide-react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
@@ -8,6 +8,7 @@ import { LoginForm } from "@/src/components/auth/login-form"
 import { LanguageSelector } from "@/src/components/ui/language-selector"
 import { AppLocale } from "@/src/i18n/config"
 import { setLocaleAction } from "@/src/actions/set-locale-action"
+import Image from "next/image"
 
 type Props = {
     locale: AppLocale
@@ -36,10 +37,10 @@ export function BienvenidaContent({ locale, onLocaleChange }: Props) {
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6 py-16">
+        <div className="min-h-[100dvh] w-full overflow-x-hidden overflow-y-auto flex flex-col items-center justify-start sm:justify-center bg-gray-50 px-4 sm:px-6 pt-24 sm:pt-28 pb-8 sm:pb-16">
 
-            {/* Barra superior */}
-            <div className="fixed top-0 left-0 right-0 flex justify-between items-center px-8 py-4">
+            {/* Barra superior — fija, con fondo translúcido para no tapar el contenido */}
+            <div className="fixed top-0 left-0 right-0 flex justify-between items-center px-4 sm:px-8 py-3 sm:py-4 bg-gray-50/80 backdrop-blur-sm">
 
                 {/* Selector de idioma — esquina superior izquierda */}
                 <LanguageSelector
@@ -52,11 +53,11 @@ export function BienvenidaContent({ locale, onLocaleChange }: Props) {
                 />
 
                 {/* Botón de login — derecha */}
-                <div className="flex items-center gap-3">
-                    <span className="text-sm text-gray-500">{t("alreadyHaveAccount")}</span>
+                <div className="flex items-center gap-2 sm:gap-4">
+                    <span className="hidden sm:block text-sm text-gray-500">{t("alreadyHaveAccount")}</span>
                     <button
                         onClick={() => setShowLogin(true)}
-                        className="text-sm font-semibold text-primary border border-primary px-4 py-2 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+                        className="text-sm font-semibold text-primary border border-primary px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
                     >
                         {t("signIn")}
                     </button>
@@ -86,12 +87,19 @@ export function BienvenidaContent({ locale, onLocaleChange }: Props) {
                 </div>
             )}
 
-            <div className="max-w-2xl w-full flex flex-col items-center gap-10">
+            <div className="max-w-2xl w-full flex flex-col items-center gap-5 sm:gap-10">
 
                 {/* Logo / Icono de la app */}
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-24 h-24 bg-primary rounded-3xl flex items-center justify-center shadow-lg">
-                        <Wallet className="w-14 h-14 text-white" />
+                    <div className="relative w-56 h-20 sm:w-72 sm:h-24">
+                        <Image
+                            src="/logoRiconomy.png"
+                            alt="Riconomy"
+                            fill
+                            priority
+                            className="object-contain"
+                            sizes="(min-width: 640px) 288px, 224px"
+                        />
                     </div>
                     <p className="text-sm font-semibold tracking-widest text-primary uppercase">
                         {t("brand")}
@@ -100,7 +108,7 @@ export function BienvenidaContent({ locale, onLocaleChange }: Props) {
 
                 {/* Mensaje principal */}
                 <div className="text-center flex flex-col gap-6">
-                    <h1 className="text-4xl font-bold text-gray-900 leading-tight">
+                    <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 leading-tight">
                         {headlineLines.map((line, index) => (
                             <span key={`${line}-${index}`}>
                                 {line}
@@ -109,15 +117,15 @@ export function BienvenidaContent({ locale, onLocaleChange }: Props) {
                         ))}
                     </h1>
 
-                    <p className="text-gray-600 text-lg leading-relaxed">
+                    <p className="text-gray-600 text-sm sm:text-lg leading-relaxed">
                         {t("description")}
                     </p>
 
-                    <p className="text-gray-500 text-base leading-relaxed">
+                    <p className="text-gray-500 text-sm sm:text-base leading-relaxed">
                         {t("description2")}
                     </p>
 
-                    <p className="text-gray-500 text-base leading-relaxed">
+                    <p className="text-gray-500 text-sm sm:text-base leading-relaxed">
                         {t("description3")}
                     </p>
                 </div>
@@ -126,7 +134,7 @@ export function BienvenidaContent({ locale, onLocaleChange }: Props) {
                 <button
                     onClick={handleGetStarted}
                     disabled={isNavigating}
-                    className="bg-primary hover:bg-primary/90 text-white font-semibold text-lg px-10 py-4 rounded-xl shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-100 disabled:opacity-70 disabled:cursor-not-allowed disabled:scale-100"
+                    className="bg-primary hover:bg-primary/90 text-white font-semibold text-base sm:text-lg px-6 sm:px-10 py-3 sm:py-4 rounded-xl shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-100 disabled:opacity-70 disabled:cursor-not-allowed disabled:scale-100"
                 >
                     {t("start")}
                 </button>

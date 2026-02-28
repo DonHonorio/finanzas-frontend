@@ -45,7 +45,7 @@ export function AddTransactionButton({
         className={cn(
           isFloating
             ? "w-14 h-14 bg-white rounded-full shadow-xl border border-gray-100 flex items-center justify-center text-3xl text-primary hover:bg-gray-50 transition-transform hover:scale-105 active:scale-95"
-            : "w-60 bg-primary hover:bg-primary/90 text-primary-foreground text-lg rounded-lg transition select-none",
+            : "bg-primary hover:bg-primary/90 text-primary-foreground text-sm sm:text-base px-4 py-2 rounded-lg transition select-none",
           className
         )}
         title={t("title")}

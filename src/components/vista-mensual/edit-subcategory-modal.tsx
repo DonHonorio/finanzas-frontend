@@ -15,7 +15,7 @@ type Props = {
 // Modal wrapper para editar una subcategoría existente
 export function EditSubcategoryModal({ open, subcategory, onCancel, onAccept }: Props) {
   return (
-    <Modal open={open} onCancel={onCancel} className="w-[75vw] max-w-2xl rounded-2xl overflow-hidden">
+    <Modal open={open} onCancel={onCancel} className="w-[95vw] sm:w-[80vw] max-w-2xl h-[92dvh] sm:h-auto max-h-[92dvh] rounded-2xl overflow-hidden flex flex-col">
       <SubcategoryForm
         initialData={{
           name: subcategory.name,

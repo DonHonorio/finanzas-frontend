@@ -38,12 +38,12 @@ export function VistaMensualHeader({ mode, setMode, actualYear, setActualYear }:
       <div className="flex items-center justify-between">
 
         {/* Selector de modo: Gastos vs Ingresos */}
-        <div className="relative bg-gray-100 rounded-xl p-1 w-56 h-12 flex items-center">
+        <div className="relative bg-gray-100 rounded-xl p-1 w-40 sm:w-56 h-10 sm:h-12 flex items-center">
 
           {/* Indicador visual deslizante - cambia posición según el modo */}
           <div
             className={`
-              absolute top-1 left-1 h-10 w-[calc(50%-4px)]
+              absolute top-1 left-1 h-8 sm:h-10 w-[calc(50%-4px)]
               bg-primary text-primary-foreground rounded-lg shadow
               transition-all duration-300
               ${mode === 'incomes' ? 'translate-x-full' : ''} /* Desplaza a derecha para ingresos */

@@ -102,21 +102,21 @@ export function CuentasPageClient({ user, source }: CuentasPageClientProps) {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
+    <div className="h-[100dvh] overflow-hidden flex flex-col bg-gray-50">
       <Header user={resolvedUser} source={source} />
 
-      <main className="flex-1 p-10 overflow-hidden">
+      <main className="flex-1 min-h-0 p-3 sm:p-6 md:p-10 overflow-hidden">
         <div className="h-full bg-white rounded-2xl border border-gray-200 flex flex-col overflow-hidden">
           {/* Cabecera de sección con CTA de creación. */}
-          <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between gap-4">
+          <div className="px-4 sm:px-6 py-3 sm:py-5 border-b border-gray-200 flex items-center justify-between gap-3">
             <div>
-              <h1 className="text-3xl font-bold text-gray-800">{t("title")}</h1>
-              <p className="text-sm text-gray-500 mt-1">{t("subtitle")}</p>
+              <h1 className="text-xl sm:text-3xl font-bold text-gray-800">{t("title")}</h1>
+              <p className="text-xs sm:text-sm text-gray-500 mt-1">{t("subtitle")}</p>
             </div>
             <button
               type="button"
               onClick={() => setOpenAddAccountModal(true)}
-              className="px-5 py-2.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition font-medium"
+              className="shrink-0 px-3 sm:px-5 py-2 sm:py-2.5 text-sm sm:text-base bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition font-medium"
             >
               {t("add")}
             </button>

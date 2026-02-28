@@ -18,7 +18,7 @@ import { useColumnResize } from "@/src/hooks/use-column-resize"
 import { useDeleteTransaction } from "@/src/hooks/use-delete-transaction"
 import { SubcategoryTransactionsTable } from "./subcategory-transactions-table"
 import { CloseButton } from "@/src/components/ui/close-button"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 
 type Props = {
     open: boolean
@@ -38,6 +38,7 @@ const COLUMNS_SETUP: ColumnConfig[] = [
 
 export function ViewSubcategoryModal({ open, subcategory, categoryType, onCancel, onTransactionChanged, subcategories }: Props) {
     const t = useTranslations("SubcategoryModal")
+    const locale = useLocale()
     // Estado para el orden de las transacciones (ascendente/descendente)
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
     
@@ -80,15 +81,15 @@ export function ViewSubcategoryModal({ open, subcategory, categoryType, onCancel
         <Modal
             open={open}
             onCancel={onCancel}
-            className="w-[50%] h-[80%] rounded-2xl overflow-hidden flex flex-col"
+            className="w-[90vw] sm:w-[70vw] h-[80vh] rounded-2xl overflow-hidden flex flex-col"
         >
             {/* HEADER */}
-            <div className="flex items-center justify-between p-6 border-b shrink-0">
-                <div className="flex items-center gap-10">
+            <div className="flex items-start sm:items-center justify-between p-4 sm:p-6 border-b shrink-0 gap-2">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 flex-1 min-w-0">
                     {/* Título con color de la subcategoría */}
-                    <h2 className="text-2xl font-semibold flex items-center gap-3">
+                    <h2 className="text-lg sm:text-2xl font-semibold flex items-center gap-2">
                         <div
-                            className="w-4 h-4 rounded-full"
+                            className="w-3 h-3 sm:w-4 sm:h-4 rounded-full shrink-0"
                             style={{ backgroundColor: subcategory.color }}
                         />
                         {subcategory.name} ({transactions.length})
@@ -104,7 +105,7 @@ export function ViewSubcategoryModal({ open, subcategory, categoryType, onCancel
                             onTransactionChanged?.()
                         }}
                         variant="default"
-                        className="w-auto px-4 py-2 text-sm h-9"
+                        className="w-auto px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm h-8 sm:h-9"
                         defaultCategoryId={subcategory.categoryId}
                         defaultSubcategoryId={subcategory.subcategoryId}
                         subcategories={subcategories}
@@ -116,7 +117,7 @@ export function ViewSubcategoryModal({ open, subcategory, categoryType, onCancel
             </div>
 
             {/* CONTENIDO */}
-            <div className="flex-1 overflow-y-auto overflow-x-hidden bg-white relative min-h-[400px]" ref={tableContainerRef}>
+            <div className="flex-1 overflow-y-auto overflow-x-auto bg-white relative" ref={tableContainerRef}>
                 <SubcategoryTransactionsTable
                     loading={loading}
                     transactions={transactions}
@@ -135,7 +136,7 @@ export function ViewSubcategoryModal({ open, subcategory, categoryType, onCancel
                     <div className="flex items-center gap-3">
                         <span className="text-gray-500 font-medium">{t("total")}</span>
                         <span className="text-xl font-bold text-gray-900">
-                            {formatCurrency(totalAmount)}
+                            {formatCurrency(totalAmount, { locale })}
                         </span>
                     </div>
                 </div>

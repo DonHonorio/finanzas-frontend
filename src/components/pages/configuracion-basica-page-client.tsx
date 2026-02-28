@@ -46,12 +46,12 @@ export function ConfiguracionBasicaPageClient() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6 py-16">
-            <div className="max-w-xl w-full flex flex-col items-center gap-10">
+        <div className="min-h-[100dvh] w-full overflow-x-hidden overflow-y-auto flex flex-col items-center justify-start sm:justify-center bg-gray-50 px-4 sm:px-6 py-6 sm:py-16">
+            <div className="max-w-xl w-full flex flex-col items-center gap-5 sm:gap-10">
 
                 {/* Encabezado */}
                 <div className="text-center flex flex-col gap-3">
-                    <h1 className="text-3xl font-bold text-gray-900">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
                         {t("title")}
                     </h1>
                     <p className="text-gray-500 text-base">
@@ -60,10 +60,10 @@ export function ConfiguracionBasicaPageClient() {
                 </div>
 
                 {/* Formulario de configuración */}
-                <form onSubmit={handleContinuar} className="w-full flex flex-col gap-6">
+                <form onSubmit={handleContinuar} className="w-full flex flex-col gap-4 sm:gap-6">
 
                     {/* Moneda */}
-                    <div className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col gap-4 shadow-sm">
+                    <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 flex flex-col gap-4 shadow-sm">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
                                 <Globe className="w-5 h-5 text-primary" />
@@ -73,14 +73,14 @@ export function ConfiguracionBasicaPageClient() {
                         <select name="baseCurrency" defaultValue="EUR" className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-700 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary/40 transition">
                             {currencies.map(curr => (
                                 <option key={curr.currency} value={curr.currency}>
-                                    {curr.currency} - {new Intl.DisplayNames([locale], { type: "currency" }).of(curr.currency)}
+                                    {curr.currency} - {curr.description}
                                 </option>
                             ))}
                         </select>
                     </div>
 
                     {/* Zona horaria */}
-                    <div className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col gap-4 shadow-sm">
+                    <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 flex flex-col gap-4 shadow-sm">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
                                 <Clock className="w-5 h-5 text-primary" />
@@ -95,7 +95,7 @@ export function ConfiguracionBasicaPageClient() {
                     </div>
 
                     {/* Idioma */}
-                    <div className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col gap-4 shadow-sm">
+                    <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 flex flex-col gap-4 shadow-sm">
                         <LanguageSelector
                             name="language"
                             value={language}
@@ -107,7 +107,7 @@ export function ConfiguracionBasicaPageClient() {
                     {/* Botón continuar */}
                     <button
                         type="submit"
-                        className="w-full bg-primary hover:bg-primary/90 text-white font-semibold text-lg px-10 py-4 rounded-xl shadow-md transition-all duration-200 hover:shadow-lg hover:scale-[1.02] active:scale-100"
+                        className="w-full bg-primary hover:bg-primary/90 text-white font-semibold text-base sm:text-lg px-6 sm:px-10 py-3 sm:py-4 rounded-xl shadow-md transition-all duration-200 hover:shadow-lg hover:scale-[1.02] active:scale-100"
                     >
                         {t("continue")}
                     </button>

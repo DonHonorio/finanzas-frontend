@@ -95,16 +95,18 @@ export function SubcategoryForm({ initialData, categoryId, action, onSuccess, on
     return (
         <form
             id="subcategory-form"
-            className="flex-1 p-6 overflow-hidden"
+            className="flex flex-col flex-1 min-h-0 overflow-hidden"
             action={dispatch}
         >
+        {/* Área scrollable */}
+        <div className="flex-1 min-h-0 overflow-y-auto p-6">
             {/* Campos ocultos para IDs */}
             <input type="hidden" name="subcategoryId" value={subcategoryId} />
             <input type="hidden" name="categoryId" value={categoryId} />
 
             {/* Mensajes de error */}
             {state.errors.length > 0 && (
-                <div className="px-6 pt-5">
+                <div className="pb-4">
                     <div className="max-h-40 overflow-y-auto space-y-2 pr-2">
                         {state.errors.map((error, index) => (
                             <ErrorMessage key={`${error}-${index}`}>{error}</ErrorMessage>
@@ -119,7 +121,7 @@ export function SubcategoryForm({ initialData, categoryId, action, onSuccess, on
             </h2>
 
             {/* Contenido del formulario */}
-            <div className="space-y-4 h-[calc(55vh-260px)]">
+            <div className="space-y-4">
                 {/* Nombre */}
                 <div>
                     <label className="block text-[15px] font-semibold text-gray-700 mb-1">{t("name")}</label>
@@ -216,7 +218,10 @@ export function SubcategoryForm({ initialData, categoryId, action, onSuccess, on
                 description={
                     <div>
                         <p className="mb-3">
-                            {t("deleteDescription", { name: initialData?.name ?? "" })}
+                            {t.rich("deleteDescription", {
+                                name: initialData?.name ?? "",
+                                b: (chunks) => <strong className="font-semibold text-gray-900">{chunks}</strong>,
+                            })}
                         </p>
                         <p className="text-red-600 font-semibold">
                             {t("deleteWarning")}
@@ -228,15 +233,17 @@ export function SubcategoryForm({ initialData, categoryId, action, onSuccess, on
                 confirmButtonText={tCommon("delete")}
             />
 
-            {/* Footer */}
-            <div className="mt-6 px-6 py-4 flex justify-end gap-4 border-t border-gray-200">
-                <CancelButton onClick={onCancel} className="px-12" />
-                <SaveButton 
-                    isPending={isPending} 
+        </div>{/* fin área scrollable */}
+
+            {/* Footer sticky */}
+            <div className="shrink-0 px-6 py-4 flex justify-end gap-4 border-t border-gray-200">
+                <CancelButton onClick={onCancel} className="px-6 sm:px-12" />
+                <SaveButton
+                    isPending={isPending}
                     isValid={isFormValid}
                     label={initialData ? t("save") : t("create")}
                     form="subcategory-form"
-                    className="px-12"
+                    className="px-6 sm:px-12"
                 />
             </div>
         </form>

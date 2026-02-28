@@ -12,7 +12,7 @@ type Props = {
 // Modal para agregar una nueva categoría, usado en la vista mensual
 export function AddCategoryModal({ open, onAccept, onCancel, mode }: Props) {
   return (
-    <Modal open={open} onCancel={onCancel} className="w-[75vw] max-w-5xl rounded-2xl overflow-hidden">
+    <Modal open={open} onCancel={onCancel} className="w-[95vw] sm:w-[80vw] max-w-5xl h-[92dvh] sm:h-auto max-h-[92dvh] rounded-2xl overflow-hidden flex flex-col">
       <CategoryForm
         action={createCategory}
         onSuccess={onAccept}

@@ -41,6 +41,16 @@ export function formatDate(dateString: string, locale?: string) {
   })
 }
 
+// Formatea números de forma compacta para vistas reducidas (tablet/móvil): 1234 → "1.2K"
+export function formatCompact(value: number): string {
+  const abs = Math.abs(value)
+  const sign = value < 0 ? '-' : ''
+  if (abs === 0) return '0'
+  if (abs >= 10000) return `${sign}${Math.round(abs / 1000)}K`
+  if (abs >= 1000) return `${sign}${(abs / 1000).toFixed(1)}K`
+  return `${sign}${Math.round(abs)}`
+}
+
 // Opciones de icono
 export const iconOptions = [
   "💰", "💵", "🧾", "💳", "🏦", "💶", "🏛️", "💸",

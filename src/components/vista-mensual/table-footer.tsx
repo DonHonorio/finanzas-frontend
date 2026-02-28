@@ -1,10 +1,10 @@
 'use client'
 
 import { columnWidths } from "@/src/helpers/dashboard-helpers"
-import { formatCurrency, months } from "@/src/lib/utils"
+import { formatCurrency, formatCompact, months } from "@/src/lib/utils"
 import { CategoryRow, Month } from "@/src/types/dashboard-types"
 import { Table } from "@tanstack/react-table"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 
 // Calcula el total gastado/ingresado para un mes específico
 // Suma todos los valores de ese mes en cada categoría
@@ -20,16 +20,19 @@ function sumBudgets(data: CategoryRow[]) {
 type Props = {
   table: Table<CategoryRow>
   data: CategoryRow[] // Datos actuales mostrados en la tabla
+  compact?: boolean
 }
 
-export function TableFooter({ table, data }: Props) {
+export function TableFooter({ table, data, compact = false }: Props) {
   const t = useTranslations("CategoryTable")
+  const locale = useLocale()
+  const fmt = compact ? formatCompact : (value: number) => formatCurrency(value, { locale })
 
   return (
     // Tabla independiente que alinea sus columnas con la tabla principal
     // table-fixed + mismo colgroup garantiza alineación perfecta
     <table className="w-full table-fixed border-collapse text-sm font-semibold border-t border-border">
-      {/* 
+      {/*
         MISMO colgroup que TableHeader y TableBody
         Esto asegura que las columnas del footer coincidan exactamente
         en ancho con las columnas superiores
@@ -47,17 +50,17 @@ export function TableFooter({ table, data }: Props) {
       <tfoot>
         <tr>
           {/* Celda "TOTAL" - ocupa la columna de categorías */}
-          <td className="px-4 py-3 text-left">{t("total")}</td>
-          
+          <td className={compact ? 'px-1 py-2 text-xs text-left' : 'px-4 py-3 text-left'}>{t("total")}</td>
+
           {/* Total de presupuestos - formateado como moneda */}
-          <td className="px-4 py-3 text-right">
-            {formatCurrency(sumBudgets(data))}
+          <td className={compact ? 'px-1 py-2 text-xs text-right' : 'px-4 py-3 text-right'}>
+            {fmt(sumBudgets(data))}
           </td>
-          
+
           {/* Totales por mes - cada mes calcula la suma de todas las categorías */}
           {months.map(m => (
-            <td key={m} className="px-4 py-3 text-right bg-secondary/30">
-              {formatCurrency(sumMonth(data, m))}
+            <td key={m} className={compact ? 'px-1 py-2 text-xs text-right bg-secondary/30' : 'px-4 py-3 text-right bg-secondary/30'}>
+              {fmt(sumMonth(data, m))}
             </td>
           ))}
         </tr>

@@ -19,7 +19,7 @@ type Props = {
 // Modal wrapper que contiene el formulario de transacción para añadir un nuevo movimiento
 export function AddTransactionModal({ open, accounts, categories, onAccept, onCancel, mode, defaultCategoryId, defaultSubcategoryId, subcategories }: Props) {
   return (
-    <Modal open={open} onCancel={onCancel} className="w-[75vw] max-w-2xl rounded-2xl overflow-hidden">
+    <Modal open={open} onCancel={onCancel} className="w-[95vw] sm:w-[80vw] max-w-2xl h-[92dvh] sm:h-auto max-h-[92dvh] rounded-2xl overflow-hidden flex flex-col">
       <TransactionForm
         accounts={accounts}
         categories={categories}

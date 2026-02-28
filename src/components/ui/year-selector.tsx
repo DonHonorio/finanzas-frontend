@@ -14,12 +14,12 @@ export function YearSelector({ year, setYear, actualYear, setActualYear }: YearS
   const t = useTranslations("YearSelector")
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-1 sm:gap-4">
       {/* Botón "Aplicar año" - Solo visible cuando hay cambio sin aplicar -> Sirve para realizar búsqueda en dicho año */}
       {year !== actualYear && ( // year -> año visible / actualYear -> año datos buscados
         <button
           title={t("applyYear")}
-          className="p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
+          className="p-1 sm:p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
           onClick={() => {
             setActualYear(year)
           }}
@@ -32,18 +32,18 @@ export function YearSelector({ year, setYear, actualYear, setActualYear }: YearS
       {/* Botón año anterior (flecha izquierda)*/}
       <button
         onClick={() => setYear(year - 1)}
-        className="p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
+        className="p-1 sm:p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
       >
         <ChevronLeft className="h-5 w-5" />
       </button>
 
       {/* Año actual mostrado - tabular-nums para alineación numérica perfecta */}
-      <span className="text-2xl font-bold tabular-nums select-none">{year}</span>
+      <span className="text-base sm:text-2xl font-bold tabular-nums select-none">{year}</span>
 
       {/* Botón año siguiente (flecha derecha) */}
       <button
         onClick={() => setYear(year + 1)}
-        className="p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
+        className="p-1 sm:p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
       >
         <ChevronRight className="h-5 w-5" />
       </button>

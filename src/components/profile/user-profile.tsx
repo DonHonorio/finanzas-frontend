@@ -63,7 +63,7 @@ export function UserProfile({ user, source = "backend" }: UserProfileProps) {
         <div className="relative">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 transition"
+                className="flex items-center gap-2 sm:gap-3 px-2 sm:px-4 py-2 rounded-lg hover:bg-gray-100 transition"
             >
                 {user.avatar ? (
                     <img

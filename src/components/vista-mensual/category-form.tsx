@@ -110,9 +110,11 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
     return (
         <form
             id="category-form"
-            className="flex-1 p-6 overflow-hidden"
+            className="flex flex-col flex-1 min-h-0 overflow-hidden"
             action={dispatch}
         >
+        {/* Área scrollable: todo el contenido del formulario excepto el footer */}
+        <div className="flex-1 min-h-0 overflow-y-auto p-6">
             <input type="hidden" name="categoryId" value={initialData?.categoryId || ""} />
             {/* Mensajes de error */}
             {state.errors.length > 0 && (
@@ -215,7 +217,7 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
                     <div>
                         <label className="block text-[15px] font-semibold text-gray-700 mb-2">{t("icon")}</label>
                         <input type="hidden" name="icon" value={icon} />
-                        <div className="grid grid-cols-8 gap-2">
+                        <div className="grid grid-cols-6 sm:grid-cols-8 gap-3 sm:gap-2">
                             {iconOptions.map((item, index) => (
                                 <button
                                     key={`${item}-${index}`}
@@ -300,7 +302,10 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
                 title={t("deleteTitle")}
                 description={
                     <p>
-                        {t("deleteDescription", { name: initialData?.name ?? "" })}
+                        {t.rich("deleteDescription", {
+                            name: initialData?.name ?? "",
+                            b: (chunks) => <strong className="font-semibold text-gray-900">{chunks}</strong>,
+                        })}
                     </p>
                 }
                 validationText={initialData?.name || ""}
@@ -308,18 +313,20 @@ export function CategoryForm({ initialData, action, onSuccess, onCancel, mode }:
                 confirmButtonText={tCommon("delete")}
             />
 
-            {/* Footer */}
-            <div className="px-6 py-4 flex justify-end gap-4 border-t border-gray-200">
+        </div>{/* fin área scrollable */}
+
+            {/* Footer sticky */}
+            <div className="shrink-0 px-6 py-4 flex justify-end gap-4 border-t border-gray-200">
                 {/* Botón cancelar */}
-                <CancelButton onClick={onCancel} className="px-12" />
+                <CancelButton onClick={onCancel} className="px-6 sm:px-12" />
 
                 {/* Botón guardar/crear */}
-                <SaveButton 
-                    isPending={isPending} 
+                <SaveButton
+                    isPending={isPending}
                     isValid={isFormValid}
                     label={initialData ? t("save") : t("create")}
                     form="category-form"
-                    className="px-12"
+                    className="px-6 sm:px-12"
                 />
             </div>
         </form>

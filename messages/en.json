@@ -206,7 +206,11 @@
     "incomes": "income",
     "categories": "CATEGORIES",
     "budget": "BUDGET",
-    "addCategory": "Add category"
+    "addCategory": "Add category",
+    "viewDetails": "View details",
+    "yearTotal": "Year total",
+    "monthlyBreakdown": "Monthly breakdown",
+    "activeMonths": "Active months"
   },
   "CategoryModal": {
     "createSubcategory": "+ Create subcategory",
@@ -224,6 +228,8 @@
     "total": "TOTAL",
     "subBadge": "Sub",
     "viewSubcategoryTransactions": "View subcategory transactions",
+    "viewDetail": "View detail",
+    "hideDetail": "Hide detail",
     "editSubcategory": "Edit subcategory",
     "edit": "Edit",
     "delete": "Delete",
@@ -277,7 +283,7 @@
     "withSubcategories": "With subcategories",
     "delete": "Delete category",
     "deleteTitle": "Confirm deletion",
-    "deleteDescription": "Type the category name {name} to confirm deletion.",
+    "deleteDescription": "Type the category name <b>{name}</b> to confirm deletion.",
     "deletePlaceholder": "Category name",
     "create": "Create",
     "save": "Save"
@@ -295,7 +301,7 @@
     "active": "Active",
     "delete": "Delete subcategory",
     "deleteTitle": "Confirm deletion",
-    "deleteDescription": "Type the subcategory name {name} to confirm deletion.",
+    "deleteDescription": "Type the subcategory name <b>{name}</b> to confirm deletion.",
     "deleteWarning": "Warning: all transactions associated with this subcategory will be deleted.",
     "deletePlaceholder": "Subcategory name",
     "create": "Create",

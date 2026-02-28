@@ -19,7 +19,7 @@ type Props = {
 // Modal wrapper para editar transacción existente
 export function EditTransactionModal({ open, transaction, accounts, categories, onCancel, onAccept, mode, subcategories }: Props) {
     return (
-        <Modal open={open} onCancel={onCancel} className="w-[75vw] max-w-2xl rounded-2xl overflow-hidden">
+        <Modal open={open} onCancel={onCancel} className="w-[95vw] sm:w-[75vw] max-w-2xl h-[92dvh] sm:h-auto max-h-[92dvh] rounded-2xl overflow-hidden">
             <TransactionForm
             // Se pasan los datos de la transacción a editar como initialData para prellenar el formulario
                 initialData={{

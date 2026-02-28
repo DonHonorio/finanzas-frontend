@@ -16,7 +16,7 @@ export function AddAccountModal({ open, onCancel, onAccept }: Props) {
   const t = useTranslations("AccountForm")
 
   return (
-    <Modal open={open} onCancel={onCancel} className="w-[92vw] max-w-2xl rounded-2xl overflow-hidden">
+    <Modal open={open} onCancel={onCancel} className="w-[92vw] max-w-2xl h-[92dvh] sm:h-auto max-h-[92dvh] rounded-2xl overflow-hidden flex flex-col">
       {/* Reusa la misma capa de validación/feedback que el flujo de edición. */}
       <AccountForm
         action={createAccount}

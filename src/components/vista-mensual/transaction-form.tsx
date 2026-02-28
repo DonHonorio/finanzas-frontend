@@ -139,9 +139,11 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
     return (
         <form
             id="transaction-form"
-            className="flex-1 p-6 overflow-hidden"
+            className="flex h-full flex-col min-h-0 overflow-hidden"
             action={dispatch}  // Se usa useActionState en lugar de onSubmit tradicional
         >
+        {/* Área scrollable: todo el contenido del formulario excepto el footer */}
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6">
             {/* Campos hidden para datos que no vienen de inputs visibles */}
             <input type="hidden" name="transactionId" value={initialData?.transactionId || ""} />
             {/* A la hora de actualizar sirve para enviarlo al endpoint e identificar la categoría previa, por si se actualiza a una nueva categoría */}
@@ -150,7 +152,7 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
 
             {/* Mensajes de error de la acción principal */}
             {state.errors.length > 0 && (
-                <div className="px-6 pt-5">
+                <div className="mb-4">
                     <div className="max-h-40 overflow-y-auto space-y-2 pr-2">
                         {state.errors.map((error, index) => (
                             <ErrorMessage key={`${error}-${index}`}>{error}</ErrorMessage>
@@ -160,7 +162,7 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
             )}
 
             {/* Título del formulario */}
-            <h2 className="text-[26px] font-semibold mb-4">
+            <h2 className="text-xl sm:text-[26px] font-semibold mb-4">
                 {initialData ? t("editTitle") : t("createTitle")}
             </h2>
 
@@ -313,8 +315,10 @@ export function TransactionForm({ initialData, accounts, categories, action, onS
                 confirmButtonText={tCommon("delete")}
             />
 
-            {/* Botones de acción del formulario */}
-            <div className="mt-6 pt-4 flex justify-end gap-4 border-t border-gray-200">
+        </div>{/* fin área scrollable */}
+
+            {/* Footer sticky */}
+            <div className="shrink-0 px-4 sm:px-6 py-3 sm:py-4 flex justify-end gap-3 sm:gap-4 border-t border-gray-200">
                 <CancelButton onClick={onCancel} />
                 <SaveButton
                     isPending={isPending}

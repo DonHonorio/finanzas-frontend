@@ -14,7 +14,7 @@ type Props = {
 // Modal wrapper para crear una nueva subcategoría dentro de una categoría existente
 export function AddSubcategoryModal({ open, categoryId, onCancel, onAccept }: Props) {
   return (
-    <Modal open={open} onCancel={onCancel} className="w-[75vw] max-w-2xl rounded-2xl overflow-hidden">
+    <Modal open={open} onCancel={onCancel} className="w-[95vw] sm:w-[80vw] max-w-2xl h-[92dvh] sm:h-auto max-h-[92dvh] rounded-2xl overflow-hidden flex flex-col">
       <SubcategoryForm
         categoryId={categoryId}     // Pasa el ID al formulario para la relación jerárquica
         action={createSubcategory} // Server action para crear subcategoría
