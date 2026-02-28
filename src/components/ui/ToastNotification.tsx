@@ -1,4 +1,5 @@
 "use client"
+import "react-toastify/ReactToastify.css"
 import { ToastContainer } from 'react-toastify'
 
 // Componente wrapper para las notificaciones toast
