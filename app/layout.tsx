@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import "./globals.css"
+import 'react-toastify/dist/ReactToastify.css'
 import { Outfit } from 'next/font/google'
 import { NextIntlClientProvider } from "next-intl"
 import { getLocale, getMessages } from "next-intl/server"
