@@ -5,7 +5,6 @@ import { CalendarDays, TrendingUp, PiggyBank, CreditCard } from "lucide-react"
 import { z } from 'zod'
 import { Header } from "@/src/components/menu-principal/header"
 import { AddTransactionButton } from "@/src/components/ui/add-transaction-button"
-import ToastNotification from "@/src/components/ui/ToastNotification"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { getAccounts } from "@/src/data-layer/accounts"
@@ -138,8 +137,6 @@ export function HomePageClient({ user, source, title }: HomePageClientProps) {
           />
         </div>
       </main>
-
-      <ToastNotification />
     </div>
   )
 }

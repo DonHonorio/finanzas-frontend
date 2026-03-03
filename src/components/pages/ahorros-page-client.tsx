@@ -3,7 +3,6 @@
 import { PiggyBank } from "lucide-react"
 import { z } from 'zod'
 import { Header } from "@/src/components/menu-principal/header"
-import ToastNotification from "@/src/components/ui/ToastNotification"
 import { UserSchema } from '@/src/schemas'
 import { useResolvedSessionUser } from "@/src/hooks/use-resolved-session-user"
 import { useTranslations } from "next-intl"
@@ -38,7 +37,6 @@ export function AhorrosPageClient({ user, source }: AhorrosPageClientProps) {
                     </div>
                 </div>
             </main>
-            <ToastNotification />
         </div>
     )
 }

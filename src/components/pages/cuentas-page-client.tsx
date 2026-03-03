@@ -3,7 +3,6 @@
 import { useState, useTransition } from "react"
 import { z } from "zod"
 import { Header } from "@/src/components/menu-principal/header"
-import ToastNotification from "@/src/components/ui/ToastNotification"
 import { UserSchema } from "@/src/schemas"
 import { useResolvedSessionUser } from "@/src/hooks/use-resolved-session-user"
 import { useAccountsData } from "@/src/hooks/use-accounts-data"
@@ -199,8 +198,6 @@ export function CuentasPageClient({ user, source }: CuentasPageClientProps) {
         }}
         onConfirm={handleDeleteConfirmed}
       />
-
-      <ToastNotification />
     </div>
   )
 }

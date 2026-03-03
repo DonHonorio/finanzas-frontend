@@ -3,6 +3,7 @@ import "./globals.css"
 import { Outfit } from 'next/font/google'
 import { NextIntlClientProvider } from "next-intl"
 import { getLocale, getMessages } from "next-intl/server"
+import ToastNotification from "@/src/components/ui/ToastNotification"
 
 const outfit = Outfit({subsets: ['latin']})
 
@@ -26,6 +27,7 @@ export default async function RootLayout({
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
+          <ToastNotification />
         </NextIntlClientProvider>
       </body>
     </html>
